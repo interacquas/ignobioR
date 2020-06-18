@@ -1,7 +1,7 @@
 #' @title Mapping Floristic Ignorance
 #'
-#' @description This function map occurence data taking into account spatial and temporal uncertainty
-#' @param site, excl_areas, tau, cellsize
+#' @description This function map occurrence data taking into account spatial and temporal uncertainty
+#' @param data_flor, site, year_study, excl_areas, tau, cellsize, CRS.new, tau
 #' @return A map
 #' @export
 #' @examples
@@ -10,7 +10,7 @@
 ignorance_map <- function(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau) {
 
   start_time <- Sys.time() ## starting time
-  raster:crs(site) <- sp::CRS("+init=epsg:4326")
+  raster::crs(site) <- sp::CRS("+init=epsg:4326")
   CRS.new <- paste0("+init=epsg:", CRS.new)
   print(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
 
@@ -158,7 +158,7 @@ names(raster_stack) <- list
 raster_sum <- sum(raster_stack, na.rm = TRUE)
 
 ############ Rescale the raster to show IFI
-r.max = cellStats(raster_sum, "max")
+r.max = raster::cellStats(raster_sum, "max")
 raster_sum <- r.max - raster_sum
 
 ############ Plot the map after a 'mask' operation
@@ -166,7 +166,7 @@ raster_sum <- r.max - raster_sum
 raster_sum2 <- crop(raster_sum, r)
 
 x_crop <- raster::crop(raster_sum2, r)
-writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
+rgdal::writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
 gdalUtils::gdal_rasterize(sprintf('%s/%s.shp', tempdir(), f),
                f2 <- tempfile(fileext='.tif'), at=T,
                tr=res(x_crop), te=c(bbox(x_crop)), burn=1,
@@ -191,14 +191,14 @@ test_spdf <- as(raster_new, "SpatialPixelsDataFrame")
 test_df <- as.data.frame(test_spdf)
 colnames(test_df) <- c("value", "x", "y")
 
-pdf("Ignorance Map2.pdf", onefile = TRUE)
+pdf("IgnoranceMap.pdf", onefile = TRUE)
 
 ### Plot n° 1
 p1 <- ggplot()+
   geom_tile(data = test_df, aes(x=x, y=y, fill=value), alpha=0.8) +
-  ggplot2:geom_polygon(data = site_3035, aes(x=long, y=lat, group=group),
+  geom_polygon(data = site_3035, aes(x=long, y=lat, group=group),
                fill=NA, color="black", size=1) +
-  ggplot2::geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
+  geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
   scale_fill_distiller(palette = "Spectral", direction = -1, guide = guide_legend(),breaks=rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10)),
                        labels=round(rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10))), limits = c(0, maxValue(raster_new)))+
   coord_equal()+
@@ -214,8 +214,8 @@ print(p1)
 
 # Plot n° 2
 
-x_crop_rich <- crop(rich, r)
-writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
+x_crop_rich <- raster::crop(rich, r)
+rgdal::writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
 gdalUtils::gdal_rasterize(sprintf('%s/%s.shp', tempdir(), f),
                f3 <- tempfile(fileext='.tif'), at=T,
                tr=res(x_crop_rich), te=c(bbox(x_crop_rich)), burn=1,
@@ -229,9 +229,9 @@ colnames(test_df2) <- c("value", "x", "y")
 
 p2 <- ggplot() +
   geom_tile(data=test_df2, aes(x=x, y=y, fill=value), alpha=0.8) +
-  ggplot2::geom_polygon(data=site_3035, aes(x=long, y=lat, group=group),
+  geom_polygon(data=site_3035, aes(x=long, y=lat, group=group),
                fill=NA, color="black", size=1) +
-  ggplot2::geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
+  geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
   scale_fill_distiller(palette = "Spectral", direction = 1, guide = guide_legend(),breaks= rev(seq(0, maxValue(raster_new_rich),maxValue(raster_new_rich)/10)),
                        labels=round(rev(seq(0, maxValue(raster_new_rich),maxValue(raster_new_rich)/10))), limits = c(0, maxValue(raster_new_rich)))+
   coord_equal() +

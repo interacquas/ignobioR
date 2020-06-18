@@ -100,16 +100,16 @@ if(cont==1)
 {
   raster::crs(excl_areas) <- sp::CRS("+init=epsg:4326")
   # Crop the shapefile of the seas with study area
-  excl_areas <- raster::crop(excl_areas, extent(data_flor_planar))
-  excl_areas_3035 <- rgdal::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
+  excl_areas <- raster::crop(excl_areas, raster::extent(data_flor_planar))
+  excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
   plot(excl_areas_3035, main="Area of exclusion uploaded!")
   }
 
 
-data_flor_planar <- rgdal::spTransform(data_flor_planar, CRS.new)
+data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
 points_3035 <- data_flor_planar
-site_3035 <- rgdal::spTransform(site, CRS.new)
-data_flor_planar <- rgdal::spTransform(data_flor_planar, CRS.new)
+site_3035 <- sp::spTransform(site, CRS.new)
+data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
 data_flor_planar$lat <- data_flor_planar@coords[,2]
 data_flor_planar$long <- data_flor_planar@coords[,1]
 
@@ -169,8 +169,8 @@ overlayXYT$p_occurrence_temporal <- (1-(tau/100))^((year_study- overlayXYT$year)
 # Spatiotemporal probability of occurrence
 overlayXYT$p_occurrence_spatiotemporal <- (overlayXYT$p_occurrence_spatial * overlayXYT$p_occurrence_temporal)
 
-cl2 <- makeCluster(detectCores()/2) #### to perform a parallel computing
-registerDoSNOW(cl2)
+cl2 <- parallel::makeCluster(parallel::detectCores()/2) #### to perform a parallel computing
+doSNOW::registerDoSNOW(cl2)
 
 pb2 <- txtProgressBar(min = 0, max = length(x), style = 3)
 progress <- function(n) setTxtProgressBar(pb2, n)
