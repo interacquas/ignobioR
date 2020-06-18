@@ -65,7 +65,7 @@ print("Creating spatial objects")
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
 coordinates(data_flor_planar) <- ~ Long+Lat
-sp::proj4string(data_flor_planar) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
+sp::proj4string(data_flor_planar) <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
 
 if(cont==1)
 {
