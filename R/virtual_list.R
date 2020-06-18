@@ -91,10 +91,14 @@ if(is.null(excl_areas)==TRUE) {print("No unsuitable areas provided")
                                   cont <- 1}
 
 print("Preparing spatial objects!")
+
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
-sp::coordinates(data_flor_planar) <- ~ Long+Lat
-sp::proj4string(data_flor_planar) <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
+
+xy <- data_flor_planar[,c(2,3)]
+ttt <- sp::CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
+data_flor_planar <- sp::SpatialPointsDataFrame(coords = xy, data = data_flor_planar,
+                               proj4string = ttt)
 
 if(cont==1)
 {
@@ -128,7 +132,8 @@ list<- as.vector(list)
 
 included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
 number_included_species <- max(included_species)
-sapply(over(site_3035, geometry(data_flor_planar), returnList = FALSE), length)
+TA<- sp::geometry(data_flor_planar)
+sapply(sp::over(site_3035, TA, returnList = FALSE), length)
 
 
 # Drafting the VFL
@@ -146,8 +151,8 @@ if (cont==1) {
 
 
 #Plot buffers and study area
-plot(site_3035)
-plot(df_spt, add=TRUE)
+sp::plot(site_3035)
+sp::plot(df_spt, add=TRUE)
 
 # Measure the area of the buffers
 x <- as.vector(unique(df_spt$Taxon))
