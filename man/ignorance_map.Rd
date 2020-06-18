@@ -7,13 +7,13 @@
 ignorance_map(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau)
 }
 \arguments{
-\item{site, }{excl_areas, tau, cellsize}
+\item{data_flor, }{site, year_study, excl_areas, tau, cellsize, CRS.new, tau}
 }
 \value{
 A map
 }
 \description{
-This function map occurence data taking into account spatial and temporal uncertainty
+This function map occurrence data taking into account spatial and temporal uncertainty
 }
 \examples{
 \dontrun{ignorance_map()}
