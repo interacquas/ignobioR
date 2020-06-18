@@ -1,15 +1,15 @@
 #' @title Draft the virtual floristic list of a given territory
 #'
-#' @description Bla bla bla
-#' @param site,
+#' @description A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
+#' @param data_flor, site, year_study, excl_areas, CRS.new, tau, upperlimit
 #'        tau
-#' @return A dataframe
+#' @return A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 #' @export
 #' @examples
 #' \dontrun{virtual_list()}
 
 
-virtual_list <- function(data_flor, site, year_study, excl_areas=NULL, CRS.new, tau, upperlimit) {
+virtual_list <- function(data_flor, site, year_study, excl_areas=NULL, CRS.new, tau, upperlimit=20) {
 
 start_time <- Sys.time() ## starting time
 raster::crs(site) <- sp::CRS("+init=epsg:4326")

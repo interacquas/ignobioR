@@ -11,17 +11,18 @@ virtual_list(
   excl_areas = NULL,
   CRS.new,
   tau,
-  upperlimit
+  upperlimit = 20
 )
 }
 \arguments{
-\item{site, }{tau}
+\item{data_flor, }{site, year_study, excl_areas, CRS.new, tau, upperlimit
+tau}
 }
 \value{
-A dataframe
+A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 }
 \description{
-Bla bla bla
+A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
 }
 \examples{
 \dontrun{virtual_list()}
