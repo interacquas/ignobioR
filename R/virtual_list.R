@@ -93,28 +93,28 @@ if(is.null(excl_areas)==TRUE) {print("No unsuitable areas provided")
 print("Preparing spatial objects!")
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
-coordinates(data_flor_planar) <- ~ Long+Lat
-proj4string(data_flor_planar) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
+sp::coordinates(data_flor_planar) <- ~ Long+Lat
+sp::proj4string(data_flor_planar) <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
 
 if(cont==1)
 {
-  crs(excl_areas) <- CRS("+init=epsg:4326")
+  raster::crs(excl_areas) <- sp::CRS("+init=epsg:4326")
   # Crop the shapefile of the seas with study area
-  excl_areas <- crop(excl_areas, extent(data_flor_planar))
-  excl_areas_3035 <- spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
+  excl_areas <- raster::crop(excl_areas, extent(data_flor_planar))
+  excl_areas_3035 <- rgdal::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
   plot(excl_areas_3035, main="Area of exclusion uploaded!")
   }
 
 
-data_flor_planar <- spTransform(data_flor_planar, CRS.new)
+data_flor_planar <- rgdal::spTransform(data_flor_planar, CRS.new)
 points_3035 <- data_flor_planar
-site_3035 <- spTransform(site, CRS.new)
-data_flor_planar <- spTransform(data_flor_planar, CRS.new)
+site_3035 <- rgdal::spTransform(site, CRS.new)
+data_flor_planar <- rgdal::spTransform(data_flor_planar, CRS.new)
 data_flor_planar$lat <- data_flor_planar@coords[,2]
 data_flor_planar$long <- data_flor_planar@coords[,1]
 
 # Apply for cycle to taxa having buffer intersecting with the polygon of the study area
-data_flor_buffer <- gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
+data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
 result <- raster::intersect(data_flor_buffer, site_3035)
 DF <- as.data.frame(result)
 
@@ -152,7 +152,7 @@ plot(df_spt, add=TRUE)
 
 # Measure the area of the buffers
 x <- as.vector(unique(df_spt$Taxon))
-df_spt$area_buffer <- gArea(df_spt, byid=TRUE)
+df_spt$area_buffer <- rgeos::gArea(df_spt, byid=TRUE)
 overlayXYT <- raster::intersect(site_3035, df_spt)
 overlayXYT$area_intersection = sapply(slot(overlayXYT, "polygons"), slot, "area")
 
