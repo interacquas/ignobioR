@@ -122,7 +122,6 @@ DF <- as.data.frame(result)
 
 points_INS <- raster::intersect(points_3035, site_3035)
 
-
 # Create a vector with taxa present in the input dataframe
 list <- unique(DF$Taxon)
 list<- as.vector(list)
@@ -175,14 +174,15 @@ doSNOW::registerDoSNOW(cl2)
 pb2 <- txtProgressBar(min = 0, max = length(x), style = 3)
 progress <- function(n) setTxtProgressBar(pb2, n)
 opts <- base::list(progress = progress)
+`%dopar%` <- foreach::`%dopar%`
 
-output <- foreach(i = 1:length(x), .combine = rbind,
+output <- foreach::foreach(i = 1:length(x), .combine = rbind,
                   .options.snow = opts, .packages= "sp") %dopar% {
                     probsptemp_species(x[i])
                   }
 
 close(pb2)
-stopCluster(cl2)
+parallel::stopCluster(cl2)
 
 output <- as.data.frame(output)
 output$taxon <- x
@@ -198,7 +198,7 @@ print(paste0("Virtual floristic List drafting time:", round(as.numeric(difftime(
 # FINAL STEPS
 
 #1 Remove rows with 'Estimated spatiotemporal probability' equal to 0
-output2<-output[!(output$Estimated_Spatiotemporal_probability==0),]
+output2 <- output[!(output$Estimated_Spatiotemporal_probability==0),]
 
 #2 Order by decreasing 'Estimated spatiotemporal probability'
 output3 <- output2[order(-output2$Estimated_Spatiotemporal_probability, -output2$Max_probability, output2$taxon),]
