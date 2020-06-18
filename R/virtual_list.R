@@ -106,7 +106,7 @@ if(cont==1)
   # Crop the shapefile of the seas with study area
   excl_areas <- raster::crop(excl_areas, raster::extent(data_flor_planar))
   excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
-  plot(excl_areas_3035, main="Area of exclusion uploaded!")
+  sp::plot(excl_areas_3035, main="Area of exclusion uploaded!")
   }
 
 
