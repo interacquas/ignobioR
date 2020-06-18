@@ -10,9 +10,9 @@
 ignorance_map <- function(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau) {
 
   start_time <- Sys.time() ## starting time
-raster:crs(site) <- sp::CRS("+init=epsg:4326")
-CRS.new <- paste0("+init=epsg:", CRS.new)
- print(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
+  raster:crs(site) <- sp::CRS("+init=epsg:4326")
+  CRS.new <- paste0("+init=epsg:", CRS.new)
+  print(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
 
 ignorance_species <- function(dfOBJ) {
   ###### Create buffers having radius = 'uncertainty'
@@ -42,11 +42,11 @@ ignorance_species <- function(dfOBJ) {
   DDF_buffer@bbox <- as.matrix(raster::extent(r))
 
   ####### Rasterise
-  x <- stack()
+  x <- raster::stack()
   for(i in 1:nrow(DDF_buffer)){
     xxx <- raster::rasterize(DDF_buffer[i,], r2, 'st_ignorance', update=TRUE, getCover=TRUE)
     xxx[xxx > 0] <- DDF_buffer@data[i,"st_ignorance"]
-    x <- stack( x , xxx )
+    x <- raster::stack( x , xxx )
 
   }
 
@@ -65,26 +65,26 @@ print("Creating spatial objects")
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
 coordinates(data_flor_planar) <- ~ Long+Lat
-proj4string(data_flor_planar) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
+sp::proj4string(data_flor_planar) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
 
 if(cont==1)
 {
-  crs(excl_areas) <- CRS("+init=epsg:4326")
+  raster::crs(excl_areas) <- sp::CRS("+init=epsg:4326")
   # Crop the shapefile of the seas with study area
-  excl_areas <- crop(excl_areas, extent(data_flor_planar))
-  excl_areas_3035 <- spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
+  excl_areas <- raster::crop(excl_areas, extent(data_flor_planar))
+  excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
   }
 
-data_flor_planar <- spTransform(data_flor_planar, CRS.new)
+data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
 points_3035 <- data_flor_planar
-site_3035 <- spTransform(site, CRS.new)
+site_3035 <- sp::spTransform(site, CRS.new)
 
 #data_flor_planar <- spTransform(data_flor_planar, CRS.new)
 data_flor_planar$lat <- data_flor_planar@coords[,2]
 data_flor_planar$long <- data_flor_planar@coords[,1]
 
 # Apply for cycle to taxa having buffer intersecting with the polygon of the study area
-data_flor_buffer <- gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
+data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
 
 ##### Plot intermediate step
 
@@ -120,13 +120,13 @@ xmin(r) <- min(result@bbox[1,1]) - cellsize
 xmax(r) <- max(result@bbox[1,2]) + cellsize
 ymin(r) <- min(result@bbox[2,1]) - cellsize
 ymax(r) <- max(result@bbox[2,2]) + cellsize
-res(r) <- cellsize
-crs(r) <- CRS.new
-values(r) <- 1:ncell(r)
+raster::res(r) <- cellsize
+raster::crs(r) <- CRS.new
+raster::values(r) <- 1:ncell(r)
 r2 <- r
 r2[]<-NA
 
-rich <- rasterize(data_flor_planar, r, 'Taxon', function(x, ...) length(unique(na.omit(x))))
+rich <- raster::rasterize(data_flor_planar, r, 'Taxon', function(x, ...) length(unique(na.omit(x))))
 
 included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
 number_included_species <- max(included_species)
@@ -143,7 +143,7 @@ opts <- base::list(progress = progress)
 raster_stack <- foreach(i= 1:length(list), .options.snow = opts, .packages="raster", .combine=stack) %dopar% {
   df_species <- DF[which(DF$Taxon == list[i]),]
   coordinates(df_species) <- ~long+lat
-  proj4string(df_species) <- CRS.new
+  sp::proj4string(df_species) <- CRS.new
   ignorance_species(df_species)
 }
 
