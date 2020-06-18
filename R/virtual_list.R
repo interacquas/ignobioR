@@ -161,8 +161,8 @@ overlayXYT <- raster::intersect(site_3035, df_spt)
 overlayXYT$area_intersection = sapply(slot(overlayXYT, "polygons"), slot, "area")
 
 #Plot buffers and study area
-plot(site_3035)
-plot(overlayXYT, add=TRUE)
+sp::plot(site_3035)
+sp::plot(overlayXYT, add=TRUE)
 
 # Spatial probability
 overlayXYT$p_occurrence_spatial <- overlayXYT$area_intersection/overlayXYT$area_buffer
