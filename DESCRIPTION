@@ -1,6 +1,6 @@
 Package: ignobioR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Analysing uncertainty in biodiversity occurrence data
 Version: 0.1.0
 Author: Marco D'Antraccoli, Gianni Bedini, Lorenzo Peruzzi
 Maintainer: Marco D'Antraccoli <marcodantra@gmail.com>
