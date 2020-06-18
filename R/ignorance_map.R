@@ -132,11 +132,11 @@ included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
 number_included_species <- max(included_species)
 sapply(over(site_3035, geometry(data_flor_planar), returnList = FALSE), length)
 
-cl <- makeCluster(detectCores()/2) #### to perform a parallel computing
-registerDoSNOW(cl)
+cl <- parallel::makeCluster(detectCores()/2) #### to perform a parallel computing
+doSNOW::registerDoSNOW(cl)
 
 print("Starting to draft the Map of Floristic Ignorance!")
-pb <- txtProgressBar(min = 0, max = length(list), style = 3) # progress bar
+pb <- utils::txtProgressBar(min = 0, max = length(list), style = 3) # progress bar
 progress <- function(n) setTxtProgressBar(pb, n)
 opts <- base::list(progress = progress)
 
@@ -196,9 +196,9 @@ pdf("Ignorance Map2.pdf", onefile = TRUE)
 ### Plot n° 1
 p1 <- ggplot()+
   geom_tile(data = test_df, aes(x=x, y=y, fill=value), alpha=0.8) +
-  geom_polygon(data = site_3035, aes(x=long, y=lat, group=group),
+  ggplot2:geom_polygon(data = site_3035, aes(x=long, y=lat, group=group),
                fill=NA, color="black", size=1) +
-  geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
+  ggplot2::geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
   scale_fill_distiller(palette = "Spectral", direction = -1, guide = guide_legend(),breaks=rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10)),
                        labels=round(rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10))), limits = c(0, maxValue(raster_new)))+
   coord_equal()+
@@ -229,9 +229,9 @@ colnames(test_df2) <- c("value", "x", "y")
 
 p2 <- ggplot() +
   geom_tile(data=test_df2, aes(x=x, y=y, fill=value), alpha=0.8) +
-  geom_polygon(data=site_3035, aes(x=long, y=lat, group=group),
+  ggplot2::geom_polygon(data=site_3035, aes(x=long, y=lat, group=group),
                fill=NA, color="black", size=1) +
-  geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
+  ggplot2::geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
   scale_fill_distiller(palette = "Spectral", direction = 1, guide = guide_legend(),breaks= rev(seq(0, maxValue(raster_new_rich),maxValue(raster_new_rich)/10)),
                        labels=round(rev(seq(0, maxValue(raster_new_rich),maxValue(raster_new_rich)/10))), limits = c(0, maxValue(raster_new_rich)))+
   coord_equal() +
