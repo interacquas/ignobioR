@@ -46,11 +46,11 @@ ignorance_species <- function(dfOBJ) {
   for(i in 1:nrow(DDF_buffer)){
     xxx <- raster::rasterize(DDF_buffer[i,], r2, 'st_ignorance', update=TRUE, getCover=TRUE)
     xxx[xxx > 0] <- DDF_buffer@data[i,"st_ignorance"]
-    x <- raster::stack( x , xxx )
+    x <- raster::stack(x, xxx)
 
   }
 
-  r.polys <- raster::stackApply(x, indices = rep(1, nlayers(x)), fun = max)
+  r.polys <- raster::stackApply(x, indices = rep(1, raster::nlayers(x)), fun = max)
   r.polys[is.na(r.polys[])] <- 0
   return(r.polys)
 } # define the core function
@@ -64,45 +64,47 @@ print("Creating spatial objects")
 
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
-coordinates(data_flor_planar) <- ~ Long+Lat
-sp::proj4string(data_flor_planar) <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
+
+xy <- data_flor_planar[,c(2,3)]
+ttt <- sp::CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
+data_flor_planar <- sp::SpatialPointsDataFrame(coords = xy, data = data_flor_planar, proj4string = ttt)
 
 if(cont==1)
 {
   raster::crs(excl_areas) <- sp::CRS("+init=epsg:4326")
   # Crop the shapefile of the seas with study area
-  excl_areas <- raster::crop(excl_areas, extent(data_flor_planar))
+  excl_areas <- raster::crop(excl_areas, raster::extent(data_flor_planar))
   excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
   }
 
 data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
 points_3035 <- data_flor_planar
 site_3035 <- sp::spTransform(site, CRS.new)
-
-#data_flor_planar <- spTransform(data_flor_planar, CRS.new)
+print("ok1")
+#data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new) # RIGA RIDONDANTE????
 data_flor_planar$lat <- data_flor_planar@coords[,2]
 data_flor_planar$long <- data_flor_planar@coords[,1]
 
 # Apply for cycle to taxa having buffer intersecting with the polygon of the study area
 data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
-
+print("ok2")
 ##### Plot intermediate step
 
 if(cont==1)
 {
-  plot(data_flor_buffer)
-  plot(site_3035, add=TRUE)
-  plot(excl_areas_3035, add =TRUE, border="red",lty =2)
-  plot(points_3035, add=TRUE, col="blue")
+  sp::plot(data_flor_buffer)
+  sp::plot(site_3035, add=TRUE)
+  sp::plot(excl_areas_3035, add =TRUE, border="red",lty =2)
+  sp::plot(points_3035, add=TRUE, col="blue")
 
 
 } else {
-  plot(data_flor_buffer)
-  plot(site_3035, add=TRUE)
-  plot(points_3035, add=TRUE, col="blue")
+  sp::plot(data_flor_buffer)
+  sp::plot(site_3035, add=TRUE)
+  sp::plot(points_3035, add=TRUE, col="blue")
 }
 
-
+print("ok3")
 result <- raster::intersect(data_flor_buffer, site_3035)
 DF <- as.data.frame(result)
 
@@ -112,27 +114,30 @@ points_INS <- raster::intersect(points_3035, site_3035)
 
 # Create a vector with taxa present in the input dataframe
 list <- unique(DF$Taxon)
-list<- as.vector(list)
+list <- as.vector(list)
 
 # Create an empty raster
-r <- raster()
-xmin(r) <- min(result@bbox[1,1]) - cellsize
-xmax(r) <- max(result@bbox[1,2]) + cellsize
-ymin(r) <- min(result@bbox[2,1]) - cellsize
-ymax(r) <- max(result@bbox[2,2]) + cellsize
+r <- raster::raster()
+raster::xmin(r) <- min(result@bbox[1,1]) - cellsize
+raster::xmax(r) <- max(result@bbox[1,2]) + cellsize
+raster::ymin(r) <- min(result@bbox[2,1]) - cellsize
+raster::ymax(r) <- max(result@bbox[2,2]) + cellsize
 raster::res(r) <- cellsize
 raster::crs(r) <- CRS.new
-raster::values(r) <- 1:ncell(r)
+raster::values(r) <- 1:raster::ncell(r)
 r2 <- r
 r2[]<-NA
-
+print("ok4")
 rich <- raster::rasterize(data_flor_planar, r, 'Taxon', function(x, ...) length(unique(na.omit(x))))
+print("ok5")
 
 included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
 number_included_species <- max(included_species)
-sapply(over(site_3035, geometry(data_flor_planar), returnList = FALSE), length)
+TA2<- sp::geometry(data_flor_planar)
+sapply(sp::over(site_3035, TA2, returnList = FALSE), length)
 
-cl <- parallel::makeCluster(detectCores()/2) #### to perform a parallel computing
+
+cl <- parallel::makeCluster(parallel::detectCores()-1) #### to perform a parallel computing
 doSNOW::registerDoSNOW(cl)
 
 print("Starting to draft the Map of Floristic Ignorance!")
@@ -140,21 +145,24 @@ pb <- utils::txtProgressBar(min = 0, max = length(list), style = 3) # progress b
 progress <- function(n) setTxtProgressBar(pb, n)
 opts <- base::list(progress = progress)
 
-raster_stack <- foreach(i= 1:length(list), .options.snow = opts, .packages="raster", .combine=stack) %dopar% {
-  df_species <- DF[which(DF$Taxon == list[i]),]
-  coordinates(df_species) <- ~long+lat
-  sp::proj4string(df_species) <- CRS.new
+`%dopar%` <- foreach::`%dopar%`
+
+raster_stack <- foreach::foreach(i= 1:length(list), .options.snow = opts, .packages="raster", .combine=raster::stack) %dopar% {
+  yo <- DF[which(DF$Taxon == list[i]),]
+  xy <- yo[,c(7,6)]
+  ppp <- raster::crs(site_3035)
+  df_species <- sp::SpatialPointsDataFrame(coords = xy, data = yo, proj4string = ppp)
   ignorance_species(df_species)
 }
 
 close(pb)
-stopCluster(cl)
+parallel::stopCluster(cl)
 
 #####
 print("Almost done. Preparing outputs")
 
 #### Sum the single rasters
-names(raster_stack) <- list
+raster::names(raster_stack) <- list
 raster_sum <- sum(raster_stack, na.rm = TRUE)
 
 ############ Rescale the raster to show IFI
@@ -163,16 +171,16 @@ raster_sum <- r.max - raster_sum
 
 ############ Plot the map after a 'mask' operation
 
-raster_sum2 <- crop(raster_sum, r)
+raster_sum2 <- raster::crop(raster_sum, r)
 
 x_crop <- raster::crop(raster_sum2, r)
 rgdal::writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
 gdalUtils::gdal_rasterize(sprintf('%s/%s.shp', tempdir(), f),
                f2 <- tempfile(fileext='.tif'), at=T,
-               tr=res(x_crop), te=c(bbox(x_crop)), burn=1,
+               tr=raster::res(x_crop), te=c(bbox(x_crop)), burn=1,
                init=0, a_nodata=0, ot='Byte')
 
-raster_new <- x_crop*raster(f2)
+raster_new <- x_crop*raster::raster(f2)
 
 ### Record the time elapsed
 end_time <- Sys.time()

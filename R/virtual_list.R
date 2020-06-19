@@ -9,7 +9,7 @@
 #' \dontrun{virtual_list()}
 
 
-virtual_list <- function(data_flor, site, year_study, excl_areas=NULL, CRS.new, tau, upperlimit=20) {
+virtual_list <- function(data_flor, site, year_study, excl_areas=NULL, CRS.new, tau, upperlimit) {
 
 start_time <- Sys.time() ## starting time
 raster::crs(site) <- sp::CRS("+init=epsg:4326")
