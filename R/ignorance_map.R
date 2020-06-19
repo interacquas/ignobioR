@@ -199,25 +199,24 @@ test_spdf <- as(raster_new, "SpatialPixelsDataFrame")
 test_df <- as.data.frame(test_spdf)
 colnames(test_df) <- c("value", "x", "y")
 
-grDevices::pdf("IgnoranceMap.pdf", onefile = TRUE)
 print("ok6")
+
 ### Plot n° 1
-sp::plot(raster_new, main ="CANCELLARE QUESTO PLOT!")
-p1 <- ggplot(ggplot2::test_df)+
+p1 <- ggplot2::ggplot()+
   ggplot2:geom_tile(data = test_df, aes(x=x, y=y, fill=value), alpha=0.8) +
   ggplot2::geom_polygon(data = site_3035, aes(x=long, y=lat, group=group),
                fill=NA, color="black", size=1) +
   ggplot2::geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
   ggplo2::scale_fill_distiller(palette = "Spectral", direction = -1, guide = guide_legend(),breaks=rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10)),
                        labels=round(rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10))), limits = c(0, maxValue(raster_new)))+
-  coord_equal()+
-  theme_classic()+
-  labs(fill="IFI")+
-  theme(legend.position="bottom")+
-  theme(legend.key.width=unit(0.6, "cm"))+
-  theme(legend.position='right', legend.direction='vertical')+
+  ggplo2::coord_equal()+
+  ggplo2::theme_classic()+
+  ggplo2::labs(fill="IFI")+
+  ggplo2::theme(legend.position="bottom")+
+  ggplo2::theme(legend.key.width=unit(0.6, "cm"))+
+  ggplo2::theme(legend.position='right', legend.direction='vertical')+
   ggtitle("Map of Floristic Ignorance (MFI)")+
-  xlab("Latitude") + ylab("Longitude")
+  ggplo2::xlab("Latitude") + ggplo2::ylab("Longitude")
 
 print(p1)
 
@@ -285,10 +284,17 @@ print(p4)
 ss <- tableGrob(statistics, theme=ttheme_minimal())
 plot(ss)
 
-dev.off() # file .pdf created!
+# Creating the .pdf file
+grDevices::pdf("IgnoranceMap.pdf", onefile = TRUE)
+p1
+p2
+p3
+p4
+plot(ss)
+dev.off()
 
 # Write to file the raster of the ‘Map of Floristic Ignorance’ and a .csv file listing the taxa considered to draft the map
-writeRaster(raster_new, filename = "Ignorance Map", format="GTiff", overwrite=TRUE)
+raste::writeRaster(raster_new, filename = "Ignorance Map", format="GTiff", overwrite=TRUE)
 write.csv(list, row.names=FALSE, "Taxa considered to compute the Floristic Ignorance Map.csv")
 print(paste0("Done! The files have been saved here", getwd()))
 
