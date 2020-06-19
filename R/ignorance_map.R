@@ -239,7 +239,7 @@ p2 <- ggplot2::ggplot(test_df2) + ggplot2::coord_equal() + ggplot2::theme_classi
 
 # Plot n° 3
 hist(DF$year)
-p3 <- function() {
+p3 <-
   ggplot2::ggplot(DF)+
   ggplot2::aes(x = year, y = ..count../sum(..count..))+
   ggplot2::geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$year))/30)+
@@ -249,21 +249,20 @@ p3 <- function() {
     ggplot2::xlab("Year") + ggplot2::ylab("Density")+
     ggplot2::labs(fill="Number of taxa")+
     ggplot2::theme_classic()
-}
 
 
 # Plot n° 4
 
-p4 <- function() {
-  ggplot(DF) +
-  aes(x = uncertainty, y = ..count../sum(..count..)) +
-  geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$uncertainty))/30)+
-  coord_cartesian(xlim = c(min(DF$uncertainty), max(DF$uncertainty)))+
-  scale_y_continuous(labels = function(x) paste0(x*100, "%"))+
-  ggtitle("Occurrence uncertainties distribution")+
-  xlab("Uncertainty") + ylab("Density")+
-  theme_classic()
-}
+p4 <-
+  ggplot2::ggplot(DF) +
+  ggplot2::aes(x = uncertainty, y = ..count../sum(..count..)) +
+  ggplot2::geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$uncertainty))/30)+
+  ggplot2::coord_cartesian(xlim = c(min(DF$uncertainty), max(DF$uncertainty)))+
+  ggplot2::scale_y_continuous(labels = function(x) paste0(x*100, "%"))+
+  ggplot2::ggtitle("Occurrence uncertainties distribution")+
+  ggplot2::xlab("Uncertainty") + ggplot2::ylab("Density")+
+  ggplot2::theme_classic()
+
 
 # Plot n° 5
 
@@ -279,7 +278,7 @@ plot(ss)
 dev.off()
 
 # Write to file the raster of the ‘Map of Floristic Ignorance’ and a .csv file listing the taxa considered to draft the map
-raster::writeRaster(raster_new, filename = "Ignorance Map", format="GTiff", overwrite=TRUE)
+raster::writeRaster(raster_new, filename = "MAPignorance", format="GTiff", overwrite=TRUE)
 write.csv(list, row.names=FALSE, "Taxa considered to compute the Floristic Ignorance Map.csv")
 print(paste0("Done! The files have been saved here", getwd()))
 
