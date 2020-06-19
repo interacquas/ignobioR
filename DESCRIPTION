@@ -26,7 +26,8 @@ Imports:
 	rgdal,
 	rgeos,
 	sp,	
-	tcltk
+	tcltk,
+	tidyverse
 RoxygenNote: 7.1.0
 Depends: 
     R (>= 2.10)
