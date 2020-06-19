@@ -17,6 +17,7 @@ Imports:
 	foreach,
 	gdalUtils,
 	ggplot2,
+	grDevices,
 	gridExtra,	
 	GISTools,	
 	gridExtra,

@@ -162,7 +162,7 @@ parallel::stopCluster(cl)
 print("Almost done. Preparing outputs")
 
 #### Sum the single rasters
-raster::names(raster_stack) <- list
+base::names(raster_stack) <- list
 raster_sum <- sum(raster_stack, na.rm = TRUE)
 
 ############ Rescale the raster to show IFI
@@ -177,7 +177,7 @@ x_crop <- raster::crop(raster_sum2, r)
 rgdal::writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
 gdalUtils::gdal_rasterize(sprintf('%s/%s.shp', tempdir(), f),
                f2 <- tempfile(fileext='.tif'), at=T,
-               tr=raster::res(x_crop), te=c(bbox(x_crop)), burn=1,
+               tr=raster::res(x_crop), te=c(sp::bbox(x_crop)), burn=1,
                init=0, a_nodata=0, ot='Byte')
 
 raster_new <- x_crop*raster::raster(f2)
@@ -199,15 +199,16 @@ test_spdf <- as(raster_new, "SpatialPixelsDataFrame")
 test_df <- as.data.frame(test_spdf)
 colnames(test_df) <- c("value", "x", "y")
 
-pdf("IgnoranceMap.pdf", onefile = TRUE)
-
+grDevices::pdf("IgnoranceMap.pdf", onefile = TRUE)
+print("ok6")
 ### Plot n° 1
-p1 <- ggplot()+
-  geom_tile(data = test_df, aes(x=x, y=y, fill=value), alpha=0.8) +
-  geom_polygon(data = site_3035, aes(x=long, y=lat, group=group),
+sp::plot(raster_new, main ="CANCELLARE QUESTO PLOT!")
+p1 <- ggplot(ggplot2::test_df)+
+  ggplot2:geom_tile(data = test_df, aes(x=x, y=y, fill=value), alpha=0.8) +
+  ggplot2::geom_polygon(data = site_3035, aes(x=long, y=lat, group=group),
                fill=NA, color="black", size=1) +
-  geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
-  scale_fill_distiller(palette = "Spectral", direction = -1, guide = guide_legend(),breaks=rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10)),
+  ggplot2::geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
+  ggplo2::scale_fill_distiller(palette = "Spectral", direction = -1, guide = guide_legend(),breaks=rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10)),
                        labels=round(rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10))), limits = c(0, maxValue(raster_new)))+
   coord_equal()+
   theme_classic()+
@@ -221,12 +222,13 @@ p1 <- ggplot()+
 print(p1)
 
 # Plot n° 2
+sp::plot(rich, main ="CANCELLARE QUESTO PLOT!")
 
 x_crop_rich <- raster::crop(rich, r)
 rgdal::writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
 gdalUtils::gdal_rasterize(sprintf('%s/%s.shp', tempdir(), f),
                f3 <- tempfile(fileext='.tif'), at=T,
-               tr=res(x_crop_rich), te=c(bbox(x_crop_rich)), burn=1,
+               tr=res(x_crop_rich), te=c(sp::bbox(x_crop_rich)), burn=1,
                init=0, a_nodata=0, ot='Byte')
 
 raster_new_rich <- x_crop_rich*raster(f3) # multiply the raster by 1 or NA
