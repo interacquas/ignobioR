@@ -88,6 +88,7 @@ data_flor_planar$long <- data_flor_planar@coords[,1]
 # Apply for cycle to taxa having buffer intersecting with the polygon of the study area
 data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
 print("ok2")
+
 ##### Plot intermediate step
 
 if(cont==1)
@@ -193,33 +194,21 @@ values <- c(as.character(start_time), as.character(end_time), end_time-start_tim
 statistics <- as.data.frame(cbind(names, values))
 statistics
 
-#### Save a .pdf file with results #####
-
-test_spdf <- as(raster_new, "SpatialPixelsDataFrame")
-test_df <- as.data.frame(test_spdf)
-colnames(test_df) <- c("value", "x", "y")
-
-print("ok6")
+#### Producing the images to export #####
 
 ### Plot n° 1
 sp::plot(raster_new, main="raster_new")
-p1 <- function() {
-  ggplot2::ggplot(ggplot2::test_df)+
-  ggplot2:geom_tile(test_df, ggplot2::aes(x=x, y=y, fill=value), alpha=0.8) +
-  ggplot2::geom_polygon(site_3035, ggplot2::aes(x=long, y=lat, group=group),
-               fill=NA, color="black", size=1) +
-  ggplot2::geom_polygon(data=rasterToPolygons(raster_new), ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
-  ggplo2::scale_fill_distiller(palette = "Spectral", direction = -1, guide = guide_legend(),breaks=rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10)),
-                       labels=round(rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10))), limits = c(0, maxValue(raster_new)))+
-  ggplo2::coord_equal()+
-  ggplo2::theme_classic()+
-  ggplo2::labs(fill="IFI")+
-  ggplo2::theme(legend.position="bottom")+
-  ggplo2::theme(legend.key.width=unit(0.6, "cm"))+
-  ggplo2::theme(legend.position='right', legend.direction='vertical')+
-  ggtitle("Map of Floristic Ignorance (MFI)")+
-  ggplo2::xlab("Latitude") + ggplo2::ylab("Longitude")
-}
+
+p1 <- ggplot2::ggplot(test_df)+ ggplot2::coord_equal()+ggplot2::theme_classic()+
+  ggplot2::labs(fill="IFI")+
+  ggplot2::theme(legend.position="right",legend.direction='vertical')+ ggplot2::theme(legend.key.width=grid::unit(0.6, "cm"))+
+  ggplot2::xlab("Latitude") + ggplot2::ylab("Longitude")+
+  ggplot2::scale_fill_distiller(palette = "Spectral", direction = +1, guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new), raster::maxValue(raster_new)/10)),
+                                labels=round(rev(seq(0, raster::maxValue(raster_new), raster::maxValue(raster_new)/10))), limits = c(0, raster::maxValue(raster_new)))+
+  ggplot2::geom_tile(test_df, mapping = ggplot2::aes(x=.data$x, y=.data$y, fill=.data$value), alpha=0.8)+
+  ggplot2::geom_polygon(site_3035, mapping= ggplot2::aes(x=long, y=lat, group=group), fill=NA, color="black", size=1)+
+  ggplot2::geom_polygon(data=raster::rasterToPolygons(raster_new), mapping=ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
+  ggplot2::ggtitle("Map of Floristic Ignorance (MFI)")
 
 # Plot n° 2
 sp::plot(rich, main="rich")
@@ -237,36 +226,29 @@ test_df2 <- as.data.frame(test_spdf2)
 colnames(test_df2) <- c("value", "x", "y")
 
 
-p2 <- function() {
-  ggplot() +
-  geom_tile(data=test_df2, aes(x=x, y=y, fill=value), alpha=0.8) +
-  geom_polygon(data=site_3035, aes(x=long, y=lat, group=group),
-               fill=NA, color="black", size=1) +
-  geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
-  scale_fill_distiller(palette = "Spectral", direction = 1, guide = guide_legend(),breaks= rev(seq(0, maxValue(raster_new_rich),maxValue(raster_new_rich)/10)),
-                       labels=round(rev(seq(0, maxValue(raster_new_rich),maxValue(raster_new_rich)/10))), limits = c(0, maxValue(raster_new_rich)))+
-  coord_equal() +
-  theme_classic() +
-  theme(legend.position="bottom")+
-  theme(legend.key.width=unit(0.6, "cm"))+
-  theme(legend.position='right', legend.direction='vertical')+
-  ggtitle("Traditional richness map (without uncertainties)")+
-  xlab("Latitude") + ylab("Longitude")
-}
+p2 <- ggplot2::ggplot(test_df2) + ggplot2::coord_equal() + ggplot2::theme_classic() +
+  ggplot2::theme(legend.position="right", legend.direction='vertical', legend.key.width=grid::unit(0.6, "cm"))+
+  ggplot2::geom_tile(data=test_df2, mapping=ggplot2::aes(x=.data$x, y=.data$y, fill=.data$value), alpha=0.8) +
+  ggplot2::geom_polygon(data=site_3035, mapping=ggplot2::aes(x=long, y=lat, group=group),fill=NA, color="black", size=1) +
+  ggplot2::geom_polygon(data=raster::rasterToPolygons(raster_new), mapping = ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
+  ggplot2::scale_fill_distiller(palette = "Spectral", direction = +1, guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new_rich), raster::maxValue(raster_new_rich)/10)),
+                                labels=round(rev(seq(0, raster::maxValue(raster_new_rich), raster::maxValue(raster_new_rich)/10))), limits = c(0, raster::maxValue(raster_new_rich)))+
+  ggplot2::ggtitle("Traditional richness map (without uncertainties)")+
+  ggplot2::xlab("Latitude") + ggplot2::ylab("Longitude")
 
 
 # Plot n° 3
 hist(DF$year)
 p3 <- function() {
-  ggplot(DF)+
-  aes(x = year, y = ..count../sum(..count..))+
-  geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$year))/30)+
-  coord_cartesian(xlim = c(min(DF$year), year_study))+
-  scale_y_continuous(labels = function(x) paste0(x*100, "%"))+
-  ggtitle("Occurrence dates distribution")+
-  xlab("Year") + ylab("Density")+
-  labs(fill="Number of taxa")+
-  theme_classic()
+  ggplot2::ggplot(DF)+
+  ggplot2::aes(x = year, y = ..count../sum(..count..))+
+  ggplot2::geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$year))/30)+
+    ggplot2::coord_cartesian(xlim = c(min(DF$year), year_study))+
+    ggplot2::scale_y_continuous(labels = function(x) paste0(x*100, "%"))+
+    ggplot2::ggtitle("Occurrence dates distribution")+
+    ggplot2::xlab("Year") + ggplot2::ylab("Density")+
+    ggplot2::labs(fill="Number of taxa")+
+    ggplot2::theme_classic()
 }
 
 
@@ -283,15 +265,16 @@ p4 <- function() {
   theme_classic()
 }
 
-
 # Plot n° 5
 
 ss <-  gridExtra::tableGrob(statistics, theme=gridExtra::ttheme_minimal())
-plot(ss)
 
 # Creating the .pdf file
 grDevices::pdf("IgnoranceMap.pdf", onefile = TRUE)
-
+p1
+p2
+p3
+p4
 plot(ss)
 dev.off()
 

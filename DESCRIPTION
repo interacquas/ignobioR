@@ -18,6 +18,7 @@ Imports:
 	gdalUtils,
 	ggplot2,
 	grDevices,
+	grid,
 	gridExtra,	
 	GISTools,	
 	gridExtra,
