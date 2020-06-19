@@ -1,11 +1,22 @@
-#' @title Mapping Floristic Ignorance
+#' @title Map of Floristic Ignorance
 #'
-#' @description This function map occurrence data taking into account spatial and temporal uncertainty
-#' @param data_flor, site, year_study, excl_areas, tau, cellsize, CRS.new, tau
+#' @description This function map occurrence data taking into account spatial and temporal uncertainty of each record
+#' @param data_flor file having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)
+#' @param site a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326
+#' @param year_study the present-year in which you perform the analysis
+#' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
+#' @param cellsize the resolution of the ignorance map in meters
+#' @param CRS.new choose the new Coordinate Reference System. Note: must be in XXXXXXXXXXXX
+#' @param tau % of taxa loss in 100 years time-span (see text for further details)
+#'
 #' @return A map
 #' @export
 #' @examples
-#' \dontrun{ignorance_map()}
+#' \dontrun{
+#' data(datashort)
+#' data(site)
+#' data(excl_areas)
+#' ignorance_map(datashort, site, year_study, excl_areas = exclareas,10^3, 3035, 20 )}
 
 ignorance_map <- function(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau) {
 

@@ -1,12 +1,23 @@
 #' @title Draft the virtual floristic list of a given territory
 #'
 #' @description A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
-#' @param data_flor,site,year_study,excl_areas,CRS.new,tau,upperlimit
-#'        
+#' @param data_flor XXXXXXX
+#' @param site YYYYYYYYYYYY
+#' @param year_study ZZZZZZZZZZZ
+#' @param excl_areas RRRRRRRRRRRr
+#' @param CRS.new TTTTTTTTTTTtt
+#' @param tau YYYYYYYYYYYYY
+#' @param upperlimiy VVVVVVVVVVVVV
+#' 
 #' @return A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 #' @export
 #' @examples
-#' \dontrun{virtual_list()}
+#' \dontrun{
+#' data(datashort)
+#' data(site)
+#' data(exclareas))
+#' 
+#' virtual_list(datashort, site, 2020, exclareas=exclareas, 3035, 20, 20)}
 
 
 virtual_list <- function(data_flor, site, year_study, excl_areas=NULL, CRS.new, tau, upperlimit) {

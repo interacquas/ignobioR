@@ -15,7 +15,19 @@ virtual_list(
 )
 }
 \arguments{
-\item{data_flor, site, year_study, excl_areas, CRS.new, tau, upperlimit}{}
+\item{data_flor}{XXXXXXX}
+
+\item{site}{YYYYYYYYYYYY}
+
+\item{year_study}{ZZZZZZZZZZZ}
+
+\item{excl_areas}{RRRRRRRRRRRr}
+
+\item{CRS.new}{TTTTTTTTTTTtt}
+
+\item{tau}{YYYYYYYYYYYYY}
+
+\item{upperlimiy}{VVVVVVVVVVVVV}
 }
 \value{
 A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
@@ -24,5 +36,10 @@ A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, 
 A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
 }
 \examples{
-\dontrun{virtual_list()}
+\dontrun{
+data(datashort)
+data(site)
+data(exclareas))
+
+virtual_list(datashort, site, 2020, exclareas=exclareas, 3035, 20, 20)}
 }

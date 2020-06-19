@@ -7,7 +7,19 @@
 ignorance_map(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau)
 }
 \arguments{
-\item{data_flor, }{site, year_study, excl_areas, tau, cellsize, CRS.new, tau}
+\item{data_flor}{file having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)}
+
+\item{site}{a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326}
+
+\item{year_study}{the present-year in which you perform the analysis}
+
+\item{excl_areas}{a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326}
+
+\item{cellsize}{the resolution of the ignorance map in meters}
+
+\item{CRS.new}{choose the new Coordinate Reference System. Note: must be in XXXXXXXXXXXX}
+
+\item{tau}{% of taxa loss in 100 years time-span (see text for further details)}
 }
 \value{
 A map
@@ -16,5 +28,9 @@ A map
 This function map occurrence data taking into account spatial and temporal uncertainty
 }
 \examples{
-\dontrun{ignorance_map()}
+\dontrun{
+data(datashort)
+data(site)
+data(excl_areas)
+ignorance_map(datashort, site, year_study, excl_areas = exclareas,10^3, 3035, 20 )}
 }
