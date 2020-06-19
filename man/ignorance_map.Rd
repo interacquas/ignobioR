@@ -33,5 +33,5 @@ data(datashort)
 data(site)
 data(excl_areas)
 
-ignorance_map(datashort, site, year_study, excl_areas = exclareas, 10^3, 3035, 20 )}
+ignorance_map(datashort, site, year_study, excl_areas = exclareas, 10000, 3035, 20 )}
 }

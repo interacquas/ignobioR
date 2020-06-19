@@ -19,10 +19,34 @@
 #' data(site)
 #' data(excl_areas)
 #'
-#' ignorance_map(datashort, site, year_study, excl_areas = exclareas, 10^3, 3035, 20 )}
+#' ignorance_map(datashort, site, year_study, excl_areas = exclareas, 10000, 3035, 20 )}
 
 ignorance_map <- function(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau) {
 
+  
+  ################## Check for the congruency of input objects ##############
+  
+  if (max(data_flor$year) > year_study) 
+  {
+    stop("Some occurrence dates are more recent than the year of the study")
+  }
+  
+  if (class(site) != "SpatialPolygonsDataFrame" | class(excl_areas) != "SpatialPolygonsDataFrame") 
+  {
+    stop("Layers must be of class SpatialPolygonsDataFrame")
+  }
+  
+  if (tau < 0 | tau >= 100) 
+  {
+    stop(" 0 <= tau < 100 is FALSE. Please set up another tau value")
+  }
+  
+  if (length(which(2*data_flor$uncertainty < (cellsize/20))) > 1) 
+  {print(data_flor[(data_flor$uncertainty * 2) < (cellsize/20),])
+    stop("There are ", paste(length(which(2*data_flor$uncertainty < (cellsize/20)))), " occurrence records having an uncertainty value too small in respect to the cell size. They could be lost during the rasterisation process. Digit ‘help(rasterize)' for more details")
+  }
+  
+  # Preliminary steps
   start_time <- Sys.time() ## starting time
   raster::crs(site) <- sp::CRS("+init=epsg:4326")
   CRS.new <- paste0("+init=epsg:", CRS.new)
@@ -104,7 +128,7 @@ data_flor_planar$long <- data_flor_planar@coords[,1]
 data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
 print("ok2")
 
-##### Plot intermediate step
+##### Plot intermediate steps
 
 if(cont==1)
 {
@@ -145,6 +169,7 @@ r2 <- r
 r2[]<-NA
 print("ok4")
 rich <- raster::rasterize(data_flor_planar, r, 'Taxon', function(x, ...) length(unique(na.omit(x))))
+rich[is.na(rich)] <- 0
 print("ok5")
 
 included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
@@ -190,6 +215,10 @@ raster_sum <- r.max - raster_sum
 raster_sum2 <- raster::crop(raster_sum, r)
 
 x_crop <- raster::crop(raster_sum2, r)
+
+e <- raster::extent(site_3035)
+x_crop <- raster::extend(x_crop, raster::extent(e[1]-cellsize, e[2] + cellsize, e[3] - cellsize, e[4]+cellsize), value=raster::maxValue(raster_sum2))
+
 rgdal::writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
 gdalUtils::gdal_rasterize(sprintf('%s/%s.shp', tempdir(), f),
                f2 <- tempfile(fileext='.tif'), at=T,
@@ -230,8 +259,10 @@ p1 <- ggplot2::ggplot(test_df)+ ggplot2::coord_equal()+ ggplot2::theme_classic()
   ggplot2::ggtitle("Map of Floristic Ignorance (MFI)")
 
 # Plot n° 2
-sp::plot(rich, main="rich")
-x_crop_rich <- raster::crop(rich, r)
+x_crop_rich <- raster::extend(rich, raster_new, value=0)
+sp::plot(x_crop_rich, main="rich")
+sp::plot(site_3035, add=TRUE)
+
 rgdal::writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
 gdalUtils::gdal_rasterize(sprintf('%s/%s.shp', tempdir(), f),
                f3 <- tempfile(fileext='.tif'), at=T,
@@ -243,7 +274,6 @@ raster_new_rich <- x_crop_rich*raster::raster(f3) # multiply the raster by 1 or 
 test_spdf2 <- as(raster_new_rich, "SpatialPixelsDataFrame")
 test_df2 <- as.data.frame(test_spdf2)
 colnames(test_df2) <- c("value", "x", "y")
-
 
 p2 <- ggplot2::ggplot(test_df2) + ggplot2::coord_equal() + ggplot2::theme_classic() +
   ggplot2::theme(legend.position="right", legend.direction='vertical', legend.key.width=grid::unit(0.6, "cm"))+
@@ -257,11 +287,9 @@ p2 <- ggplot2::ggplot(test_df2) + ggplot2::coord_equal() + ggplot2::theme_classi
 
 
 # Plot n° 3
-hist(DF$year)
-p3 <-
-  ggplot2::ggplot(DF)+
-  ggplot2::aes(x = year, y = ..count../sum(..count..))+
-  ggplot2::geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$year))/30)+
+p3 <-  ggplot2::ggplot(DF)+
+    ggplot2::aes(x = year, y = ..count../sum(..count..))+
+    ggplot2::geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$year))/30)+
     ggplot2::coord_cartesian(xlim = c(min(DF$year), year_study))+
     ggplot2::scale_y_continuous(labels = function(x) paste0(x*100, "%"))+
     ggplot2::ggtitle("Occurrence dates distribution")+
