@@ -15,8 +15,7 @@ virtual_list(
 )
 }
 \arguments{
-\item{data_flor, }{site, year_study, excl_areas, CRS.new, tau, upperlimit
-tau}
+\item{data_flor, site, year_study, excl_areas, CRS.new, tau, upperlimit}{}
 }
 \value{
 A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY

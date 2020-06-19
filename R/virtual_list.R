@@ -1,8 +1,8 @@
 #' @title Draft the virtual floristic list of a given territory
 #'
 #' @description A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
-#' @param data_flor, site, year_study, excl_areas, CRS.new, tau, upperlimit
-#'        tau
+#' @param data_flor,site,year_study,excl_areas,CRS.new,tau,upperlimit
+#'        
 #' @return A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 #' @export
 #' @examples
