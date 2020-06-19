@@ -198,7 +198,7 @@ output[c("Estimated_Spatiotemporal_probability", "Max_probability", "Min_probabi
 
 listing_time_FIN <- Sys.time()
 
-print(paste0("Virtual floristic List drafting time: ", round(as.numeric(difftime(time1 = listing_time_FIN, time2 = listing_time_START, units = "mins")), 5), "minutes"))
+print(paste0("Virtual floristic List drafting time:", round(as.numeric(difftime(time1 = listing_time_FIN, time2 = listing_time_START, units = "mins")), 5), " minutes"))
 
 # FINAL STEPS
 

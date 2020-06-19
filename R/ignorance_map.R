@@ -202,11 +202,13 @@ colnames(test_df) <- c("value", "x", "y")
 print("ok6")
 
 ### Plot n° 1
-p1 <- ggplot2::ggplot()+
-  ggplot2:geom_tile(data = test_df, aes(x=x, y=y, fill=value), alpha=0.8) +
-  ggplot2::geom_polygon(data = site_3035, aes(x=long, y=lat, group=group),
+sp::plot(raster_new, main="raster_new")
+p1 <- function() {
+  ggplot2::ggplot(ggplot2::test_df)+
+  ggplot2:geom_tile(test_df, ggplot2::aes(x=x, y=y, fill=value), alpha=0.8) +
+  ggplot2::geom_polygon(site_3035, ggplot2::aes(x=long, y=lat, group=group),
                fill=NA, color="black", size=1) +
-  ggplot2::geom_polygon(data=rasterToPolygons(raster_new), aes(x=long, y=lat, group=group), color="black", alpha=0)+
+  ggplot2::geom_polygon(data=rasterToPolygons(raster_new), ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
   ggplo2::scale_fill_distiller(palette = "Spectral", direction = -1, guide = guide_legend(),breaks=rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10)),
                        labels=round(rev(seq(0, maxValue(raster_new),maxValue(raster_new)/10))), limits = c(0, maxValue(raster_new)))+
   ggplo2::coord_equal()+
@@ -217,26 +219,26 @@ p1 <- ggplot2::ggplot()+
   ggplo2::theme(legend.position='right', legend.direction='vertical')+
   ggtitle("Map of Floristic Ignorance (MFI)")+
   ggplo2::xlab("Latitude") + ggplo2::ylab("Longitude")
-
-print(p1)
+}
 
 # Plot n° 2
-sp::plot(rich, main ="CANCELLARE QUESTO PLOT!")
-
+sp::plot(rich, main="rich")
 x_crop_rich <- raster::crop(rich, r)
 rgdal::writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
 gdalUtils::gdal_rasterize(sprintf('%s/%s.shp', tempdir(), f),
                f3 <- tempfile(fileext='.tif'), at=T,
-               tr=res(x_crop_rich), te=c(sp::bbox(x_crop_rich)), burn=1,
+               tr=raster::res(x_crop_rich), te=c(sp::bbox(x_crop_rich)), burn=1,
                init=0, a_nodata=0, ot='Byte')
 
-raster_new_rich <- x_crop_rich*raster(f3) # multiply the raster by 1 or NA
+raster_new_rich <- x_crop_rich*raster::raster(f3) # multiply the raster by 1 or NA
 
 test_spdf2 <- as(raster_new_rich, "SpatialPixelsDataFrame")
 test_df2 <- as.data.frame(test_spdf2)
 colnames(test_df2) <- c("value", "x", "y")
 
-p2 <- ggplot() +
+
+p2 <- function() {
+  ggplot() +
   geom_tile(data=test_df2, aes(x=x, y=y, fill=value), alpha=0.8) +
   geom_polygon(data=site_3035, aes(x=long, y=lat, group=group),
                fill=NA, color="black", size=1) +
@@ -250,12 +252,13 @@ p2 <- ggplot() +
   theme(legend.position='right', legend.direction='vertical')+
   ggtitle("Traditional richness map (without uncertainties)")+
   xlab("Latitude") + ylab("Longitude")
+}
 
-print(p2)
 
 # Plot n° 3
-
-p3 <- ggplot(DF)+
+hist(DF$year)
+p3 <- function() {
+  ggplot(DF)+
   aes(x = year, y = ..count../sum(..count..))+
   geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$year))/30)+
   coord_cartesian(xlim = c(min(DF$year), year_study))+
@@ -264,11 +267,13 @@ p3 <- ggplot(DF)+
   xlab("Year") + ylab("Density")+
   labs(fill="Number of taxa")+
   theme_classic()
+}
 
-print(p3)
 
 # Plot n° 4
-p4 <- ggplot(DF) +
+
+p4 <- function() {
+  ggplot(DF) +
   aes(x = uncertainty, y = ..count../sum(..count..)) +
   geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$uncertainty))/30)+
   coord_cartesian(xlim = c(min(DF$uncertainty), max(DF$uncertainty)))+
@@ -276,25 +281,22 @@ p4 <- ggplot(DF) +
   ggtitle("Occurrence uncertainties distribution")+
   xlab("Uncertainty") + ylab("Density")+
   theme_classic()
+}
 
-print(p4)
 
 # Plot n° 5
 
-ss <- tableGrob(statistics, theme=ttheme_minimal())
+ss <-  gridExtra::tableGrob(statistics, theme=gridExtra::ttheme_minimal())
 plot(ss)
 
 # Creating the .pdf file
 grDevices::pdf("IgnoranceMap.pdf", onefile = TRUE)
-p1
-p2
-p3
-p4
+
 plot(ss)
 dev.off()
 
 # Write to file the raster of the ‘Map of Floristic Ignorance’ and a .csv file listing the taxa considered to draft the map
-raste::writeRaster(raster_new, filename = "Ignorance Map", format="GTiff", overwrite=TRUE)
+raster::writeRaster(raster_new, filename = "Ignorance Map", format="GTiff", overwrite=TRUE)
 write.csv(list, row.names=FALSE, "Taxa considered to compute the Floristic Ignorance Map.csv")
 print(paste0("Done! The files have been saved here", getwd()))
 
