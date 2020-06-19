@@ -1,7 +1,8 @@
-#' @title Map of Floristic Ignorance
+#' @title Map of Floristic Ignorance (MFI)
 #'
 #' @description This function map occurrence data taking into account spatial and temporal uncertainty of each record
-#' @param data_flor file having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)
+#'
+#' @param data_flor dataframe having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)
 #' @param site a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326
 #' @param year_study the present-year in which you perform the analysis
 #' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
@@ -11,12 +12,14 @@
 #'
 #' @return A map
 #' @export
-#' @examples
-#' \dontrun{
+#' 
+#' 
+#' @examples \dontrun{
 #' data(datashort)
 #' data(site)
 #' data(excl_areas)
-#' ignorance_map(datashort, site, year_study, excl_areas = exclareas,10^3, 3035, 20 )}
+#'
+#' ignorance_map(datashort, site, year_study, excl_areas = exclareas, 10^3, 3035, 20 )}
 
 ignorance_map <- function(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau) {
 
@@ -24,7 +27,8 @@ ignorance_map <- function(data_flor, site, year_study, excl_areas, cellsize, CRS
   raster::crs(site) <- sp::CRS("+init=epsg:4326")
   CRS.new <- paste0("+init=epsg:", CRS.new)
   print(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
-
+  print(paste0("Chosen tau:", " ", tau))
+  
 ignorance_species <- function(dfOBJ) {
   ###### Create buffers having radius = 'uncertainty'
   DDF_buffer <- rgeos::gBuffer(dfOBJ, width=(dfOBJ $uncertainty), byid=TRUE)
@@ -68,7 +72,8 @@ ignorance_species <- function(dfOBJ) {
 
 if(is.null(excl_areas)==TRUE)
   {print("No unsuitable areas provided")
-  cont <- 0} else {print("Unsuitable areas provided")
+  cont <- 0} else {print("Unsuitable areas provided. Plotting")
+                   sp::plot(site)
                    cont <- 1}
 
 print("Creating spatial objects")
@@ -92,7 +97,6 @@ data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
 points_3035 <- data_flor_planar
 site_3035 <- sp::spTransform(site, CRS.new)
 print("ok1")
-#data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new) # RIGA RIDONDANTE????
 data_flor_planar$lat <- data_flor_planar@coords[,2]
 data_flor_planar$long <- data_flor_planar@coords[,1]
 
@@ -116,7 +120,7 @@ if(cont==1)
   sp::plot(points_3035, add=TRUE, col="blue")
 }
 
-print("ok3")
+print("Filtering occurrence records with buffers intersecting the study area")
 result <- raster::intersect(data_flor_buffer, site_3035)
 DF <- as.data.frame(result)
 
@@ -210,11 +214,15 @@ statistics
 ### Plot n° 1
 sp::plot(raster_new, main="raster_new")
 
-p1 <- ggplot2::ggplot(test_df)+ ggplot2::coord_equal()+ggplot2::theme_classic()+
+test_spdf <- as(raster_new, "SpatialPixelsDataFrame")
+test_df <- as.data.frame(test_spdf)
+colnames(test_df) <- c("value", "x", "y")
+
+p1 <- ggplot2::ggplot(test_df)+ ggplot2::coord_equal()+ ggplot2::theme_classic()+
   ggplot2::labs(fill="IFI")+
   ggplot2::theme(legend.position="right",legend.direction='vertical')+ ggplot2::theme(legend.key.width=grid::unit(0.6, "cm"))+
   ggplot2::xlab("Latitude") + ggplot2::ylab("Longitude")+
-  ggplot2::scale_fill_distiller(palette = "Spectral", direction = +1, guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new), raster::maxValue(raster_new)/10)),
+  ggplot2::scale_fill_distiller(palette = "Spectral", direction = -1, guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new), raster::maxValue(raster_new)/10)),
                                 labels=round(rev(seq(0, raster::maxValue(raster_new), raster::maxValue(raster_new)/10))), limits = c(0, raster::maxValue(raster_new)))+
   ggplot2::geom_tile(test_df, mapping = ggplot2::aes(x=.data$x, y=.data$y, fill=.data$value), alpha=0.8)+
   ggplot2::geom_polygon(site_3035, mapping= ggplot2::aes(x=long, y=lat, group=group), fill=NA, color="black", size=1)+
@@ -241,7 +249,7 @@ p2 <- ggplot2::ggplot(test_df2) + ggplot2::coord_equal() + ggplot2::theme_classi
   ggplot2::theme(legend.position="right", legend.direction='vertical', legend.key.width=grid::unit(0.6, "cm"))+
   ggplot2::geom_tile(data=test_df2, mapping=ggplot2::aes(x=.data$x, y=.data$y, fill=.data$value), alpha=0.8) +
   ggplot2::geom_polygon(data=site_3035, mapping=ggplot2::aes(x=long, y=lat, group=group),fill=NA, color="black", size=1) +
-  ggplot2::geom_polygon(data=raster::rasterToPolygons(raster_new), mapping = ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
+  ggplot2::geom_polygon(data=raster::rasterToPolygons(raster_new_rich), mapping = ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
   ggplot2::scale_fill_distiller(palette = "Spectral", direction = +1, guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new_rich), raster::maxValue(raster_new_rich)/10)),
                                 labels=round(rev(seq(0, raster::maxValue(raster_new_rich), raster::maxValue(raster_new_rich)/10))), limits = c(0, raster::maxValue(raster_new_rich)))+
   ggplot2::ggtitle("Traditional richness map (without uncertainties)")+
@@ -264,8 +272,7 @@ p3 <-
 
 # Plot n° 4
 
-p4 <-
-  ggplot2::ggplot(DF) +
+p4 <- ggplot2::ggplot(DF) +
   ggplot2::aes(x = uncertainty, y = ..count../sum(..count..)) +
   ggplot2::geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$uncertainty))/30)+
   ggplot2::coord_cartesian(xlim = c(min(DF$uncertainty), max(DF$uncertainty)))+
@@ -302,6 +309,6 @@ plot(ss)
 
 # Save into a list
 
-to2 <- list(MFI = raster_new, Statistics= statistics)
+to2 <- list(MFI = raster_new, RICH = raster_new_rich, Uncertainties = data.frame(uncertainty= DF$uncertainty, year= DF$year) , Statistics= statistics)
 
 }

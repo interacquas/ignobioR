@@ -1,6 +1,7 @@
-#' @title Draft the virtual floristic list of a given territory
+#' @title Draft the virtual floristic list (VFL) of the study area
 #'
 #' @description A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
+#'
 #' @param data_flor XXXXXXX
 #' @param site YYYYYYYYYYYY
 #' @param year_study ZZZZZZZZZZZ
@@ -11,11 +12,10 @@
 #' 
 #' @return A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 #' @export
-#' @examples
-#' \dontrun{
+#' @examples \dontrun{
 #' data(datashort)
 #' data(site)
-#' data(exclareas))
+#' data(exclareas)
 #' 
 #' virtual_list(datashort, site, 2020, exclareas=exclareas, 3035, 20, 20)}
 

@@ -2,12 +2,12 @@
 % Please edit documentation in R/ignorance_map.R
 \name{ignorance_map}
 \alias{ignorance_map}
-\title{Mapping Floristic Ignorance}
+\title{Map of Floristic Ignorance (MFI)}
 \usage{
 ignorance_map(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau)
 }
 \arguments{
-\item{data_flor}{file having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)}
+\item{data_flor}{dataframe having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)}
 
 \item{site}{a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326}
 
@@ -25,12 +25,13 @@ ignorance_map(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau)
 A map
 }
 \description{
-This function map occurrence data taking into account spatial and temporal uncertainty
+This function map occurrence data taking into account spatial and temporal uncertainty of each record
 }
 \examples{
 \dontrun{
 data(datashort)
 data(site)
 data(excl_areas)
-ignorance_map(datashort, site, year_study, excl_areas = exclareas,10^3, 3035, 20 )}
+
+ignorance_map(datashort, site, year_study, excl_areas = exclareas, 10^3, 3035, 20 )}
 }

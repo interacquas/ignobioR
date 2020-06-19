@@ -2,7 +2,7 @@
 % Please edit documentation in R/virtual_list.R
 \name{virtual_list}
 \alias{virtual_list}
-\title{Draft the virtual floristic list of a given territory}
+\title{Draft the virtual floristic list (VFL) of the study area}
 \usage{
 virtual_list(
   data_flor,
@@ -39,7 +39,7 @@ A list of species potentially occurring within a study site, in which a probabil
 \dontrun{
 data(datashort)
 data(site)
-data(exclareas))
+data(exclareas)
 
 virtual_list(datashort, site, 2020, exclareas=exclareas, 3035, 20, 20)}
 }
