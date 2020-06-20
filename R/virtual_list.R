@@ -17,7 +17,7 @@
 #' data(site)
 #' data(exclareas)
 #' 
-#' virtual_list(datashort, site, 2020, exclareas=exclareas, 3035, 20, 20)}
+#' virtual_list(datashort, site, 2020, excl_areas=exclareas, 3035, 20, 20)}
 
 
 virtual_list <- function(data_flor, site, year_study, excl_areas=NULL, CRS.new, tau, upperlimit) {
@@ -242,7 +242,7 @@ output3[is.num] <- lapply(output3[is.num], round, 1) # round the values
 
 #3 Store into environment and save the .csv file
 
-to <- list(VFL = output3, Statistics= c(Study_year= year_study, CRS=CRS.new))
+to <- list(VFL = output3, Statistics= data.frame(Study_year= year_study, CRS=CRS.new))
 write.csv(output3, row.names=FALSE, "Virtual floristic list.csv")
 return(to)
 
