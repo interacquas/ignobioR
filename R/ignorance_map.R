@@ -21,7 +21,7 @@
 #'
 #' ignorance_map(datashort, site, year_study, excl_areas = exclareas, 10000, 3035, 20 )}
 
-ignorance_map <- function(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau) {
+ignorance_map <- function(data_flor, site, year_study, excl_areas=NULL, CRS.new, tau, cellsize) {
 
   
   ################## Check for the congruency of input objects ##############
