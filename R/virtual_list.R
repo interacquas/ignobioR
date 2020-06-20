@@ -20,7 +20,7 @@
 #' virtual_list(datashort, site, 2020, exclareas=exclareas, 3035, 20, 20)}
 
 
-virtual_list <- function(data_flor, site, year_study, excl_areas=NULL, CRS.new, tau, upperlimit) {
+virtual_list <- function(data_flor, site, year_study, excl_areas=NULL,CRS.new, tau, upperlimit) {
 
   ################## Check for the congruency of input objects ##############
   
