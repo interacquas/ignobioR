@@ -34,7 +34,7 @@ sp::plot(exclareas, add=TRUE, col="red")
 # Draft the virtual floristic list (VFL)
 ```{r}
 
-vfl <- virtual_list(datashort, site, 2020, exclareas, 3035, 20, 20)
+vfl <- virtual_list(data_flor=datashort, site=site, excl_areas=exclareas, tau=20)
 
 head(vfl$VFL)
 vfl$statistics
@@ -42,7 +42,7 @@ vfl$statistics
 
 # Draft the Map of Floristic Ignorance (MFI)
 ```{r}
-mfi <- ignorance_map(datashort, site, 2020, exclareas, 2000, 3035, 20)
+mfi <- ignorance_map(data_flor=datashort, site=site, excl_areas=exclareas, tau=20, cellsize=2000)
 ```
 
 
