@@ -17,3 +17,33 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(ignobioR)
 ```
+
+# Prepare the data
+```{r}
+
+data(datashort) # Upload the dataset with occurrence data
+head(datashort)
+
+data(site) # Upload the study area
+data(exclareas) # Unsuitable data
+
+sp::plot(site)
+sp::plot(exclareas, add=TRUE, col="red")
+```
+
+# Draft the virtual floristic list (VFL)
+```{r}
+
+vfl <- virtual_list(datashort, site, 2020, exclareas,3035, 20, 20)
+
+head(vfl$VFL)
+vfl$statistics
+```
+
+# Draft the Map of Floristic Ignorance (MFI)
+```{r}
+mfi <- ignorance_map(datashort, site, 2020, exclareas, 2000, 3035, 20)
+```
+
+
+
