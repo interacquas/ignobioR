@@ -33,7 +33,7 @@ ignorance_map <- function(data_flor, site, year_study, excl_areas, cellsize, CRS
   
   if (class(site) != "SpatialPolygonsDataFrame" | class(excl_areas) != "SpatialPolygonsDataFrame") 
   {
-    stop("Layers must be of class SpatialPolygonsDataFrame")
+    print("Layers must be of class SpatialPolygonsDataFrame")
   }
   
   if (tau < 0 | tau >= 100) 

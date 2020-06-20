@@ -29,9 +29,9 @@ virtual_list <- function(data_flor, site, year_study, excl_areas=NULL, CRS.new, 
     stop("Some occurrence dates are more recent than the year of the study")
   }
   
-  if (class(site) != "SpatialPolygonsDataFrame" | class(excl_areas) != "SpatialPolygonsDataFrame") 
+  if (!(class(site)[1] == "SpatialPolygonsDataFrame") | !(class(excl_areas)[1] == "SpatialPolygonsDataFrame")) 
   {
-    stop("Layers must be of class SpatialPolygonsDataFrame")
+    print("Layers must be of class SpatialPolygonsDataFrame")
   }
   
   if (tau < 0 | tau >= 100) 
@@ -39,12 +39,7 @@ virtual_list <- function(data_flor, site, year_study, excl_areas=NULL, CRS.new, 
     stop(" 0 <= tau < 100 is FALSE. Please set up another tau value")
   }
   
-  if (length(which(2*data_flor$uncertainty < (cellsize/20))) > 1) 
-  {print(data_flor[(data_flor$uncertainty * 2) < (cellsize/20),])
-    stop("There are ", paste(length(which(2*data_flor$uncertainty < (cellsize/20)))), " occurrence records having an uncertainty value too small in respect to the cell size. They could be lost during the rasterisation process. Digit ‘help(rasterize)' for more details")
-  }
-  
-  # Preliminary steps
+   # Preliminary steps
   
 start_time <- Sys.time() ## starting time
 raster::crs(site) <- sp::CRS("+init=epsg:4326")

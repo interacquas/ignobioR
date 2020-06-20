@@ -1,9 +1,9 @@
 Package: ignobioR
 Type: Package
-Title: Analysing uncertainty in biodiversity occurrence data
+Title: Managing biodiversity occurrence data considering uncertainty
 Version: 0.1.0
 Author: Marco D'Antraccoli, Gianni Bedini, Lorenzo Peruzzi
-Maintainer: Marco D'Antraccoli <marcodantra@gmail.com>
+Maintainer: Marco D'Antraccoli <marcodantra@gmail.com>, Gianni Bedini <gianni.bedini@unipi.it>
 Description: A framework able to explicitly consider the spatial and temporal uncertainties intrinsic in floristic occurrence records and aimed to return two main outputs:
     (i) a ‘Map of Floristic Ignorance’ (MFI), a map representing the spatial distribution of the lack in floristic knowledge across cells in a study site.
     (ii) a ‘Virtual Floristic List’ (VFL) of taxa potentially occurring within a study site, in which a probability of occurrence is computed for every taxon.
