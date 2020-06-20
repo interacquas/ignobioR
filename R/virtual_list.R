@@ -27,7 +27,7 @@ virtual_list <- function(data_flor,site, year_study=NULL, excl_areas=NULL, CRS.n
   if (length(year_study) ==0) 
   {
     year_study <- Sys.Date()
-    year_study <- substr(year_study, start = 1, stop = 4)
+    year_study <- as.numeric(substr(year_study, start = 1, stop = 4))
   }
   
   if (max(data_flor$year) > year_study) 
