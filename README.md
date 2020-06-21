@@ -16,9 +16,9 @@ data(datashort)
 data(site)
 
 
-ignorance_map(data_flor=datashort[1:100,], site=site, tau=20, cellsize=2000)
+ignorance_map(data_flor=datashort, site=site, tau=20, cellsize=2000)
 
-virtual_list(data_flor=datashort[1:100,], site=site, tau=20)
+virtual_list(data_flor=datashort, site=site, tau=20)
 
 
 
