@@ -42,4 +42,6 @@ data(site)
 data(exclareas)
 
 virtual_list(data_flor=datashort, site=site, excl_areas=exclareas, tau=30, upperlimit=25)}
+See more about the markdown markup at the
+[Commonmark web site](http://commonmark.org/help)
 }
