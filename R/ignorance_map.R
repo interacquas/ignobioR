@@ -6,7 +6,7 @@
 #' @param site a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326
 #' @param year_study the present-year in which you perform the analysis
 #' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
-#' @param CRS.new he new Coordinate Reference System. Note: must be in XXXXXXXXXXXX
+#' @param CRS.new he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll
 #' @param tau YYYYYYYYYYYYY
 #' @param upperlimit VVVVVVVVVVVVVj
 #' 
