@@ -19,7 +19,7 @@
 #' data(site)
 #' data(excl_areas)
 #'
-#' ignorance_map(datashort, site, year_study, excl_areas = exclareas, 3035, 20, 10000)}
+#' ignorance_map(data_flor=datashort, site=site, tau=20, cellsize=10000)}
 
 ignorance_map <- function(data_flor, site, year_study=NULL, excl_areas=NULL, CRS.new=3035, tau, cellsize) {
 
