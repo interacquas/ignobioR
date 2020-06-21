@@ -2,9 +2,17 @@
 % Please edit documentation in R/ignorance_map.R
 \name{ignorance_map}
 \alias{ignorance_map}
-\title{Map of Floristic Ignorance (MFI)}
+\title{Ignorance map}
 \usage{
-ignorance_map(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau)
+ignorance_map(
+  data_flor,
+  site,
+  year_study = NULL,
+  excl_areas = NULL,
+  CRS.new = 3035,
+  tau,
+  cellsize
+)
 }
 \arguments{
 \item{data_flor}{dataframe having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)}
@@ -15,23 +23,23 @@ ignorance_map(data_flor, site, year_study, excl_areas, cellsize, CRS.new, tau)
 
 \item{excl_areas}{a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326}
 
-\item{cellsize}{the resolution of the ignorance map in meters}
+\item{CRS.new}{he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll}
 
-\item{CRS.new}{choose the new Coordinate Reference System. Note: must be in XXXXXXXXXXXX}
+\item{tau}{YYYYYYYYYYYYY}
 
-\item{tau}{% of taxa loss in 100 years time-span (see text for further details)}
+\item{upperlimit}{VVVVVVVVVVVVVj}
 }
 \value{
-A map
+A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 }
 \description{
-This function map occurrence data taking into account spatial and temporal uncertainty of each record
+A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
 }
 \examples{
 \dontrun{
 data(datashort)
 data(site)
-data(excl_areas)
+data(exclareas)
 
-ignorance_map(datashort, site, year_study, excl_areas = exclareas, 10000, 3035, 20 )}
+ignorance_map(data_flor=datashort, site=site, tau=20, cellsize=10000)}
 }

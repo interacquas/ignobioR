@@ -7,33 +7,33 @@
 virtual_list(
   data_flor,
   site,
-  year_study,
+  year_study = NULL,
   excl_areas = NULL,
-  CRS.new,
+  CRS.new = 3035,
   tau,
-  upperlimit
+  upperlimit = 20
 )
 }
 \arguments{
-\item{data_flor}{XXXXXXX}
+\item{data_flor}{dataframe having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)}
 
-\item{site}{YYYYYYYYYYYY}
+\item{site}{a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326}
 
-\item{year_study}{ZZZZZZZZZZZ}
+\item{year_study}{the present-year in which you perform the analysis}
 
-\item{excl_areas}{RRRRRRRRRRRr}
+\item{excl_areas}{a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326}
 
-\item{CRS.new}{TTTTTTTTTTTtt}
+\item{CRS.new}{he new Coordinate Reference System. Note: must be in XXXXXXXXXXXX}
 
 \item{tau}{YYYYYYYYYYYYY}
 
-\item{upperlimiy}{VVVVVVVVVVVVV}
+\item{upperlimit}{VVVVVVVVVVVVV}
 }
 \value{
 A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 }
 \description{
-A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
+This function map occurrence data taking into account spatial and temporal uncertainty of each record
 }
 \examples{
 \dontrun{
@@ -41,5 +41,5 @@ data(datashort)
 data(site)
 data(exclareas)
 
-virtual_list(datashort, site, 2020, exclareas=exclareas, 3035, 20, 20)}
+virtual_list(data_flor=datashort, site=site, excl_areas=exclareas, CRS.new=3035, tau=30, upperlimit=25)}
 }
