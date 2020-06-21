@@ -1,6 +1,6 @@
 #' @title Draft the virtual floristic list (VFL) of the study area
 #'
-#' @description A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
+#' @description This function map occurrence data taking into account spatial and temporal uncertainty of each record
 #'
 #' @param data_flor dataframe having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)
 #' @param site a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326
