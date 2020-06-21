@@ -43,7 +43,7 @@ virtual_list<-function(data_flor,site,year_study=NULL,excl_areas=NULL,CRS.new = 
   
   if (!(class(site)[1] == "SpatialPolygonsDataFrame") | !(class(excl_areas)[1] == "SpatialPolygonsDataFrame")) 
   {
-    print("Layers must be of class SpatialPolygonsDataFrame")
+    stop("Layers must be of class SpatialPolygonsDataFrame")
   }
   
   if (tau < 0 | tau >= 100) 
