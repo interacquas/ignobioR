@@ -8,7 +8,7 @@
 #' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
 #' @param CRS.new he new Coordinate Reference System. Note: must be in XXXXXXXXXXXX
 #' @param tau YYYYYYYYYYYYY
-#' @param upperlimit VVVVVVVVVVVVV
+#' @param upperlimit VVVVVVVVVVVVVj
 #' 
 #' @return A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 #' @export
