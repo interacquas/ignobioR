@@ -22,7 +22,7 @@
 #' 
 #' }
 
-virtual_list<-function(data_flor,site, year_study=NULL, excl_areas=NULL, CRS.new = 3035, tau, upperlimit=20){
+virtual_list<-function(data_flor,site,year_study=NULL,excl_areas=NULL,CRS.new = 3035,tau,upperlimit=20){
 
 
   ################## Check for settings ##############
