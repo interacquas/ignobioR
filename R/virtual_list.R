@@ -13,13 +13,14 @@
 #' @return A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 #' @export
 #' @examples \dontrun{
+#'
 #' data(datashort)
 #' data(site)
 #' data(exclareas)
 #' 
-#' virtual_list(data_flor=datashort, site=site, excl_areas=exclareas, tau=30, upperlimit=25)}
-#' See more about the markdown markup at the
-#' [Commonmark web site](http://commonmark.org/help)
+#' virtual_list(data_flor=datashort, site=site, excl_areas=exclareas, tau=30, upperlimit=25)
+#' 
+#' }
 
 virtual_list<-function(data_flor,site, year_study=NULL, excl_areas=NULL, CRS.new = 3035, tau, upperlimit=20){
 
