@@ -2,7 +2,7 @@
 % Please edit documentation in R/virtual_list.R
 \name{virtual_list}
 \alias{virtual_list}
-\title{Draft the virtual floristic list (VFL) of the study area}
+\title{vfl}
 \usage{
 virtual_list(
   data_flor,
@@ -23,17 +23,17 @@ virtual_list(
 
 \item{excl_areas}{a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326}
 
-\item{CRS.new}{he new Coordinate Reference System. Note: must be in XXXXXXXXXXXX}
+\item{CRS.new}{he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll}
 
 \item{tau}{YYYYYYYYYYYYY}
 
-\item{upperlimit}{VVVVVVVVVVVVV}
+\item{upperlimit}{VVVVVVVVVVVVVj}
 }
 \value{
 A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 }
 \description{
-This function map occurrence data taking into account spatial and temporal uncertainty of each record
+A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
 }
 \examples{
 \dontrun{

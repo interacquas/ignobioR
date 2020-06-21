@@ -1,14 +1,14 @@
-#' @title Draft the virtual floristic list (VFL) of the study area
+#' @title vfl
 #'
-#' @description This function map occurrence data taking into account spatial and temporal uncertainty of each record
+#' @description A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
 #'
 #' @param data_flor dataframe having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)
 #' @param site a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326
 #' @param year_study the present-year in which you perform the analysis
 #' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
-#' @param CRS.new he new Coordinate Reference System. Note: must be in XXXXXXXXXXXX
+#' @param CRS.new he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll
 #' @param tau YYYYYYYYYYYYY
-#' @param upperlimit VVVVVVVVVVVVV
+#' @param upperlimit VVVVVVVVVVVVVj
 #' 
 #' @return A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 #' @export
@@ -22,7 +22,7 @@
 #' 
 #' }
 
-virtual_list<-function(data_flor,site,year_study=NULL,excl_areas=NULL,CRS.new = 3035,tau,upperlimit=20){
+virtual_list<-function(data_flor,site,year_study=NULL,excl_areas=NULL,CRS.new = 3035, tau, upperlimit=20){
 
 
   ################## Check for settings ##############
