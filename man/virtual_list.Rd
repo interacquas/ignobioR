@@ -23,14 +23,18 @@ virtual_list(
 
 \item{excl_areas}{a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326}
 
-\item{CRS.new}{he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll}
+\item{CRS.new}{the new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll}
 
-\item{tau}{YYYYYYYYYYYYY}
+\item{tau}{percentual value of taxa loss in 100 years time-span (see below for further details)}
 
-\item{upperlimit}{VVVVVVVVVVVVVj}
+\item{upperlimit}{maximum number of floristic records for a given taxon managed by the algorithm to compute the VFL. You can increase this number; a number between 20 and 30 is suggested. Then, the algorithm considers only the n most relevant, in terms of probability, occurrence records}
 }
 \value{
-A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
+an object of class list with X slots:
+\itemize{
+ \item{"The virtual floristic list"}{bla bla bla}
+ \item{"Statistics"}{bla bla bla}
+}
 }
 \description{
 A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon

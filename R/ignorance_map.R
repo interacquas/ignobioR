@@ -7,17 +7,24 @@
 #' @param year_study the present-year in which you perform the analysis
 #' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
 #' @param CRS.new he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll
-#' @param tau YYYYYYYYYYYYY
-#' @param upperlimit VVVVVVVVVVVVVj
+#' @param tau percentual value of taxa loss in 100 years time-span (see below for further details)
+#' @param cellsize the resolution of the ignorance map in meters
 #' 
-#' @return A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
+#' @return A list with 4 objects:
+#' \itemize{
+##'  \item{"MFI"}{ The Map of Floristic Ignorance}
+##'  \item{"RICH"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
+##'  \item{"uncertainties"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
+##'  \item{"Statistics"}{ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx}
+##' }
 #' @export
 #' @examples \dontrun{
 #' data(datashort)
 #' data(site)
 #' data(exclareas)
 #' 
-#' ignorance_map(data_flor=datashort, site=site, tau=20, cellsize=10000)}
+#' ignorance_map(data_flor=datashort, site=site, tau=20, cellsize=10000)
+#' }
 
 
 ignorance_map <- function(data_flor, site, year_study=NULL, excl_areas=NULL, CRS.new=3035, tau, cellsize) {

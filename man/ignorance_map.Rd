@@ -25,12 +25,18 @@ ignorance_map(
 
 \item{CRS.new}{he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll}
 
-\item{tau}{YYYYYYYYYYYYY}
+\item{tau}{percentual value of taxa loss in 100 years time-span (see below for further details)}
 
-\item{upperlimit}{VVVVVVVVVVVVVj}
+\item{cellsize}{the resolution of the ignorance map in meters}
 }
 \value{
-A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
+A list with 4 objects:
+\itemize{
+ \item{"MFI"}{ The Map of Floristic Ignorance}
+ \item{"RICH"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
+ \item{"uncertainties"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
+ \item{"Statistics"}{ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx}
+}
 }
 \description{
 A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
@@ -41,5 +47,6 @@ data(datashort)
 data(site)
 data(exclareas)
 
-ignorance_map(data_flor=datashort, site=site, tau=20, cellsize=10000)}
+ignorance_map(data_flor=datashort, site=site, tau=20, cellsize=10000)
+}
 }
