@@ -239,7 +239,7 @@ print(paste0("Virtual floristic List drafting time:", round(as.numeric(difftime(
 # FINAL STEPS
 
 #1 Remove rows with 'Estimated spatiotemporal probability' equal to 0
-output2 <- output[!(output$Estimated_Spatiotemporal_probability==0),]
+output2<- output[!(output$Estimated_Spatiotemporal_probability==0),]
 
 #2 Order by decreasing 'Estimated spatiotemporal probability'
 output3 <- output2[order(-output2$Estimated_Spatiotemporal_probability, -output2$Max_probability, output2$taxon),]

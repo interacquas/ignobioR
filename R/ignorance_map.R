@@ -23,7 +23,7 @@
 
 ignorance_map <- function(data_flor, site, year_study=NULL, excl_areas=NULL, CRS.new=3035, tau, cellsize) {
 
-  ################## Check for settings ##############
+  ################## Check for settings #############
   if (length(year_study) ==0) 
   {
     year_study <- Sys.Date()
