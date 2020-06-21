@@ -2,13 +2,13 @@
 #'
 #' @description A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
 #'
-#' @param data_flor XXXXXXX
-#' @param site YYYYYYYYYYYY
-#' @param year_study ZZZZZZZZZZZ
-#' @param excl_areas RRRRRRRRRRRr
-#' @param CRS.new TTTTTTTTTTTtt
+#' @param data_flor dataframe having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)
+#' @param site a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326
+#' @param year_study the present-year in which you perform the analysis
+#' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
+#' @param CRS.new he new Coordinate Reference System. Note: must be in XXXXXXXXXXXX
 #' @param tau YYYYYYYYYYYYY
-#' @param upperlimiy VVVVVVVVVVVVV
+#' @param upperlimit VVVVVVVVVVVVV
 #' 
 #' @return A .csv file (comma-separated values) file having N columns, namely ‘Taxon’, YYYYYYYYYYYYYY
 #' @export
@@ -17,10 +17,10 @@
 #' data(site)
 #' data(exclareas)
 #' 
-#' virtual_list(datashort, site, 2020, excl_areas=exclareas, 3035, 20, 20)}
+#' virtual_list(data_flor=datashort, site=site, excl_areas=exclareas, CRS.new=3035, tau=30, upperlimit=25)}
 
 
-virtual_list <- function(data_flor,site, year_study=NULL, excl_areas=NULL, CRS.new = 3035, tau, upperlimit=20) {
+virtual_list <- function(data_flor,site, year_study=NULL, excl_areas=NULL, CRS.new = 3035, tau, upperlimit=20){
 
 
   ################## Check for settings ##############
@@ -239,10 +239,10 @@ print(paste0("Virtual floristic List drafting time:", round(as.numeric(difftime(
 # FINAL STEPS
 
 #1 Remove rows with 'Estimated spatiotemporal probability' equal to 0
-output2<- output[!(output$Estimated_Spatiotemporal_probability==0),]
+output2 <- output[!(output$Estimated_Spatiotemporal_probability==0),]
 
-#2 Order by decreasing 'Estimated spatiotemporal probability'
-output3 <- output2[order(-output2$Estimated_Spatiotemporal_probability, -output2$Max_probability, output2$taxon),]
+#2 Order taxa by alphavetical order
+output3 <- output2[order(output2$taxon, -output2$Estimated_Spatiotemporal_probability, -output2$Max_probability),]
 is.num <- sapply(output3, is.numeric)
 output3[is.num] <- lapply(output3[is.num], round, 1) # round the values
 
