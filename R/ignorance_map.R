@@ -41,11 +41,6 @@ ignorance_map <- function(data_flor, site, year_study=NULL, excl_areas=NULL, CRS
     stop("Some occurrence dates are more recent than the year of the study")
   }
   
-  if (!(class(site)[1] == "SpatialPolygonsDataFrame") | !(class(excl_areas)[1] == "SpatialPolygonsDataFrame")) 
-  {
-    print("Layers must be of class SpatialPolygonsDataFrame")
-  }
-  
   if (tau < 0 | tau >= 100) 
   {
     stop(" 0 <= tau < 100 is FALSE. Please set up another tau value")
