@@ -24,7 +24,7 @@ virtual_list <- function(data_flor,site, year_study=NULL, excl_areas=NULL, CRS.n
 
 
   ################## Check for settings ##############
-  if (length(year_study) ==0) 
+  if (length(year_study) == 0) 
   {
     year_study <- Sys.Date()
     year_study <- as.numeric(substr(year_study, start = 1, stop = 4))
