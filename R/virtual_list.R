@@ -186,7 +186,6 @@ if (cont==1) {
   df_spt <- df_spt - excl_areas_3035
 }
 
-
 # Measure the area of the buffers
 x <- as.vector(unique(df_spt$Taxon))
 df_spt$area_buffer <- rgeos::gArea(df_spt, byid=TRUE)
@@ -197,7 +196,7 @@ overlayXYT$area_intersection = sapply(slot(overlayXYT, "polygons"), slot, "area"
 
 #Plot buffers and study area
 
-if(is.null(excl_areas)==TRUE) {    
+if(cont==0) {    
   sp::plot(site_3035, main="Buffers deriving from spatial uncertainty")
   sp::plot(df_spt, add=TRUE, col="red") } 
   else {

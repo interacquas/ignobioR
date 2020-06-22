@@ -60,7 +60,7 @@ ignorance_map <- function(data_flor, site, year_study=NULL, excl_areas=NULL, CRS
   
 ignorance_species <- function(dfOBJ) {
   ###### Create buffers having radius = 'uncertainty'
-  DDF_buffer <- rgeos::gBuffer(dfOBJ, width=(dfOBJ $uncertainty), byid=TRUE)
+  DDF_buffer <- rgeos::gBuffer(dfOBJ, width=(dfOBJ$uncertainty), byid=TRUE)
 
   if (cont==1) {
     DDF_buffer <- DDF_buffer - excl_areas_3035
@@ -162,20 +162,22 @@ list <- unique(DF$Taxon)
 list <- as.vector(list)
 
 # Create an empty raster
+print("Creating an empty raster")
+
 r <- raster::raster()
-raster::xmin(r) <- min(result@bbox[1,1]) - cellsize
-raster::xmax(r) <- max(result@bbox[1,2]) + cellsize
-raster::ymin(r) <- min(result@bbox[2,1]) - cellsize
-raster::ymax(r) <- max(result@bbox[2,2]) + cellsize
+raster::xmin(r) <- min(result@bbox[1,1]) - max(data_flor$uncertainty)
+raster::xmax(r) <- max(result@bbox[1,2]) + max(data_flor$uncertainty)
+raster::ymin(r) <- min(result@bbox[2,1]) - max(data_flor$uncertainty)
+raster::ymax(r) <- max(result@bbox[2,2]) + max(data_flor$uncertainty)
 raster::res(r) <- cellsize
 raster::crs(r) <- CRS.new
 raster::values(r) <- 1:raster::ncell(r)
 r2 <- r
 r2[]<-NA
-print("ok4")
+print("Calculating species richness of each cell")
 rich <- raster::rasterize(data_flor_planar, r, 'Taxon', function(x, ...) length(unique(na.omit(x))))
 rich[is.na(rich)] <- 0
-print("ok5")
+
 
 included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
 number_included_species <- max(included_species)
@@ -241,6 +243,12 @@ values <- c(as.character(start_time), as.character(end_time), end_time-start_tim
             nrow(points_INS), nrow(DF), round(median(DF$uncertainty)), median(DF$year))
 statistics <- as.data.frame(cbind(names, values))
 statistics
+
+
+sp::plot(data_flor_buffer)
+
+sp::plot(r, add=TRUE)
+
 
 #### Producing the images to export #####
 
