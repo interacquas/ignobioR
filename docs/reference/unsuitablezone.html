@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>vfl — virtual_list • ignobioR</title>
+<title>Prices of 50,000 round cut diamonds. — unsuitablezone • ignobioR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -36,9 +36,10 @@
 
 
 
-<meta property="og:title" content="vfl — virtual_list" />
+<meta property="og:title" content="Prices of 50,000 round cut diamonds. — unsuitablezone" />
 
-<meta property="og:description" content="A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon" />
+<meta property="og:description" content="A dataset containing the prices and other attributes of almost 54,000
+diamonds." />
 
 
 
@@ -115,79 +116,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>vfl</h1>
+    <h1>Prices of 50,000 round cut diamonds.</h1>
     
-    <div class="hidden name"><code>virtual_list.Rd</code></div>
+    <div class="hidden name"><code>unsuitablezone.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon</p>
+    <p>A dataset containing the prices and other attributes of almost 54,000
+diamonds.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>virtual_list</span>(
-  <span class='no'>data_flor</span>,
-  <span class='no'>site</span>,
-  <span class='kw'>year_study</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>excl_areas</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>CRS.new</span> <span class='kw'>=</span> <span class='fl'>3035</span>,
-  <span class='no'>tau</span>,
-  <span class='kw'>upperlimit</span> <span class='kw'>=</span> <span class='fl'>20</span>
-)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>data_flor</th>
-      <td><p>dataframe having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)</p></td>
-    </tr>
-    <tr>
-      <th>site</th>
-      <td><p>a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326</p></td>
-    </tr>
-    <tr>
-      <th>year_study</th>
-      <td><p>the present-year in which you perform the analysis</p></td>
-    </tr>
-    <tr>
-      <th>excl_areas</th>
-      <td><p>a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326</p></td>
-    </tr>
-    <tr>
-      <th>CRS.new</th>
-      <td><p>the new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll</p></td>
-    </tr>
-    <tr>
-      <th>tau</th>
-      <td><p>percentual value of taxa loss in 100 years time-span (see below for further details)</p></td>
-    </tr>
-    <tr>
-      <th>upperlimit</th>
-      <td><p>maximum number of floristic records for a given taxon managed by the algorithm to compute the VFL. You can increase this number; a number between 20 and 30 is suggested. Then, the algorithm considers only the n most relevant, in terms of probability, occurrence records</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <pre class="usage"><span class='no'>unsuitablezone</span></pre>
+        
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>an object of class list with X slots:</p><ul>
-<li><p>"The virtual floristic list"bla bla bla</p></li>
-<li><p>"Statistics"bla bla bla</p></li>
-</ul>
+    <p>A data frame with 53940 rows and 10 variables:</p><dl'>
+  <dt>price</dt><dd><p>price, in US dollars</p></dd>
+  <dt>carat</dt><dd><p>weight of the diamond, in carats</p></dd>
+  ...
+
+</dl>
 
     
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <p><a href='http://www.diamondse.info/'>http://www.diamondse.info/</a></p>
+    
 
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>floratus</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>park</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>unsuitablezone</span>)
-
-<span class='fu'>virtual_list</span>(<span class='kw'>data_flor</span><span class='kw'>=</span><span class='no'>datashort</span>, <span class='kw'>site</span><span class='kw'>=</span><span class='no'>site</span>, <span class='kw'>excl_areas</span><span class='kw'>=</span><span class='no'>unsuitablezone</span>, <span class='kw'>tau</span><span class='kw'>=</span><span class='fl'>30</span>, <span class='kw'>upperlimit</span><span class='kw'>=</span><span class='fl'>25</span>)
-
-}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

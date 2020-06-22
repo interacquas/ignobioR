@@ -188,7 +188,7 @@ doSNOW::registerDoSNOW(cl)
 
 print("Starting to draft the Map of Floristic Ignorance!")
 pb <- utils::txtProgressBar(min = 0, max = length(list), style = 3) # progress bar
-progress <- function(n) setTxtProgressBar(pb, n)
+progress <- function(n) utils::setTxtProgressBar(pb, n)
 opts <- base::list(progress = progress)
 
 `%dopar%` <- foreach::`%dopar%`
@@ -330,14 +330,24 @@ grDevices::dev.off()
 
 # Write to file the raster of the ‘Map of Floristic Ignorance’ and a .csv file listing the taxa considered to draft the map
 raster::writeRaster(raster_new, filename = "MAPignorance", format="GTiff", overwrite=TRUE)
-write.csv(list, row.names=FALSE, "Taxa considered to compute the Floristic Ignorance Map.csv")
+utils::write.csv(list, row.names=FALSE, "Taxa considered to compute the Floristic Ignorance Map.csv")
 print(paste0("Done! The files have been saved here", getwd()))
 
 ### Print images
+print("Plot Map of Flositic Ignorance (MFI)")
 print(p1)
+
+print("Plot tradional richness Map")
+
 print(p2)
+
+print("Plot Occurrence uncertainties distribution")
 print(p3)
+
+print("Plot Occurrence dates distribution")
 print(p4)
+
+print("Statistics")
 plot(ss)
 
 # Save into a list
