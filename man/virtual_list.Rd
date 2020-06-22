@@ -42,11 +42,11 @@ A list of species potentially occurring within a study site, in which a probabil
 \examples{
 \dontrun{
 
-data(datashort)
-data(site)
-data(exclareas)
+data(floratus)
+data(park)
+data(unsuitablezone)
 
-virtual_list(data_flor=datashort, site=site, excl_areas=exclareas, tau=30, upperlimit=25)
+virtual_list(data_flor=datashort, site=site, excl_areas=unsuitablezone, tau=30, upperlimit=25)
 
 }
 }
