@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Map of Floristic Ignorance (MFI) — ignorance_map • ignobioR</title>
+<title>Ignorance map — ignorance_map • ignobioR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -36,7 +36,9 @@
 
 
 
-<meta property="og:title" content="Map of Floristic Ignorance (MFI) — ignorance_map" />
+<meta property="og:title" content="Ignorance map — ignorance_map" />
+
+<meta property="og:description" content="A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon" />
 
 
 
@@ -69,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ignobioR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -113,16 +115,26 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Map of Floristic Ignorance (MFI)</h1>
+    <h1>Ignorance map</h1>
     
     <div class="hidden name"><code>ignorance_map.Rd</code></div>
     </div>
 
     <div class="ref-description">
-
+    
+    <p>A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon</p>
+    
     </div>
 
-    <pre class="usage"><span class='fu'>ignorance_map</span>(<span class='no'>data_flor</span>, <span class='no'>site</span>, <span class='no'>year_study</span>, <span class='no'>excl_areas</span>, <span class='no'>cellsize</span>, <span class='no'>CRS.new</span>, <span class='no'>tau</span>)</pre>
+    <pre class="usage"><span class='fu'>ignorance_map</span>(
+  <span class='no'>data_flor</span>,
+  <span class='no'>site</span>,
+  <span class='kw'>year_study</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>excl_areas</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>CRS.new</span> <span class='kw'>=</span> <span class='fl'>3035</span>,
+  <span class='no'>tau</span>,
+  <span class='no'>cellsize</span>
+)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -144,20 +156,38 @@
       <td><p>a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326</p></td>
     </tr>
     <tr>
-      <th>cellsize</th>
-      <td><p>the resolution of the ignorance map in meters</p></td>
-    </tr>
-    <tr>
       <th>CRS.new</th>
-      <td><p>choose the new Coordinate Reference System. Note: must be in XXXXXXXXXXXX</p></td>
+      <td><p>he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll</p></td>
     </tr>
     <tr>
       <th>tau</th>
-      <td><p><!-- % of taxa loss in 100 years time-span (see text for further details)} --></p></td>
+      <td><p>percentual value of taxa loss in 100 years time-span (see below for further details)</p></td>
+    </tr>
+    <tr>
+      <th>cellsize</th>
+      <td><p>the resolution of the ignorance map in meters</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A list with 4 objects:</p><ul>
+<li><p>"MFI" The Map of Floristic Ignorance</p></li>
+<li><p>"RICH" The corresponding map computed without taking into account spatial and temporal uncertainties</p></li>
+<li><p>"uncertainties" The corresponding map computed without taking into account spatial and temporal uncertainties</p></li>
+<li><p>"Statistics" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx</p></li>
+</ul>
+
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>datashort</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>site</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>exclareas</span>)
+
+<span class='fu'>ignorance_map</span>(<span class='kw'>data_flor</span><span class='kw'>=</span><span class='no'>datashort</span>, <span class='kw'>site</span><span class='kw'>=</span><span class='no'>site</span>, <span class='kw'>tau</span><span class='kw'>=</span><span class='fl'>20</span>, <span class='kw'>cellsize</span><span class='kw'>=</span><span class='fl'>10000</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

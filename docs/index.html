@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ignobioR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -73,16 +73,40 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-A framework able to explicitly consider the spatial and temporal uncertainties intrinsic in floristic occurrence records and aimed to return two main outputs:
-    (i) a ‘Map of Floristic Ignorance’ (MFI), a map representing the spatial distribution of the lack in floristic knowledge across cells in a study site.
-    (ii) a ‘Virtual Floristic List’ (VFL) of taxa potentially occurring within a study site, in which a probability of occurrence is computed for every taxon.
+
+<div id="ignobior" class="section level1">
+<div class="page-header"><h1 class="hasAnchor">
+<a href="#ignobior" class="anchor"></a>ignobioR</h1></div>
+<p>Spiegare in poche righe cosa fa questo pacchetto</p>
+</div>
+<div id="how-to-download-and-install-the-r-package" class="section level1">
+<h1 class="hasAnchor">
+<a href="#how-to-download-and-install-the-r-package" class="anchor"></a>How to download and install the R package</h1>
+<p>if(!require(devtools)){install.packages(“devtools”); library(devtools)}</p>
+<p>install_github(“interacquas/ignobioR”)</p>
+</div>
+<div id="how-to-use-the-r-package-in-brief" class="section level1">
+<h1 class="hasAnchor">
+<a href="#how-to-use-the-r-package-in-brief" class="anchor"></a>How to use the R package (in brief):</h1>
+<p>library(ignobioR)</p>
+<p>data(datashort)</p>
+<p>data(site)</p>
+<p>ignorance_map(data_flor=datashort, site=site, tau=20, cellsize=2000)</p>
+<p>virtual_list(data_flor=datashort, site=site, tau=20)</p>
+</div>
+<div id="please-check-our-vignette" class="section level1">
+<h1 class="hasAnchor">
+<a href="#please-check-our-vignette" class="anchor"></a>Please check our Vignette</h1>
+<p><a href="https://interacquas.github.io/ignobioR/" class="uri">https://interacquas.github.io/ignobioR/</a></p>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
-<li>What license is it under?</li>
+<li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
 </ul>
 </div>
 <div class="developers">
