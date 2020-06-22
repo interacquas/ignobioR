@@ -21,20 +21,20 @@ library(ignobioR)
 # Prepare the data
 ```{r}
 
-data(datashort) # Upload the dataset with occurrence data
-head(datashort)
+data(floratus) # Upload the dataset with occurrence data
+head(floratus)
 
-data(site) # Upload the study area
-data(exclareas) # Unsuitable data
+data(park) # Upload the study area
+data(unsuitablezone) # Unsuitable data
 
-sp::plot(site)
-sp::plot(exclareas, add=TRUE, col="red")
+sp::plot(park)
+sp::plot(unsuitablezone, add=TRUE, col="red")
 ```
 
 # Draft the virtual floristic list (VFL)
 ```{r}
 
-vfl <- virtual_list(data_flor=datashort, site=site, excl_areas=exclareas, tau=20)
+vfl <- virtual_list(data_flor=floratus, site=park, excl_areas=unsuitablezone, tau=20)
 
 head(vfl$VFL)
 vfl$statistics
@@ -42,7 +42,7 @@ vfl$statistics
 
 # Draft the Map of Floristic Ignorance (MFI)
 ```{r}
-mfi <- ignorance_map(data_flor=datashort, site=site, excl_areas=exclareas, tau=20, cellsize=2000)
+mfi <- ignorance_map(data_flor=floratus, site=park, excl_areas=unsuitablezone, tau=20, cellsize=2000)
 ```
 
 
