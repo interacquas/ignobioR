@@ -12,7 +12,7 @@
 #' 
 #' @return an object of class list with X slots:
 #' \itemize{
-##'  \item{"The virtual floristic list"}{bla bla bla}
+##'  \item{"The virtual floristic list"}{A dataframe}
 ##'  \item{"Statistics"}{bla bla bla}
 ##' }
 #' @export
@@ -127,7 +127,7 @@ if(is.null(excl_areas)==TRUE) {print("No unsuitable areas provided")
                                  {print("Unsiuitable areas provided")
                                   cont <- 1}
 
-print("Preparing spatial objects!")
+print("[1/X] Preparing spatial objects!")
 
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
@@ -143,7 +143,7 @@ if(cont==1)
   # Crop the shapefile of the seas with study area
   excl_areas <- raster::crop(excl_areas, raster::extent(data_flor_planar))
   excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
-  sp::plot(excl_areas_3035, main="Area of exclusion uploaded!")
+  sp::plot(excl_areas_3035, col="red", main="Area of exclusion uploaded!")
   }
 
 
@@ -174,7 +174,7 @@ sapply(sp::over(site_3035, TA, returnList = FALSE), length)
 
 
 # Drafting the VFL
-print("Drafting the Virtual Floristic List")
+print("[1/X] Drafting the Virtual Floristic List")
 listing_time_START <- Sys.time() # record the starting time of the analysis
 
 # Subsetting the ‘SpatialPolygonDataframe’ with buffers using dataframe 'result' (i.e. select occurrence records which intersect the study area)
@@ -187,28 +187,35 @@ if (cont==1) {
 }
 
 
-#Plot buffers and study area
-sp::plot(site_3035)
-sp::plot(df_spt, add=TRUE)
-
 # Measure the area of the buffers
 x <- as.vector(unique(df_spt$Taxon))
 df_spt$area_buffer <- rgeos::gArea(df_spt, byid=TRUE)
 overlayXYT <- raster::intersect(site_3035, df_spt)
 overlayXYT$area_intersection = sapply(slot(overlayXYT, "polygons"), slot, "area")
 
+#Plots
+
 #Plot buffers and study area
-sp::plot(site_3035)
-sp::plot(overlayXYT, add=TRUE)
 
-# Spatial probability
-overlayXYT$p_occurrence_spatial <- overlayXYT$area_intersection/overlayXYT$area_buffer
+if(is.null(excl_areas)==TRUE) {    
+  sp::plot(site_3035, main="Buffers deriving from spatial uncertainty")
+  sp::plot(df_spt, add=TRUE, col="red") } 
+  else {
+    par(mfrow=c(1,2))
+    sp::plot(site_3035, main="Buffers deriving from spatial uncertainty")
+    sp::plot(data_flor_buffer, add=TRUE, col="red") 
+    
+    sp::plot(site_3035, main="Buffers deriving from spatial uncertainty")
+    sp::plot(overlayXYT, add=TRUE, col="red")}
 
-# Temporal probability
-overlayXYT$p_occurrence_temporal <- (1-(tau/100))^((year_study- overlayXYT$year)/100)
+  # Spatial probability
+  overlayXYT$p_occurrence_spatial <- overlayXYT$area_intersection/overlayXYT$area_buffer
 
-# Spatiotemporal probability of occurrence
-overlayXYT$p_occurrence_spatiotemporal <- (overlayXYT$p_occurrence_spatial * overlayXYT$p_occurrence_temporal)
+  # Temporal probability
+  overlayXYT$p_occurrence_temporal <- (1-(tau/100))^((year_study- overlayXYT$year)/100)
+
+  # Spatiotemporal probability of occurrence
+  overlayXYT$p_occurrence_spatiotemporal <- (overlayXYT$p_occurrence_spatial * overlayXYT$p_occurrence_temporal)
 
 cl2 <- parallel::makeCluster(parallel::detectCores()/2) #### to perform a parallel computing
 doSNOW::registerDoSNOW(cl2)

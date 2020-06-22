@@ -131,8 +131,8 @@ data_flor_planar$long <- data_flor_planar@coords[,1]
 
 # Apply for cycle to taxa having buffer intersecting with the polygon of the study area
 data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
-print("ok2")
 
+print("Plotting")
 ##### Plot intermediate steps
 
 if(cont==1)
@@ -182,11 +182,10 @@ number_included_species <- max(included_species)
 TA2<- sp::geometry(data_flor_planar)
 sapply(sp::over(site_3035, TA2, returnList = FALSE), length)
 
-
 cl <- parallel::makeCluster(parallel::detectCores()-1) #### to perform a parallel computing
 doSNOW::registerDoSNOW(cl)
 
-print("Starting to draft the Map of Floristic Ignorance!")
+print("Drafting the Map of Floristic Ignorance!")
 pb <- utils::txtProgressBar(min = 0, max = length(list), style = 3) # progress bar
 progress <- function(n) utils::setTxtProgressBar(pb, n)
 opts <- base::list(progress = progress)
@@ -246,13 +245,11 @@ statistics
 #### Producing the images to export #####
 
 ### Plot n° 1
-sp::plot(raster_new, main="raster_new")
-
 test_spdf <- as(raster_new, "SpatialPixelsDataFrame")
 test_df <- as.data.frame(test_spdf)
 colnames(test_df) <- c("value", "x", "y")
 
-p1 <- ggplot2::ggplot(test_df)+ ggplot2::coord_equal()+ ggplot2::theme_classic()+
+p1 <- ggplot2::ggplot(test_df)+ggplot2::coord_equal()+ ggplot2::theme_classic()+
   ggplot2::labs(fill="IFI")+
   ggplot2::theme(legend.position="right",legend.direction='vertical')+ ggplot2::theme(legend.key.width=grid::unit(0.6, "cm"))+
   ggplot2::xlab("Latitude") + ggplot2::ylab("Longitude")+
@@ -265,8 +262,6 @@ p1 <- ggplot2::ggplot(test_df)+ ggplot2::coord_equal()+ ggplot2::theme_classic()
 
 # Plot n° 2
 x_crop_rich <- raster::extend(rich, raster_new, value=0)
-sp::plot(x_crop_rich, main="rich")
-sp::plot(site_3035, add=TRUE)
 
 rgdal::writeOGR(site_3035, tempdir(), f <- basename(tempfile()), 'ESRI Shapefile')
 gdalUtils::gdal_rasterize(sprintf('%s/%s.shp', tempdir(), f),

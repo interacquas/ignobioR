@@ -32,7 +32,7 @@ virtual_list(
 \value{
 an object of class list with X slots:
 \itemize{
- \item{"The virtual floristic list"}{bla bla bla}
+ \item{"The virtual floristic list"}{A dataframe}
  \item{"Statistics"}{bla bla bla}
 }
 }

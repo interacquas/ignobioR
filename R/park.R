@@ -1,13 +1,8 @@
-#' Prices of 50,000 round cut diamonds.
+#' Boundaries of the Migliarino-San Rossore-Massaciuccoli Regional Park (Italy)
 #'
-#' A dataset containing the prices and other attributes of almost 54,000
-#' diamonds.
+#' Qui ci va la descrizione!
 #'
-#' @format A data frame with 53940 rows and 10 variables:
+#' @format A polygon of class SpatialPolygonsDataFrame having CRS "+init=epsg:4326"
 #' \describe{
-#'   \item{price}{price, in US dollars}
-#'   \item{carat}{weight of the diamond, in carats}
-#'   ...
-#' }
-#' @source \url{http://www.diamondse.info/}
+#'  }
 "park"
