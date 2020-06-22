@@ -326,7 +326,7 @@ p2
 p3
 p4
 plot(ss)
-dev.off()
+grDevices::dev.off()
 
 # Write to file the raster of the ‘Map of Floristic Ignorance’ and a .csv file listing the taxa considered to draft the map
 raster::writeRaster(raster_new, filename = "MAPignorance", format="GTiff", overwrite=TRUE)

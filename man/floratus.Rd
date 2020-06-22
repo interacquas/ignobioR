@@ -3,13 +3,15 @@
 \docType{data}
 \name{floratus}
 \alias{floratus}
-\title{Prices of 50,000 round cut diamonds.}
+\title{Dataframe with 80,000 occurrence records for Tuscany region}
 \format{
-A data frame with 53940 rows and 10 variables:
+A data frame with 80,000 rows and 5 variables:
 \describe{
-  \item{price}{price, in US dollars}
-  \item{carat}{weight of the diamond, in carats}
-  ...
+  \item{Taxon}{Taxonomic Identity}
+  \item{Long}{Longitude, in WGS84}
+  \item{Lat}{Latitude, in WGS84}
+  \item{uncertainty}{radius of the uncertainty buffer from the occurrence geographic position, in metres}
+  \item{year}{the year of the occurrence}
 }
 }
 \source{
