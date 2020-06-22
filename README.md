@@ -11,7 +11,7 @@ install_github("interacquas/ignobioR")
 
 library(ignobioR)
 
-data(datashort)
+data(floratus)
 
 data(site)
 
