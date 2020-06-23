@@ -126,31 +126,31 @@ if(cont==1)
 data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
 points_3035 <- data_flor_planar
 site_3035 <- sp::spTransform(site, CRS.new)
-print("ok1")
 data_flor_planar$lat <- data_flor_planar@coords[,2]
 data_flor_planar$long <- data_flor_planar@coords[,1]
 
 # Apply for cycle to taxa having buffer intersecting with the polygon of the study area
 data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
 sp::plot(data_flor_buffer, main="Plot bbuffers")
-print("Plotting")
+
 ##### Plot intermediate steps
+print("Plotting")
 
 if(cont==1)
 {
-  sp::plot(data_flor_buffer)
+  sp::plot(data_flor_buffer, main="XXXXXXXXXXXXX")
   sp::plot(site_3035, add=TRUE)
   sp::plot(excl_areas_3035, add =TRUE, border="red",lty =2)
   sp::plot(points_3035, add=TRUE, col="blue")
 
 
 } else {
-  sp::plot(data_flor_buffer)
+  sp::plot(data_flor_buffer, main="XXXXXXXXXXXXXXXXXXX")
   sp::plot(site_3035, add=TRUE)
   sp::plot(points_3035, add=TRUE, col="blue")
 }
 
-print("Filtering occurrence records with buffers intersecting the study area")
+print("Filtering occurrence records having buffers intersecting the study area")
 result <- raster::intersect(data_flor_buffer, site_3035)
 DF <- as.data.frame(result)
 
@@ -182,10 +182,11 @@ raster::values(r) <- 1:raster::ncell(r)
 r2 <- r
 r2[]<-NA
 
-print("Calculating species richness of each cell")
+print("Calculating species richness per cell")
 rich <- raster::rasterize(data_flor_planar, r, 'Taxon', function(x, ...) length(unique(na.omit(x))))
 rich[is.na(rich)] <- 0
 
+print("Preparing preliminary data to draft the Map of Floristic Ignorance")
 included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
 number_included_species <- max(included_species)
 TA2<- sp::geometry(data_flor_planar)
