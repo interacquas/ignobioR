@@ -131,7 +131,7 @@ data_flor_planar$long <- data_flor_planar@coords[,1]
 
 # Apply for cycle to taxa having buffer intersecting with the polygon of the study area
 data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
-sp::plot(data_flor_buffer, main="Plot bbuffers")
+sp::plot(data_flor_buffer, main="Plot buffers")
 
 ##### Plot intermediate steps
 print("Plotting")
