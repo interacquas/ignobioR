@@ -109,6 +109,7 @@ print("Creating spatial objects")
 
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
+data_flor_planar$record <- 1:nrow(data_flor_planar)
 
 xy <- data_flor_planar[,c(2,3)]
 ttt <- sp::CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
@@ -131,7 +132,7 @@ data_flor_planar$long <- data_flor_planar@coords[,1]
 
 # Apply for cycle to taxa having buffer intersecting with the polygon of the study area
 data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
-
+sp::plot(data_flor_buffer, main="Plot bbuffers")
 print("Plotting")
 ##### Plot intermediate steps
 
@@ -164,20 +165,26 @@ list <- as.vector(list)
 # Create an empty raster
 print("Creating an empty raster")
 
+filter_buffer <- result$record
+empty <- data_flor_buffer[filter_buffer, ]
+
+sp::plot(empty, main="buffers filtered")
+sp::plot(site_3035, add=TRUE)
+
 r <- raster::raster()
-raster::xmin(r) <- min(result@bbox[1,1]) - max(data_flor$uncertainty)
-raster::xmax(r) <- max(result@bbox[1,2]) + max(data_flor$uncertainty)
-raster::ymin(r) <- min(result@bbox[2,1]) - max(data_flor$uncertainty)
-raster::ymax(r) <- max(result@bbox[2,2]) + max(data_flor$uncertainty)
+raster::xmin(r) <- min(empty@bbox[1,1]) - max(data_flor$uncertainty)
+raster::xmax(r) <- max(empty@bbox[1,2]) + max(data_flor$uncertainty)
+raster::ymin(r) <- min(empty@bbox[2,1]) - max(data_flor$uncertainty)
+raster::ymax(r) <- max(empty@bbox[2,2]) + max(data_flor$uncertainty)
 raster::res(r) <- cellsize
 raster::crs(r) <- CRS.new
 raster::values(r) <- 1:raster::ncell(r)
 r2 <- r
 r2[]<-NA
+
 print("Calculating species richness of each cell")
 rich <- raster::rasterize(data_flor_planar, r, 'Taxon', function(x, ...) length(unique(na.omit(x))))
 rich[is.na(rich)] <- 0
-
 
 included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
 number_included_species <- max(included_species)
@@ -196,7 +203,7 @@ opts <- base::list(progress = progress)
 
 raster_stack <- foreach::foreach(i= 1:length(list), .options.snow = opts, .packages="raster", .combine=raster::stack) %dopar% {
   yo <- DF[which(DF$Taxon == list[i]),]
-  xy <- yo[,c(7,6)]
+  xy <- yo[,c(8,7)]
   ppp <- raster::crs(site_3035)
   df_species <- sp::SpatialPointsDataFrame(coords = xy, data = yo, proj4string = ppp)
   ignorance_species(df_species)
@@ -323,11 +330,11 @@ p4 <- ggplot2::ggplot(DF) +
 ss <-  gridExtra::tableGrob(statistics, theme=gridExtra::ttheme_minimal())
 
 # Creating the .pdf file
-grDevices::pdf("IgnoranceMap.pdf", onefile = TRUE)
-p1
-p2
-p3
-p4
+grDevices::pdf("Ignorance_output.pdf", onefile = TRUE)
+print(p1)
+print(p2)
+print(p3)
+print(p4)
 plot(ss)
 grDevices::dev.off()
 

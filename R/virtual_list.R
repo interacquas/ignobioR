@@ -172,7 +172,6 @@ number_included_species <- max(included_species)
 TA<- sp::geometry(data_flor_planar)
 sapply(sp::over(site_3035, TA, returnList = FALSE), length)
 
-
 # Drafting the VFL
 print("[1/X] Drafting the Virtual Floristic List")
 listing_time_START <- Sys.time() # record the starting time of the analysis
