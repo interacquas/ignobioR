@@ -204,7 +204,9 @@ if(cont==0) {
     sp::plot(data_flor_buffer, add=TRUE, col="red") 
     
     sp::plot(site_3035, main="Buffers deriving from spatial uncertainty")
-    sp::plot(overlayXYT, add=TRUE, col="red")}
+    sp::plot(overlayXYT, add=TRUE, col="red")
+    }
+  par(mfrow=c(1,1))  
 
   # Spatial probability
   overlayXYT$p_occurrence_spatial <- overlayXYT$area_intersection/overlayXYT$area_buffer
