@@ -127,7 +127,7 @@ if(is.null(excl_areas)==TRUE) {print("No unsuitable areas provided")
                                  {print("Unsiuitable areas provided")
                                   cont <- 1}
 
-print("[1/X] Preparing spatial objects!")
+print("Preparing spatial objects!")
 
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
@@ -173,7 +173,7 @@ TA<- sp::geometry(data_flor_planar)
 sapply(sp::over(site_3035, TA, returnList = FALSE), length)
 
 # Drafting the VFL
-print("[1/X] Drafting the Virtual Floristic List")
+print("Drafting the Virtual Floristic List")
 listing_time_START <- Sys.time() # record the starting time of the analysis
 
 # Subsetting the ‘SpatialPolygonDataframe’ with buffers using dataframe 'result' (i.e. select occurrence records which intersect the study area)

@@ -168,7 +168,7 @@ print("Creating an empty raster")
 filter_buffer <- result$record
 empty <- data_flor_buffer[filter_buffer, ]
 
-sp::plot(empty, main="buffers filtered")
+sp::plot(empty, main="Buufers intersecting the study area")
 sp::plot(site_3035, add=TRUE)
 
 r <- raster::raster()
@@ -250,13 +250,6 @@ names <-c("Started", "Finished", "Elapsed time", "CRS", "Cell size (Km)", "100 y
 values <- c(as.character(start_time), as.character(end_time), end_time-start_time, CRS.new, cellsize/1000, tau,
             nrow(points_INS), nrow(DF), round(median(DF$uncertainty)), median(DF$year))
 statistics <- as.data.frame(cbind(names, values))
-statistics
-
-
-sp::plot(data_flor_buffer)
-
-sp::plot(r, add=TRUE)
-
 
 #### Producing the images to export #####
 
