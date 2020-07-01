@@ -13,7 +13,7 @@ library(ignobioR)
 
 data(floratus)
 
-data(site)
+data(park)
 
 
 ignorance_map(data_flor=datashort, site=site, tau=20, cellsize=2000)
