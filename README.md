@@ -16,9 +16,9 @@ data(floratus)
 data(park)
 
 
-ignorance_map(data_flor=datashort, site=site, tau=20, cellsize=2000)
+ignorance_map(data_flor=floratus, site=park, tau=20, cellsize=2000)
 
-virtual_list(data_flor=datashort, site=site, tau=20)
+virtual_list(data_flor=floratus, site=park, tau=20)
 
 
 
