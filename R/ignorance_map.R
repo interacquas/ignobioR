@@ -55,8 +55,8 @@ ignorance_map <- function(data_flor, site, year_study=NULL, excl_areas=NULL, CRS
   start_time <- Sys.time() ## starting time
   raster::crs(site) <- sp::CRS("+init=epsg:4326")
   CRS.new <- paste0("+init=epsg:", CRS.new)
-  print(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
-  print(paste0("Chosen tau:", " ", tau))
+  message(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
+  message(paste0("Chosen tau:", " ", tau))
   
 ignorance_species <- function(dfOBJ) {
   ###### Create buffers having radius = 'uncertainty'
@@ -100,12 +100,12 @@ ignorance_species <- function(dfOBJ) {
 } # define the core function
 
 if(is.null(excl_areas)==TRUE)
-  {print("No unsuitable areas provided")
-  cont <- 0} else {print("Unsuitable areas provided. Plotting")
+  {message("No unsuitable areas provided")
+  cont <- 0} else {message("Unsuitable areas provided. Plotting")
                    sp::plot(site)
                    cont <- 1}
 
-print("Creating spatial objects")
+message("Creating spatial objects")
 
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
@@ -134,7 +134,7 @@ data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$unc
 sp::plot(data_flor_buffer, main="Plot buffers")
 
 ##### Plot intermediate steps
-print("Plotting")
+message("Plotting")
 
 if(cont==1)
 {
@@ -150,7 +150,7 @@ if(cont==1)
   sp::plot(points_3035, add=TRUE, col="blue")
 }
 
-print("Filtering occurrence records having buffers intersecting the study area")
+message("Filtering occurrence records having buffers intersecting the study area")
 result <- raster::intersect(data_flor_buffer, site_3035)
 DF <- as.data.frame(result)
 
@@ -163,7 +163,7 @@ list <- unique(DF$Taxon)
 list <- as.vector(list)
 
 # Create an empty raster
-print("Creating an empty raster")
+message("Creating an empty raster")
 
 filter_buffer <- result$record
 empty <- data_flor_buffer[filter_buffer, ]
@@ -182,11 +182,11 @@ raster::values(r) <- 1:raster::ncell(r)
 r2 <- r
 r2[]<-NA
 
-print("Calculating species richness per cell")
+message("Calculating species richness per cell")
 rich <- raster::rasterize(data_flor_planar, r, 'Taxon', function(x, ...) length(unique(na.omit(x))))
 rich[is.na(rich)] <- 0
 
-print("Preparing preliminary data to draft the Map of Floristic Ignorance")
+message("Preparing preliminary data to draft the Map of Floristic Ignorance")
 included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
 number_included_species <- max(included_species)
 TA2<- sp::geometry(data_flor_planar)
@@ -195,7 +195,7 @@ sapply(sp::over(site_3035, TA2, returnList = FALSE), length)
 cl <- parallel::makeCluster(parallel::detectCores()-1) #### to perform a parallel computing
 doSNOW::registerDoSNOW(cl)
 
-print("Drafting the Map of Floristic Ignorance!")
+message("Drafting the Map of Floristic Ignorance!")
 pb <- utils::txtProgressBar(min = 0, max = length(list), style = 3) # progress bar
 progress <- function(n) utils::setTxtProgressBar(pb, n)
 opts <- base::list(progress = progress)
@@ -214,7 +214,7 @@ close(pb)
 parallel::stopCluster(cl)
 
 #####
-print("Almost done. Preparing outputs")
+message("Almost done. Preparing outputs")
 
 #### Sum the single rasters
 base::names(raster_stack) <- list
@@ -335,23 +335,23 @@ grDevices::dev.off()
 # Write to file the raster of the ‘Map of Floristic Ignorance’ and a .csv file listing the taxa considered to draft the map
 raster::writeRaster(raster_new, filename = "MAPignorance", format="GTiff", overwrite=TRUE)
 utils::write.csv(list, row.names=FALSE, "Taxa considered to compute the Floristic Ignorance Map.csv")
-print(paste0("Done! The files have been saved here", getwd()))
+message(paste0("Done! The files have been saved here", getwd()))
 
 ### Print images
-print("Plot Map of Flositic Ignorance (MFI)")
+message("Plot Map of Flositic Ignorance (MFI)")
 print(p1)
 
-print("Plot tradional richness Map")
+message("Plot tradional richness Map")
 
 print(p2)
 
-print("Plot Occurrence uncertainties distribution")
+message("Plot Occurrence uncertainties distribution")
 print(p3)
 
-print("Plot Occurrence dates distribution")
+message("Plot Occurrence dates distribution")
 print(p4)
 
-print("Statistics")
+message("Statistics")
 plot(ss)
 
 # Save into a list

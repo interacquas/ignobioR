@@ -51,7 +51,7 @@ virtual_list<-function(data_flor,site,year_study=NULL,excl_areas=NULL,CRS.new = 
 start_time <- Sys.time() ## starting time
 raster::crs(site) <- sp::CRS("+init=epsg:4326")
 CRS.new <- paste0("+init=epsg:",CRS.new)
-print(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
+message(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
 
 probsptemp_species <- function(specie) {
   only_spatiotemporal_nintersect <- c(NA)
@@ -122,12 +122,12 @@ probsptemp_species <- function(specie) {
   return(data)
 } # Define the core function
 
-if(is.null(excl_areas)==TRUE) {print("No unsuitable areas provided")
+if(is.null(excl_areas)==TRUE) {message("No unsuitable areas provided")
                                cont <- 0} else
-                                 {print("Unsiuitable areas provided")
+                                 {message("Unsiuitable areas provided")
                                   cont <- 1}
 
-print("Preparing spatial objects!")
+message("Preparing spatial objects!")
 
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
@@ -173,7 +173,7 @@ TA<- sp::geometry(data_flor_planar)
 sapply(sp::over(site_3035, TA, returnList = FALSE), length)
 
 # Drafting the VFL
-print("Drafting the Virtual Floristic List")
+message("Drafting the Virtual Floristic List")
 listing_time_START <- Sys.time() # record the starting time of the analysis
 
 # Subsetting the ‘SpatialPolygonDataframe’ with buffers using dataframe 'result' (i.e. select occurrence records which intersect the study area)
@@ -242,7 +242,7 @@ output[c("Estimated_Spatiotemporal_probability", "Max_probability", "Min_probabi
 
 listing_time_FIN <- Sys.time()
 
-print(paste0("Virtual floristic List drafting time:", round(as.numeric(difftime(time1 = listing_time_FIN, time2 = listing_time_START, units = "mins")), 5), " minutes"))
+message(paste0("Virtual floristic List drafting time:", round(as.numeric(difftime(time1 = listing_time_FIN, time2 = listing_time_START, units = "mins")), 5), " minutes"))
 
 # FINAL STEPS
 
