@@ -16,9 +16,9 @@ data(floratus)
 data(park)
 
 
-ignorance_map(data_flor=floratus, site=park, tau=20, cellsize=2000)
+mfi <- ignorance_map(data_flor=floratus, site=park, tau=20, cellsize=2000) # draft the Map of Floristic Ignorance
 
-virtual_list(data_flor=floratus, site=park, tau=20)
+vfl <- virtual_list(data_flor=floratus, site=park, tau=20) # draft the Virtual floristic List 
 
 
 
