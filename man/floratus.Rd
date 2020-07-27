@@ -3,7 +3,7 @@
 \docType{data}
 \name{floratus}
 \alias{floratus}
-\title{Dataframe with 80,000 occurrence records for Tuscany region}
+\title{Floristic occurrence records for Tuscany region}
 \format{
 A data frame with 80,000 rows and 5 variables:
 \describe{
@@ -15,13 +15,13 @@ A data frame with 80,000 rows and 5 variables:
 }
 }
 \source{
-\url{http://www.diamondse.info/}
+\url{http://bot.biologia.unipi.it/wpb/toscana/index.html; https://www.gbif.org/}
 }
 \usage{
 floratus
 }
 \description{
-A dataset containing the prices and other attributes of almost 54,000
+A dataset containing 80,000 florsitic occurrence records for Tuscany
 diamonds.
 }
 \keyword{datasets}

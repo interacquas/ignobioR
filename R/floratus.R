@@ -1,6 +1,6 @@
-#' Dataframe with 80,000 occurrence records for Tuscany region
+#' Floristic occurrence records for Tuscany region
 #'
-#' A dataset containing the prices and other attributes of almost 54,000
+#' A dataset containing 80,000 florsitic occurrence records for Tuscany
 #' diamonds.
 #'
 #' @format A data frame with 80,000 rows and 5 variables:
@@ -11,5 +11,5 @@
 #'   \item{uncertainty}{radius of the uncertainty buffer from the occurrence geographic position, in metres}
 #'   \item{year}{the year of the occurrence}
 #' }
-#' @source \url{http://www.diamondse.info/}
+#' @source \url{http://bot.biologia.unipi.it/wpb/toscana/index.html; https://www.gbif.org/}
 "floratus"
