@@ -73,7 +73,8 @@ ignorance_species <- function(dfOBJ) {
   spt_scor <- c()
   for (i in 1:length(xy)) {
     spt_scor[[i]] <- length(xy[[i]])
-  }
+    spt_scor <- unlist(spt_scor)
+    }
   DDF_buffer@data$spatial_score <- 1/spt_scor
 
   #### Temporal probability
@@ -112,7 +113,7 @@ data_flor_planar <- data_flor
 data_flor_planar$record <- 1:nrow(data_flor_planar)
 
 xy <- data_flor_planar[,c(2,3)]
-ttt <- sp::CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
+ttt <- sp::CRS("+init=epsg:4326")
 data_flor_planar <- sp::SpatialPointsDataFrame(coords = xy, data = data_flor_planar, proj4string = ttt)
 
 if(cont==1)
@@ -177,7 +178,7 @@ raster::xmax(r) <- max(empty@bbox[1,2]) + max(data_flor$uncertainty)
 raster::ymin(r) <- min(empty@bbox[2,1]) - max(data_flor$uncertainty)
 raster::ymax(r) <- max(empty@bbox[2,2]) + max(data_flor$uncertainty)
 raster::res(r) <- cellsize
-raster::crs(r) <- CRS.new
+raster::crs(r) <- raster::crs(site_3035) # ho modificato questa riga, controllare
 raster::values(r) <- 1:raster::ncell(r)
 r2 <- r
 r2[]<-NA
