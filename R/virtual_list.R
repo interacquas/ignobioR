@@ -82,7 +82,9 @@ probsptemp_species <- function(specie) {
     for (i in 2:l) {
 
       only_spatiotemporal_nintersect[[i-1]] <- sum(combn(v, m = i, FUN = prod))
-    }
+      only_spatiotemporal_nintersect <- unlist(only_spatiotemporal_nintersect)
+      
+      }
 
     factor_inclexcl <- c() #### apply the 'inclusione-exclusion’ principle
 
