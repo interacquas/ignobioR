@@ -1,4 +1,4 @@
-#' @title Ignorance map
+#' @title Ignorance map OKOK
 #'
 #' @description A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
 #'
