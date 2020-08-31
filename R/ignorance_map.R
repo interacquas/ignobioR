@@ -8,14 +8,14 @@
 #' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
 #' @param CRS.new he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll
 #' @param tau percentual value of taxa loss in 100 years time-span (see below for further details)
-#' @param cellsize the resolution of the ignorance map in meters
+#' @param cellsize the resolution of the ignorance map (in meters)
 #' 
 #' @return A list with 4 objects:
 #' \itemize{
 ##'  \item{"MFI"}{ The Map of Floristic Ignorance}
 ##'  \item{"RICH"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
 ##'  \item{"uncertainties"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
-##'  \item{"Statistics"}{ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx}
+##'  \item{"Statistics"}{ A table summarising the settings used to draft the Map of Florstic Ignorance}
 ##' }
 #' @export
 #' @examples \dontrun{
@@ -23,7 +23,7 @@
 #' data(park)
 #' data(unsuitablezone)
 #' 
-#' ignorance_map(data_flor=datashort, excl_areas=unsuitablezone,site=site, tau=20, cellsize=10000)
+#' ignorance_map(data_flor= datashort, excl_areas= unsuitablezone,site=site, tau= 20, cellsize= 10000)
 #' }
 
 
@@ -38,7 +38,7 @@ ignorance_map <- function(data_flor, site, year_study=NULL, excl_areas=NULL, CRS
   
   if (max(data_flor$year) > year_study) 
   {
-    stop("Some occurrence dates are more recent than the year of the study")
+    message("CAUTION! Some occurrence dates are more recent than the year of the study")
   }
   
   if (tau < 0 | tau >= 100) 
@@ -55,6 +55,11 @@ ignorance_map <- function(data_flor, site, year_study=NULL, excl_areas=NULL, CRS
   start_time <- Sys.time() ## starting time
   raster::crs(site) <- sp::CRS("+init=epsg:4326")
   CRS.new <- paste0("+init=epsg:", CRS.new)
+  message()
+  message("##############################################################################################")
+  message("Please be patient. The process can be very slow, dependeing on the amount of records provided")
+  message("##############################################################################################")
+  message()
   message(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
   message(paste0("Chosen tau:", " ", tau))
   
@@ -119,9 +124,9 @@ data_flor_planar <- sp::SpatialPointsDataFrame(coords = xy, data = data_flor_pla
 if(cont==1)
 {
   raster::crs(excl_areas) <- sp::CRS("+init=epsg:4326")
-  # Crop the shapefile of the seas with study area
+  # Crop the study area shapefile using unsuitable areas
   excl_areas <- raster::crop(excl_areas, raster::extent(data_flor_planar))
-  excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
+  excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # conversion to new CRS
   }
 
 data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
@@ -132,23 +137,21 @@ data_flor_planar$long <- data_flor_planar@coords[,1]
 
 # Apply for cycle to taxa having buffer intersecting with the polygon of the study area
 data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
-sp::plot(data_flor_buffer, main="Plot buffers")
 
 ##### Plot intermediate steps
 message("Plotting")
 
 if(cont==1)
 {
-  sp::plot(data_flor_buffer, main="XXXXXXXXXXXXX")
-  sp::plot(site_3035, add=TRUE)
-  sp::plot(excl_areas_3035, add =TRUE, border="red",lty =2)
-  sp::plot(points_3035, add=TRUE, col="blue")
-
+  sp::plot(data_flor_buffer, border="darkgrey", main="Floristic records provided")
+  sp::plot(site_3035, add=TRUE, col="red")
+  sp::plot(excl_areas_3035, add =TRUE, border="blue",lty =2)
+  sp::plot(points_3035, cex= 0.2, pch=20, add=TRUE, col="darkgrey")
 
 } else {
-  sp::plot(data_flor_buffer, main="XXXXXXXXXXXXXXXXXXX")
-  sp::plot(site_3035, add=TRUE)
-  sp::plot(points_3035, add=TRUE, col="blue")
+  sp::plot(data_flor_buffer, border="darkgrey", main="Floristic records provided")
+  sp::plot(site_3035, col="red", add=TRUE)
+  sp::plot(points_3035, cex=0.2, pch=20, add=TRUE, col="darkgrey")
 }
 
 message("Filtering occurrence records having buffers intersecting the study area")
@@ -169,7 +172,7 @@ message("Creating an empty raster")
 filter_buffer <- result$record
 empty <- data_flor_buffer[filter_buffer, ]
 
-sp::plot(empty, main="Buufers intersecting the study area")
+sp::plot(empty, border="darkgrey", lty=3, main="Buffers intersecting the study area")
 sp::plot(site_3035, add=TRUE)
 
 r <- raster::raster()

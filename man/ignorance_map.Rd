@@ -27,7 +27,7 @@ ignorance_map(
 
 \item{tau}{percentual value of taxa loss in 100 years time-span (see below for further details)}
 
-\item{cellsize}{the resolution of the ignorance map in meters}
+\item{cellsize}{the resolution of the ignorance map (in meters)}
 }
 \value{
 A list with 4 objects:
@@ -35,7 +35,7 @@ A list with 4 objects:
  \item{"MFI"}{ The Map of Floristic Ignorance}
  \item{"RICH"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
  \item{"uncertainties"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
- \item{"Statistics"}{ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx}
+ \item{"Statistics"}{ A table summarising the settings used to draft the Map of Florstic Ignorance}
 }
 }
 \description{
@@ -47,6 +47,6 @@ data(floratus)
 data(park)
 data(unsuitablezone)
 
-ignorance_map(data_flor=datashort, excl_areas=unsuitablezone,site=site, tau=20, cellsize=10000)
+ignorance_map(data_flor= datashort, excl_areas= unsuitablezone,site=site, tau= 20, cellsize= 10000)
 }
 }
