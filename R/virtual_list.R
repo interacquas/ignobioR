@@ -1,4 +1,4 @@
-#' @title Virtual floritic lit (VFL)
+#' @title Virtual floristic list (VFL)
 #'
 #' @description A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
 #'
@@ -146,7 +146,7 @@ if(cont==1)
   # Crop the shapefile of the seas with study area
   excl_areas <- raster::crop(excl_areas, raster::extent(data_flor_planar))
   excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
-  sp::plot(excl_areas_3035, col="red", main="Area of exclusion uploaded!")
+  sp::plot(excl_areas_3035, col="red", alpha=0.4, main="Area of exclusion uploaded!")
   }
 
 

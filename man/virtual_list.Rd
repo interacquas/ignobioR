@@ -2,7 +2,7 @@
 % Please edit documentation in R/virtual_list.R
 \name{virtual_list}
 \alias{virtual_list}
-\title{vfl}
+\title{Virtual floristic list (VFL)}
 \usage{
 virtual_list(
   data_flor,
