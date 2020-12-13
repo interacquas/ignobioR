@@ -256,7 +256,7 @@ output2 <- output[(output$Estimated_Spatiotemporal_probability>0),]
 
 #2 Order taxa by alphabetical order
 output3 <- output2[order(output2$taxon, -output2$Estimated_Spatiotemporal_probability, -output2$Max_probability),]
-print("ciao")
+print("ciao2")
 
 #3 Store into environment and save the .csv file
 
