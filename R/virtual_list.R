@@ -140,19 +140,24 @@ ttt <- sp::CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 data_flor_planar <- sp::SpatialPointsDataFrame(coords = xy, data = data_flor_planar,
                                proj4string = ttt)
 
+
+site_3035 <- sp::spTransform(site, CRS.new)
+
+
 if(cont==1)
 {
   raster::crs(excl_areas) <- sp::CRS("+init=epsg:4326")
   # Crop the shapefile of the seas with study area
   excl_areas <- raster::crop(excl_areas, raster::extent(data_flor_planar))
   excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
-  sp::plot(excl_areas_3035, col="red", alpha=0.4, main="Area of exclusion uploaded!")
+  sp::plot(site_3035, lwd = 2, border="black", main="Buffers (spatial uncertainty)")
+  sp::plot(excl_areas_3035, add=TRUE, col=rgb(1,0,0, 0.2), main="Area of exclusion uploaded!")
+ 
+  
   }
-
 
 data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
 points_3035 <- data_flor_planar
-site_3035 <- sp::spTransform(site, CRS.new)
 data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
 data_flor_planar$lat <- data_flor_planar@coords[,2]
 data_flor_planar$long <- data_flor_planar@coords[,1]
@@ -199,15 +204,17 @@ overlayXYT$area_intersection = sapply(slot(overlayXYT, "polygons"), slot, "area"
 #Plot buffers and study area
 
 if(cont==0) {    
-  sp::plot(site_3035, main="Buffers deriving from spatial uncertainty")
-  sp::plot(df_spt, add=TRUE, col="red") } 
+  sp::plot(site_3035, lwd = 2, border="red", main="Buffers (spatial uncertainty)")
+  sp::plot(df_spt, add=TRUE, col=rgb(0,0,1, 0.2), lty=2) } 
   else {
     par(mfrow=c(1,2))
-    sp::plot(site_3035, main="Buffers deriving from spatial uncertainty")
-    sp::plot(data_flor_buffer, add=TRUE, col="red") 
+    sp::plot(site_3035, main="Buffers (spatial uncertainty)")
+    sp::plot(data_flor_buffer, add=TRUE, col=rgb(0,0,1, 0.2), lty=2) 
     
-    sp::plot(site_3035, main="Buffers deriving from spatial uncertainty")
-    sp::plot(overlayXYT, add=TRUE, col="red")
+    sp::plot(site_3035, main="Intersection (+ area of axclusion)")
+    sp::plot(overlayXYT, add=TRUE, col=rgb(0,0,1, 0.2), lty=2)
+    sp::plot(excl_areas_3035, add=TRUE, col=rgb(1,0,0, 0.2), lty=2)
+    
     }
   par(mfrow=c(1,1))  
 
@@ -256,7 +263,6 @@ output2 <- output[(output$Estimated_Spatiotemporal_probability>0),]
 
 #2 Order taxa by alphabetical order
 output3 <- output2[order(output2$taxon, -output2$Estimated_Spatiotemporal_probability, -output2$Max_probability),]
-print("ciao2")
 
 #3 Store into environment and save the .csv file
 
