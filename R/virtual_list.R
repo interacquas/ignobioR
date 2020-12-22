@@ -152,9 +152,7 @@ if(cont==1)
   excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
   sp::plot(site_3035, lwd = 2, border="black", main="Buffers (spatial uncertainty)")
   sp::plot(excl_areas_3035, add=TRUE, col=rgb(1,0,0, 0.2), main="Area of exclusion uploaded!")
- 
-  
-  }
+   }
 
 data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
 points_3035 <- data_flor_planar
