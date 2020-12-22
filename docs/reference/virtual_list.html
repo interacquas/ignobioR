@@ -6,13 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>vfl — virtual_list • ignobioR</title>
+<title>Virtual floristic list (VFL) — virtual_list • ignobioR</title>
+
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
@@ -36,10 +38,9 @@
 
 
 
-<meta property="og:title" content="vfl — virtual_list" />
 
+<meta property="og:title" content="Virtual floristic list (VFL) — virtual_list" />
 <meta property="og:description" content="A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon" />
-
 
 
 
@@ -99,7 +100,6 @@
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
@@ -115,27 +115,25 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>vfl</h1>
+    <h1>Virtual floristic list (VFL)</h1>
     
     <div class="hidden name"><code>virtual_list.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    
     <p>A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>virtual_list</span>(
-  <span class='no'>data_flor</span>,
-  <span class='no'>site</span>,
-  <span class='kw'>year_study</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>excl_areas</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>CRS.new</span> <span class='kw'>=</span> <span class='fl'>3035</span>,
-  <span class='no'>tau</span>,
-  <span class='kw'>upperlimit</span> <span class='kw'>=</span> <span class='fl'>20</span>
-)</pre>
-    
+    <pre class="usage"><span class='fu'>virtual_list</span><span class='op'>(</span>
+  <span class='va'>data_flor</span>,
+  <span class='va'>site</span>,
+  year_study <span class='op'>=</span> <span class='cn'>NULL</span>,
+  excl_areas <span class='op'>=</span> <span class='cn'>NULL</span>,
+  CRS.new <span class='op'>=</span> <span class='fl'>3035</span>,
+  <span class='va'>tau</span>,
+  upperlimit <span class='op'>=</span> <span class='fl'>20</span>
+<span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -168,26 +166,26 @@
       <td><p>maximum number of floristic records for a given taxon managed by the algorithm to compute the VFL. You can increase this number; a number between 20 and 30 is suggested. Then, the algorithm considers only the n most relevant, in terms of probability, occurrence records</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>an object of class list with X slots:</p><ul>
-<li><p>"The virtual floristic list"bla bla bla</p></li>
+<li><p>"The virtual floristic list"A dataframe</p></li>
 <li><p>"Statistics"bla bla bla</p></li>
 </ul>
 
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>floratus</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>park</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>unsuitablezone</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>floratus</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>park</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>unsuitablezone</span><span class='op'>)</span>
 
-<span class='fu'>virtual_list</span>(<span class='kw'>data_flor</span><span class='kw'>=</span><span class='no'>datashort</span>, <span class='kw'>site</span><span class='kw'>=</span><span class='no'>site</span>, <span class='kw'>excl_areas</span><span class='kw'>=</span><span class='no'>unsuitablezone</span>, <span class='kw'>tau</span><span class='kw'>=</span><span class='fl'>30</span>, <span class='kw'>upperlimit</span><span class='kw'>=</span><span class='fl'>25</span>)
+<span class='fu'>virtual_list</span><span class='op'>(</span>data_flor<span class='op'>=</span><span class='va'>datashort</span>, site<span class='op'>=</span><span class='va'>site</span>, excl_areas<span class='op'>=</span><span class='va'>unsuitablezone</span>, tau<span class='op'>=</span><span class='fl'>30</span>, upperlimit<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span>
 
-}</div></pre>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -203,7 +201,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

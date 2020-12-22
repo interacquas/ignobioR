@@ -8,11 +8,13 @@
 
 <title>Ignorance map — ignorance_map • ignobioR</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
@@ -36,10 +38,9 @@
 
 
 
+
 <meta property="og:title" content="Ignorance map — ignorance_map" />
-
 <meta property="og:description" content="A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon" />
-
 
 
 
@@ -99,7 +100,6 @@
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
@@ -121,21 +121,19 @@
     </div>
 
     <div class="ref-description">
-    
     <p>A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>ignorance_map</span>(
-  <span class='no'>data_flor</span>,
-  <span class='no'>site</span>,
-  <span class='kw'>year_study</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>excl_areas</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>CRS.new</span> <span class='kw'>=</span> <span class='fl'>3035</span>,
-  <span class='no'>tau</span>,
-  <span class='no'>cellsize</span>
-)</pre>
-    
+    <pre class="usage"><span class='fu'>ignorance_map</span><span class='op'>(</span>
+  <span class='va'>data_flor</span>,
+  <span class='va'>site</span>,
+  year_study <span class='op'>=</span> <span class='cn'>NULL</span>,
+  excl_areas <span class='op'>=</span> <span class='cn'>NULL</span>,
+  CRS.new <span class='op'>=</span> <span class='fl'>3035</span>,
+  <span class='va'>tau</span>,
+  <span class='va'>cellsize</span>
+<span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -165,29 +163,29 @@
     </tr>
     <tr>
       <th>cellsize</th>
-      <td><p>the resolution of the ignorance map in meters</p></td>
+      <td><p>the resolution of the ignorance map (in meters)</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A list with 4 objects:</p><ul>
 <li><p>"MFI" The Map of Floristic Ignorance</p></li>
 <li><p>"RICH" The corresponding map computed without taking into account spatial and temporal uncertainties</p></li>
 <li><p>"uncertainties" The corresponding map computed without taking into account spatial and temporal uncertainties</p></li>
-<li><p>"Statistics" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx</p></li>
+<li><p>"Statistics" A table summarising the settings used to draft the Map of Florstic Ignorance</p></li>
 </ul>
 
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>floratus</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>park</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>unsuitablezone</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>floratus</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>park</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>unsuitablezone</span><span class='op'>)</span>
 
-<span class='fu'>ignorance_map</span>(<span class='kw'>data_flor</span><span class='kw'>=</span><span class='no'>datashort</span>, <span class='kw'>excl_areas</span><span class='kw'>=</span><span class='no'>unsuitablezone</span>,<span class='kw'>site</span><span class='kw'>=</span><span class='no'>site</span>, <span class='kw'>tau</span><span class='kw'>=</span><span class='fl'>20</span>, <span class='kw'>cellsize</span><span class='kw'>=</span><span class='fl'>10000</span>)
-}</div></pre>
+<span class='fu'>ignorance_map</span><span class='op'>(</span>data_flor<span class='op'>=</span> <span class='va'>datashort</span>, excl_areas<span class='op'>=</span> <span class='va'>unsuitablezone</span>,site<span class='op'>=</span><span class='va'>site</span>, tau<span class='op'>=</span> <span class='fl'>20</span>, cellsize<span class='op'>=</span> <span class='fl'>10000</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -203,7 +201,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
