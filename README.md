@@ -23,7 +23,7 @@ vfl <- virtual_list(data_flor=floratus, site=park, tau=20) # draft the Virtual f
 
 # The Authors
 
-Marco D'Antraccoli, University of Pisa,  Botanic garden and Museum (marco.dantraccoli@unipi.it)
+Marco D'Antraccoli, University of Pisa,  Botanic Garden and Museum (marco.dantraccoli@unipi.it)
 
 Gianni Bedini, University of Pisa, Department of Biology
 
