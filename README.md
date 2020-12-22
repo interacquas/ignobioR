@@ -21,6 +21,13 @@ mfi <- ignorance_map(data_flor=floratus, site=park, tau=20, cellsize=2000) # dra
 vfl <- virtual_list(data_flor=floratus, site=park, tau=20) # draft the Virtual floristic List 
 
 
+# The Authors
+
+Marco D'Antraccoli, University of Pisa,  Botanic Garden and Museum (marco.dantraccoli@unipi.it)
+
+Gianni Bedini, University of Pisa, Department of Biology
+
+Lorenzo Peruzzi, University of Pisa, Department of Biology
 
 
 # Please check our Vignette
