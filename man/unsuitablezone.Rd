@@ -13,6 +13,6 @@ A polygon of class SpatialPolygonsDataFrame having CRS "+init=epsg:4326"
 unsuitablezone
 }
 \description{
-Areas in which records cannot occur due to a given reason kwown by the user
+Areas in which records cannot occur due to a given reason (according to the user decision).
 }
 \keyword{datasets}

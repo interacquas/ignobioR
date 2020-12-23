@@ -3,16 +3,16 @@
 \docType{data}
 \name{park}
 \alias{park}
-\title{Boundaries of the Migliarino-San Rossore-Massaciuccoli Regional Park (Italy)}
+\title{Boundaries of the Migliarino-San Rossore-Massaciuccoli Regional Park (Tuscany, Italy)}
 \format{
-A polygon of class SpatialPolygonsDataFrame having CRS "+init=epsg:4326"
-\describe{
+A polygon of class 'SpatialPolygonsDataFrame' having CRS "+init=epsg:4326"
+\describe{The study area of the example
  }
 }
 \usage{
 park
 }
 \description{
-Qui ci va la descrizione!
+The study area of the example provided
 }
 \keyword{datasets}
