@@ -23,7 +23,7 @@
 #' data(park)
 #' data(unsuitablezone)
 #' 
-#' ignorance_map(data_flor= datashort, excl_areas= unsuitablezone,site=site, tau= 20, cellsize= 10000)
+#' ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 10000)
 #' }
 
 
