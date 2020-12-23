@@ -23,7 +23,7 @@ ignorance_map(
 
 \item{excl_areas}{a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326}
 
-\item{CRS.new}{he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll}
+\item{CRS.new}{the new Coordinate Reference System. Note: must be a projected CRS. Default =}
 
 \item{tau}{percentual value of taxa loss in 100 years time-span (see below for further details)}
 
@@ -32,10 +32,10 @@ ignorance_map(
 \value{
 A list with 4 objects:
 \itemize{
- \item{"MFI"}{ The Map of Floristic Ignorance}
- \item{"RICH"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
- \item{"uncertainties"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
- \item{"Statistics"}{ A table summarising the settings used to draft the Map of Florstic Ignorance}
+ \item{"MFI"}{ the Map of Floristic Ignorance}
+ \item{"RICH"}{ the corresponding map computed without taking into account spatial and temporal uncertainties}
+ \item{"uncertainties"}{ the corresponding map computed without taking into account spatial and temporal uncertainties}
+ \item{"Statistics"}{ a table summarising the settings used to draft the Map of Florstic Ignorance}
 }
 }
 \description{

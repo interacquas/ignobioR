@@ -49,6 +49,7 @@ virtual_list<-function(data_flor, site, year_study = NULL, excl_areas = NULL, CR
 # Preliminary steps
   
 start_time <- Sys.time() ## starting time
+set_thin_PROJ6_warnings(TRUE)
 raster::crs(site) <- sp::CRS("+init=epsg:4326")
 CRS.new <- paste0("+init=epsg:",CRS.new)
 message(paste0("Chosen Coordinate Reference System:", " ", CRS.new))

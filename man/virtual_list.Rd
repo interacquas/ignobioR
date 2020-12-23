@@ -23,7 +23,7 @@ virtual_list(
 
 \item{excl_areas}{a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326}
 
-\item{CRS.new}{the new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll}
+\item{CRS.new}{the new Coordinate Reference System. Note: must be in a projected CRS. Default =}
 
 \item{tau}{percentual value of taxa loss in 100 years time-span (see below for further details)}
 
@@ -33,7 +33,7 @@ virtual_list(
 an object of class list with X slots:
 \itemize{
  \item{"The virtual floristic list"}{A dataframe}
- \item{"Statistics"}{bla bla bla}
+ \item{"Statistics"}{A set of summarising statistics of the }
 }
 }
 \description{
@@ -46,7 +46,7 @@ data(floratus)
 data(park)
 data(unsuitablezone)
 
-virtual_list(data_flor=datashort, site=site, excl_areas=unsuitablezone, tau=30, upperlimit=25)
+virtual_list(data_flor = datashort, site = park, excl_areas = unsuitablezone, tau = 30, upperlimit = 25)
 
 }
 }
