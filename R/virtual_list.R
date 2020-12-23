@@ -22,11 +22,11 @@
 #' data(park)
 #' data(unsuitablezone)
 #' 
-#' virtual_list(data_flor=datashort, site=site, excl_areas=unsuitablezone, tau=30, upperlimit=25)
+#' virtual_list(data_flor=datashort, site=site, excl_areas=unsuitablezone, tau = 30, upperlimit = 25)
 #' 
 #' }
 
-virtual_list<-function(data_flor,site,year_study=NULL,excl_areas=NULL,CRS.new = 3035, tau, upperlimit=20){
+virtual_list<-function(data_flor,site,year_study=NULL,excl_areas=NULL, CRS.new = 3035, tau, upperlimit=20){
 
 
   ################## Check for settings ##################

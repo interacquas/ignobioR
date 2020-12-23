@@ -12,10 +12,10 @@
 #' 
 #' @return A list with 4 objects:
 #' \itemize{
-##'  \item{"MFI"}{ The Map of Floristic Ignorance}
-##'  \item{"RICH"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
-##'  \item{"uncertainties"}{ The corresponding map computed without taking into account spatial and temporal uncertainties}
-##'  \item{"Statistics"}{ A table summarising the settings used to draft the Map of Florstic Ignorance}
+##'  \item{"MFI"}{ the Map of Floristic Ignorance}
+##'  \item{"RICH"}{ the corresponding map computed without taking into account spatial and temporal uncertainties}
+##'  \item{"uncertainties"}{ the corresponding map computed without taking into account spatial and temporal uncertainties}
+##'  \item{"Statistics"}{ a table summarising the settings used to draft the Map of Florstic Ignorance}
 ##' }
 #' @export
 #' @examples \dontrun{
@@ -177,11 +177,11 @@ empty <- data_flor_buffer[filter_buffer, ]
 if(cont==0)
 {
   sp::plot(site_3035, lwd=2,main="Intersecting buffers" )
-  sp::plot(empty, border="darkgrey", col=rgb(0,0,1, 0.2), add=TRUE, lty=3, )
+  sp::plot(empty, border="black", col=rgb(0,0,1, 0.2), add=TRUE, lty=2 )
   
 } else {
-  sp::plot(site_3035, lwd=2, main="Intersecting buffers (area of exclusion considered)")
-  sp::plot(rgeos::gDifference(empty, excl_areas_3035, byid=FALSE), border="darkgrey", col=rgb(0,0,1, 0.2), add=TRUE, lty=3)
+  sp::plot(site_3035, lwd=2, main="Intersecting buffers (Area of exclusion considered)")
+  sp::plot(rgeos::gDifference(empty, excl_areas_3035, byid=FALSE), border="black", col=rgb(0,0,1, 0.1), add=TRUE, lty=2)
   
 }
 
@@ -311,6 +311,7 @@ p2 <- ggplot2::ggplot(test_df2) + ggplot2::coord_equal() + ggplot2::theme_classi
 
 
 # Plot n° 3
+
 p3 <-  ggplot2::ggplot(DF)+
     ggplot2::aes(x = year, y = ..count../sum(..count..))+
     ggplot2::geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$year))/30)+
