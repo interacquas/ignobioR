@@ -23,7 +23,7 @@
 #' data(park)
 #' data(unsuitablezone)
 #' 
-#' ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 10000)
+#' ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)
 #' }
 
 
@@ -108,7 +108,8 @@ ignorance_species <- function(dfOBJ) {
 if(is.null(excl_areas)==TRUE)
   {message("No unsuitable areas provided")
   cont <- 0} else {message("Unsuitable areas provided. Plotting")
-                   sp::plot(site)
+                   sp::plot(excl_areas, col=rgb(1,0,0, 0.2), main="Unsuitable areas")
+                   sp::plot(site, border="black", lty=2, lwd=2, add=TRUE)
                    cont <- 1}
 
 message("Creating spatial objects")
@@ -135,7 +136,7 @@ site_3035 <- sp::spTransform(site, CRS.new)
 data_flor_planar$lat <- data_flor_planar@coords[,2]
 data_flor_planar$long <- data_flor_planar@coords[,1]
 
-# Apply for cycle to taxa having buffer intersecting with the polygon of the study area
+# Apply for cycle to taxa having buffer intersecting with the study area polygon
 data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
 
 ##### Plot intermediate steps
@@ -144,8 +145,8 @@ message("Plotting")
 if(cont==1)
 {
   sp::plot(data_flor_buffer, border="darkgrey", main="Floristic records provided")
-  sp::plot(site_3035, add=TRUE, col="red")
-  sp::plot(excl_areas_3035, add =TRUE, border="blue",lty =2)
+  sp::plot(site_3035, add=TRUE, border="black", lty=2, lwd=2)
+  sp::plot(excl_areas_3035, add =TRUE, col=rgb(1,0,0, 0.2))
   sp::plot(points_3035, cex= 0.2, pch=20, add=TRUE, col="darkgrey")
 
 } else {
@@ -172,8 +173,18 @@ message("Creating an empty raster")
 filter_buffer <- result$record
 empty <- data_flor_buffer[filter_buffer, ]
 
-sp::plot(empty, border="darkgrey", lty=3, main="Buffers intersecting the study area")
-sp::plot(site_3035, add=TRUE)
+
+if(cont==0)
+{
+  sp::plot(site_3035, lwd=2,main="Intersecting buffers" )
+  sp::plot(empty, border="darkgrey", col=rgb(0,0,1, 0.2), add=TRUE, lty=3, )
+  
+} else {
+  sp::plot(site_3035, lwd=2, main="Intersecting buffers (area of exclusion considered)")
+  sp::plot(rgeos::gDifference(empty, excl_areas_3035, byid=FALSE), border="darkgrey", col=rgb(0,0,1, 0.2), add=TRUE, lty=3)
+  
+}
+
 
 r <- raster::raster()
 raster::xmin(r) <- min(empty@bbox[1,1]) - max(data_flor$uncertainty)
@@ -355,7 +366,7 @@ print(p3)
 message("Plot Occurrence dates distribution")
 print(p4)
 
-message("Statistics")
+message("Return statistics")
 plot(ss)
 
 # Save into a list
