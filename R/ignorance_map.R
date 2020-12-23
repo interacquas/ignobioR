@@ -6,7 +6,7 @@
 #' @param site a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326
 #' @param year_study the present-year in which you perform the analysis
 #' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
-#' @param CRS.new he new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll
+#' @param CRS.new he new Coordinate Reference System. Note: must be a projected CRS. Default = 
 #' @param tau percentual value of taxa loss in 100 years time-span (see below for further details)
 #' @param cellsize the resolution of the ignorance map (in meters)
 #' 
@@ -27,7 +27,7 @@
 #' }
 
 
-ignorance_map <- function(data_flor, site, year_study=NULL, excl_areas=NULL, CRS.new=3035, tau, cellsize) {
+ignorance_map <- function(data_flor, site, year_study = NULL, excl_areas = NULL, CRS.new = 3035, tau, cellsize) {
 
   ################## Check for settings #############
   if (length(year_study) ==0) 
@@ -331,13 +331,14 @@ p4 <- ggplot2::ggplot(DF) +
   ggplot2::coord_cartesian(xlim = c(min(DF$uncertainty), max(DF$uncertainty)))+
   ggplot2::scale_y_continuous(labels = function(x) paste0(x*100, "%"))+
   ggplot2::ggtitle("Occurrence uncertainties distribution")+
-  ggplot2::xlab("Uncertainty") + ggplot2::ylab("Density")+
+  ggplot2::xlab("Uncertainty (metres)") + ggplot2::ylab("Density")+
   ggplot2::theme_classic()
 
 
 # Plot n° 5
 
-ss <-  gridExtra::tableGrob(statistics, theme=gridExtra::ttheme_minimal())
+ss <-  gridExtra::tableGrob(statistics, theme=tt2)
+#theme=gridExtra::ttheme_minimal()
 
 # Creating the .pdf file
 grDevices::pdf("Ignorance_output.pdf", onefile = TRUE)

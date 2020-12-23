@@ -6,14 +6,14 @@
 #' @param site a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326
 #' @param year_study the present-year in which you perform the analysis
 #' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
-#' @param CRS.new the new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll
+#' @param CRS.new the new Coordinate Reference System. Note: must be in a projected CRS. Default = 
 #' @param tau percentual value of taxa loss in 100 years time-span (see below for further details)
 #' @param upperlimit maximum number of floristic records for a given taxon managed by the algorithm to compute the VFL. You can increase this number; a number between 20 and 30 is suggested. Then, the algorithm considers only the n most relevant, in terms of probability, occurrence records
 #' 
 #' @return an object of class list with X slots:
 #' \itemize{
 ##'  \item{"The virtual floristic list"}{A dataframe}
-##'  \item{"Statistics"}{bla bla bla}
+##'  \item{"Statistics"}{A set of summarising statistics of the }
 ##' }
 #' @export
 #' @examples \dontrun{
@@ -22,11 +22,11 @@
 #' data(park)
 #' data(unsuitablezone)
 #' 
-#' virtual_list(data_flor=datashort, site=site, excl_areas=unsuitablezone, tau = 30, upperlimit = 25)
+#' virtual_list(data_flor = datashort, site = park, excl_areas = unsuitablezone, tau = 30, upperlimit = 25)
 #' 
 #' }
 
-virtual_list<-function(data_flor,site,year_study=NULL,excl_areas=NULL, CRS.new = 3035, tau, upperlimit=20){
+virtual_list<-function(data_flor, site, year_study = NULL, excl_areas = NULL, CRS.new = 3035, tau, upperlimit = 20){
 
 
   ################## Check for settings ##################
