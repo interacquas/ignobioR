@@ -30,7 +30,7 @@ data(unsuitablezone) # Unsuitable areas, i.e. floristic records cannot occur
 ```
 
 ```{r, include = FALSE}
-floratus <- floratus[1:1000,]
+floratus <- floratus[1:5000,]
 ```
 
 # Draft the virtual floristic list (VFL)
