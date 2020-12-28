@@ -182,7 +182,7 @@ if(cont==0)
   
 } else {
   sp::plot(site_3035, lwd=0.01, main= "Intersecting buffers (Area of exclusion considered)")
-  sp::plot(rgeos::gDifference(empty, excl_areas_3035, byid=TRUE), border="black", col=rgb(0,0,1, 0.1), add=TRUE, lty=2)
+  sp::plot(empty- excl_areas_3035, border="black", col=rgb(0,0,1, 0.1), add=TRUE, lty=2)
   sp::plot(site_3035, lwd=2, border="red", main="Intersecting buffers (Area of exclusion considered)", add=TRUE)
   
 }

@@ -95,7 +95,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/my-vignette.html">my-vignette</a>
+      <a href="../articles/my-vignette.html">ignobioR vignette</a>
     </li>
   </ul>
 </li>
@@ -155,7 +155,7 @@
     </tr>
     <tr>
       <th>CRS.new</th>
-      <td><p>the new Coordinate Reference System. Note: must be in XXXXXXXXXXXXlll</p></td>
+      <td><p>the new Coordinate Reference System. Note: must be in a projected CRS. Default =</p></td>
     </tr>
     <tr>
       <th>tau</th>
@@ -171,7 +171,7 @@
 
     <p>an object of class list with X slots:</p><ul>
 <li><p>"The virtual floristic list"A dataframe</p></li>
-<li><p>"Statistics"bla bla bla</p></li>
+<li><p>"Statistics"A set of summarising statistics of the</p></li>
 </ul>
 
 
@@ -182,7 +182,7 @@
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>park</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>unsuitablezone</span><span class='op'>)</span>
 
-<span class='fu'>virtual_list</span><span class='op'>(</span>data_flor<span class='op'>=</span><span class='va'>datashort</span>, site<span class='op'>=</span><span class='va'>site</span>, excl_areas<span class='op'>=</span><span class='va'>unsuitablezone</span>, tau<span class='op'>=</span><span class='fl'>30</span>, upperlimit<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span>
+<span class='fu'>virtual_list</span><span class='op'>(</span>data_flor <span class='op'>=</span> <span class='va'>datashort</span>, site <span class='op'>=</span> <span class='va'>park</span>, excl_areas <span class='op'>=</span> <span class='va'>unsuitablezone</span>, tau <span class='op'>=</span> <span class='fl'>30</span>, upperlimit <span class='op'>=</span> <span class='fl'>25</span><span class='op'>)</span>
 
 <span class='op'>}</span>
 </div></pre>
