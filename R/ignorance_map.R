@@ -261,7 +261,7 @@ raster_new <- x_crop*raster::raster(f2)
 end_time <- Sys.time()
 
 #### Create the dataframe storing the descriptive statistics
-names <-c("Started", "Finished", "Elapsed time", "CRS", "Cell size (Km)", "100 years % loss ratio (tau)",
+names <-c("Started", "Finished", "Elapsed time", "CRS", "Cell size (km)", "100 years % loss ratio (tau)",
           "Occurrence whithin", "Total occurrence computed", "Occurrence uncertanties (metres; median value)", "Occurrence dates (year; median value)")
 values <- c(as.character(start_time), as.character(end_time), end_time-start_time, CRS.new, cellsize/1000, tau,
             nrow(points_INS), nrow(DF), round(median(DF$uncertainty)), median(DF$year))

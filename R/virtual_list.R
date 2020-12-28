@@ -148,9 +148,7 @@ ttt <- sp::CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 data_flor_planar <- sp::SpatialPointsDataFrame(coords = xy, data = data_flor_planar,
                                proj4string = ttt)
 
-
 site_3035 <- sp::spTransform(site, CRS.new)
-
 
 if(cont==1)
 {

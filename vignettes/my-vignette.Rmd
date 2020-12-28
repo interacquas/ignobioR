@@ -2,7 +2,7 @@
 title: "ignobioR vignette"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my-vignette}
+  %\VignetteIndexEntry{ignobioR vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,8 +10,7 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
-)
+  comment = "#>", fig.width=12, fig.height=8, fig.align = "center")
 ```
 
 ```{r setup}
@@ -25,10 +24,13 @@ data(floratus) # Upload the dataset with occurrence data
 head(floratus)
 
 data(park) # Upload the study area
-data(unsuitablezone) # Unsuitable data
+data(unsuitablezone) # Unsuitable areas, i.e. floristic records cannot occur
 
-sp::plot(park)
-sp::plot(unsuitablezone, add=TRUE, col="red")
+
+```
+
+```{r, include = FALSE}
+floratus <- floratus[1:1000,]
 ```
 
 # Draft the virtual floristic list (VFL)
