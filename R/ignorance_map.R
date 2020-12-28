@@ -128,12 +128,12 @@ if(cont==1)
   raster::crs(excl_areas) <- sp::CRS("+init=epsg:4326")
   # Crop the study area shapefile using unsuitable areas
   excl_areas <- raster::crop(excl_areas, raster::extent(data_flor_planar))
-  excl_areas_3035 <- sp::spTransform(excl_areas, "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs") # conversion to new CRS
+  excl_areas_3035 <- sp::spTransform(excl_areas,CRSobj=CRS.new) # conversion to new CRS
   }
 
-data_flor_planar <- sp::spTransform(data_flor_planar, "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs")
+data_flor_planar <- sp::spTransform(data_flor_planar, CRSobj=CRS.new)
 points_3035 <- data_flor_planar
-site_3035 <- sp::spTransform(site, "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs")
+site_3035 <- sp::spTransform(site, CRSobj=CRS.new)
 data_flor_planar$lat <- data_flor_planar@coords[,2]
 data_flor_planar$long <- data_flor_planar@coords[,1]
 
