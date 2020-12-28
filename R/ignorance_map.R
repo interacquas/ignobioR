@@ -181,11 +181,11 @@ if(cont==0)
   sp::plot(empty, border="black", col=rgb(0,0,1, 0.1), add=TRUE, lty=2)
   
 } else {
-  sp::plot(site_3035, lwd=2, main="Intersecting buffers (Area of exclusion considered)")
+  sp::plot(site_3035, lwd=0.01, main= "Intersecting buffers (Area of exclusion considered)")
   sp::plot(rgeos::gDifference(empty, excl_areas_3035, byid=TRUE), border="black", col=rgb(0,0,1, 0.1), add=TRUE, lty=2)
+  sp::plot(site_3035, lwd=2, border="red", main="Intersecting buffers (Area of exclusion considered)", add=TRUE)
   
 }
-
 
 r <- raster::raster()
 raster::xmin(r) <- min(empty@bbox[1,1]) - max(data_flor$uncertainty)
@@ -378,6 +378,6 @@ rgdal::set_thin_PROJ6_warnings(FALSE)
 
 # Save into a list
 
-to2 <- list(MFI = raster_new, RICH = raster_new_rich, Uncertainties = data.frame(uncertainty= DF$uncertainty, year= DF$year) , Statistics= kable(statistics, format = "markdown", digits = 4))
+to2 <- list(MFI = raster_new, RICH = raster_new_rich, Uncertainties = data.frame(uncertainty= DF$uncertainty, year= DF$year) , Statistics= knitr::kable(statistics, format = "markdown", digits = 4))
 
 }
