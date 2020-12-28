@@ -49,7 +49,7 @@ virtual_list<-function(data_flor, site, year_study = NULL, excl_areas = NULL, CR
 # Preliminary steps
   
 start_time <- Sys.time() ## starting time
-set_thin_PROJ6_warnings(TRUE)
+rgdal::set_thin_PROJ6_warnings(TRUE)
 raster::crs(site) <- sp::CRS("+init=epsg:4326")
 CRS.new <- paste0("+init=epsg:",CRS.new)
 message(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
@@ -151,8 +151,8 @@ if(cont==1)
   # Crop the shapefile of the seas with study area
   excl_areas <- raster::crop(excl_areas, raster::extent(data_flor_planar))
   excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # CRS conversion to new CRS
-  sp::plot(site_3035, lwd = 2, border="black", main="Buffers (spatial uncertainty)")
-  sp::plot(excl_areas_3035, add=TRUE, col=rgb(1,0,0, 0.2), main="Area of exclusion uploaded!")
+  sp::plot(site_3035, lwd = 2, border="black", main="Area of exclusion uploaded!")
+  sp::plot(excl_areas_3035, add=TRUE, col=rgb(1,0,0, 0.2))
    }
 
 data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
@@ -267,6 +267,10 @@ output3 <- output2[order(output2$taxon, -output2$Estimated_Spatiotemporal_probab
 
 to <- list(VFL = output3, Statistics= data.frame(Study_year= year_study, CRS=CRS.new))
 write.csv(output3, row.names=FALSE, "Virtual floristic list.csv")
+message(paste0("Done! The files have been saved here: ", getwd()))
+
+
+rgdal::set_thin_PROJ6_warnings(FALSE)
 return(to)
 
 }

@@ -53,7 +53,7 @@ ignorance_map <- function(data_flor, site, year_study = NULL, excl_areas = NULL,
   
   # Preliminary steps
   start_time <- Sys.time() ## starting time
-  set_thin_PROJ6_warnings(TRUE)
+  rgdal::set_thin_PROJ6_warnings(TRUE)
   raster::crs(site) <- sp::CRS("+init=epsg:4326")
   CRS.new <- paste0("+init=epsg:", CRS.new)
   message()
@@ -128,12 +128,12 @@ if(cont==1)
   raster::crs(excl_areas) <- sp::CRS("+init=epsg:4326")
   # Crop the study area shapefile using unsuitable areas
   excl_areas <- raster::crop(excl_areas, raster::extent(data_flor_planar))
-  excl_areas_3035 <- sp::spTransform(excl_areas, CRS.new) # conversion to new CRS
+  excl_areas_3035 <- sp::spTransform(excl_areas, "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs") # conversion to new CRS
   }
 
-data_flor_planar <- sp::spTransform(data_flor_planar, CRS.new)
+data_flor_planar <- sp::spTransform(data_flor_planar, "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs")
 points_3035 <- data_flor_planar
-site_3035 <- sp::spTransform(site, CRS.new)
+site_3035 <- sp::spTransform(site, "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs")
 data_flor_planar$lat <- data_flor_planar@coords[,2]
 data_flor_planar$long <- data_flor_planar@coords[,1]
 
@@ -177,12 +177,12 @@ empty <- data_flor_buffer[filter_buffer, ]
 
 if(cont==0)
 {
-  sp::plot(site_3035, lwd=2,main="Intersecting buffers" )
-  sp::plot(empty, border="black", col=rgb(0,0,1, 0.2), add=TRUE, lty=2 )
+  sp::plot(site_3035, lwd=2,main="Intersecting buffers")
+  sp::plot(empty, border="black", col=rgb(0,0,1, 0.1), add=TRUE, lty=2)
   
 } else {
   sp::plot(site_3035, lwd=2, main="Intersecting buffers (Area of exclusion considered)")
-  sp::plot(rgeos::gDifference(empty, excl_areas_3035, byid=FALSE), border="black", col=rgb(0,0,1, 0.1), add=TRUE, lty=2)
+  sp::plot(rgeos::gDifference(empty, excl_areas_3035, byid=TRUE), border="black", col=rgb(0,0,1, 0.1), add=TRUE, lty=2)
   
 }
 
@@ -230,7 +230,7 @@ close(pb)
 parallel::stopCluster(cl)
 
 #####
-message("Almost done. Preparing outputs")
+message("Almost done. Preparing outputs.......")
 
 #### Sum the single rasters
 base::names(raster_stack) <- list
@@ -274,15 +274,17 @@ test_spdf <- as(raster_new, "SpatialPixelsDataFrame")
 test_df <- as.data.frame(test_spdf)
 colnames(test_df) <- c("value", "x", "y")
 
+tip1 <- ggplot2::fortify(site_3035, region="id")
+
 p1 <- ggplot2::ggplot(test_df)+ggplot2::coord_equal()+ ggplot2::theme_classic()+
   ggplot2::labs(fill="IFI")+
   ggplot2::theme(legend.position="right",legend.direction='vertical')+ ggplot2::theme(legend.key.width=grid::unit(0.6, "cm"))+
   ggplot2::xlab("Latitude") + ggplot2::ylab("Longitude")+
-  ggplot2::scale_fill_distiller(palette = "Spectral", direction = -1, guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new), raster::maxValue(raster_new)/10)),
+  ggplot2::scale_fill_distiller(palette = "Spectral", direction = -1,  guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new), raster::maxValue(raster_new)/10)),
                                 labels=round(rev(seq(0, raster::maxValue(raster_new), raster::maxValue(raster_new)/10))), limits = c(0, raster::maxValue(raster_new)))+
   ggplot2::geom_tile(test_df, mapping = ggplot2::aes(x=.data$x, y=.data$y, fill=.data$value), alpha=0.8)+
-  ggplot2::geom_polygon(site_3035, mapping= ggplot2::aes(x=long, y=lat, group=group), fill=NA, color="black", size=1)+
-  ggplot2::geom_polygon(data=raster::rasterToPolygons(raster_new), mapping=ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
+  ggplot2::geom_polygon(tip1, mapping= ggplot2::aes(x=long, y=lat), fill=NA, color="black", size=1)+
+  ggplot2::geom_polygon(data=raster::rasterToPolygons(raster_new), mapping = ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
   ggplot2::ggtitle("Map of Floristic Ignorance (MFI)")
 
 # Plot n° 2
@@ -303,7 +305,7 @@ colnames(test_df2) <- c("value", "x", "y")
 p2 <- ggplot2::ggplot(test_df2) + ggplot2::coord_equal() + ggplot2::theme_classic() +
   ggplot2::theme(legend.position="right", legend.direction='vertical', legend.key.width=grid::unit(0.6, "cm"))+
   ggplot2::geom_tile(data=test_df2, mapping=ggplot2::aes(x=.data$x, y=.data$y, fill=.data$value), alpha=0.8) +
-  ggplot2::geom_polygon(data=site_3035, mapping=ggplot2::aes(x=long, y=lat, group=group),fill=NA, color="black", size=1) +
+  ggplot2::geom_polygon(tip1, mapping=ggplot2::aes(x=long, y=lat),fill=NA, color="black", size=1) +
   ggplot2::geom_polygon(data=raster::rasterToPolygons(raster_new_rich), mapping = ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
   ggplot2::scale_fill_distiller(palette = "Spectral", direction = +1, guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new_rich), raster::maxValue(raster_new_rich)/10)),
                                 labels=round(rev(seq(0, raster::maxValue(raster_new_rich), raster::maxValue(raster_new_rich)/10))), limits = c(0, raster::maxValue(raster_new_rich)))+
@@ -346,14 +348,14 @@ print(p1)
 print(p2)
 print(p3)
 print(p4)
-grid.newpage()
-grid.draw(ss)
+grid::grid.newpage()
+grid::grid.draw(ss)
 grDevices::dev.off()
 
 # Write to file the raster of the ‘Map of Floristic Ignorance’ and a .csv file listing the taxa considered to draft the map
 raster::writeRaster(raster_new, filename = "MAPignorance", format="GTiff", overwrite=TRUE)
 utils::write.csv(list, row.names=FALSE, "Taxa considered to compute the Floristic Ignorance Map.csv")
-message(paste0("Done! The files have been saved here", getwd()))
+message(paste0("Done! The files have been saved here: ", getwd()))
 
 ### Print images
 message("Plot Map of Flositic Ignorance (MFI)")
@@ -370,8 +372,9 @@ message("Plot Occurrence dates distribution")
 print(p4)
 
 message("Return statistics")
-grid.newpage()
-grid.draw(ss)
+grid::grid.newpage()
+grid::grid.draw(ss)
+rgdal::set_thin_PROJ6_warnings(FALSE)
 
 # Save into a list
 
