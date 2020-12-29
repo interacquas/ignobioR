@@ -145,14 +145,14 @@ message("Plotting")
 
 if(cont==1)
 {
-  sp::plot(data_flor_buffer, border="darkgrey", main="Floristic records provided")
+  sp::plot(data_flor_buffer, border="darkgrey", lty=2, main="Floristic records provided")
   sp::plot(site_3035, add=TRUE, border="black", lty=2, lwd=2)
   sp::plot(excl_areas_3035, add =TRUE, col=rgb(1,0,0, 0.2))
-  sp::plot(points_3035, cex= 0.2, pch=20, add=TRUE, col="darkgrey")
+  sp::plot(points_3035, cex= 0.1, pch=3, add=TRUE, col="black")
 
 } else {
-  sp::plot(data_flor_buffer, border="darkgrey", main="Floristic records provided")
-  sp::plot(site_3035, col="red", add=TRUE)
+  sp::plot(data_flor_buffer, lty=2, border="darkgrey", main="Floristic records provided")
+  sp::plot(site_3035, col=rgb(1,0,0, 0.2), add=TRUE)
   sp::plot(points_3035, cex=0.2, pch=20, add=TRUE, col="darkgrey")
 }
 
