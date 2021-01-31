@@ -1,5 +1,5 @@
 ---
-title: "ignobioR vignette"
+title: "ignobioR Vignette"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{ignobioR vignette}
@@ -24,7 +24,7 @@ data(floratus) # Upload the dataset with occurrence data
 head(floratus)
 
 data(park) # Upload the study area
-data(unsuitablezone) # Unsuitable areas, i.e. floristic records cannot occur
+data(unsuitablezone) # Unsuitable areas, i.e. zones where floristic records cannot occur
 
 
 ```
