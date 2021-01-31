@@ -310,7 +310,8 @@ p2 <- ggplot2::ggplot(test_df2) + ggplot2::coord_equal() + ggplot2::theme_classi
   ggplot2::scale_fill_distiller(palette = "Spectral", direction = +1, guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new_rich), raster::maxValue(raster_new_rich)/10)),
                                 labels=round(rev(seq(0, raster::maxValue(raster_new_rich), raster::maxValue(raster_new_rich)/10))), limits = c(0, raster::maxValue(raster_new_rich)))+
   ggplot2::ggtitle("Species richness map (without uncertainties)")+
-  ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude")
+  ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude")+
+  ggplot2::guides(fill=ggplot2::guide_legend(title="Value"))
 
 
 # Plot n° 3
