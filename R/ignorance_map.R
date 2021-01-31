@@ -58,7 +58,7 @@ ignorance_map <- function(data_flor, site, year_study = NULL, excl_areas = NULL,
   CRS.new <- paste0("+init=epsg:", CRS.new)
   message()
   message("##############################################################################################")
-  message("Please be patient. The process can be very slow, dependeing on the amount of records provided")
+  message("Please be patient. The process can be very slow, depending on the amount of records provided")
   message("##############################################################################################")
   message()
   message(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
@@ -261,9 +261,9 @@ raster_new <- x_crop*raster::raster(f2)
 end_time <- Sys.time()
 
 #### Create the dataframe storing the descriptive statistics
-names <-c("Started", "Finished", "Elapsed time", "CRS", "Cell size (km)", "100 years % loss ratio (tau)",
-          "Occurrence whithin", "Total occurrence computed", "Occurrence uncertanties (metres; median value)", "Occurrence dates (year; median value)")
-values <- c(as.character(start_time), as.character(end_time), end_time-start_time, CRS.new, cellsize/1000, tau,
+names <-c("Started", "Finished", "Elapsed time", "CRS (EPSG code)", "Cell size (km)", "100 years % loss ratio (tau)",
+          "Total occurrence within", "Total occurrences computed", "Occurrence uncertanty (median value, m)", "Occurrence dates (median value, year)")
+values <- c(as.character(start_time), as.character(end_time), round(end_time-start_time,2), substr(CRS.new, 12, 16), cellsize/1000, tau,
             nrow(points_INS), nrow(DF), round(median(DF$uncertainty)), median(DF$year))
 statistics <- as.data.frame(cbind(names, values))
 
@@ -279,7 +279,7 @@ tip1 <- ggplot2::fortify(site_3035, region="id")
 p1 <- ggplot2::ggplot(test_df)+ggplot2::coord_equal()+ ggplot2::theme_classic()+
   ggplot2::labs(fill="IFI")+
   ggplot2::theme(legend.position="right",legend.direction='vertical')+ ggplot2::theme(legend.key.width=grid::unit(0.6, "cm"))+
-  ggplot2::xlab("Latitude") + ggplot2::ylab("Longitude")+
+  ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude")+
   ggplot2::scale_fill_distiller(palette = "Spectral", direction = -1,  guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new), raster::maxValue(raster_new)/10)),
                                 labels=round(rev(seq(0, raster::maxValue(raster_new), raster::maxValue(raster_new)/10))), limits = c(0, raster::maxValue(raster_new)))+
   ggplot2::geom_tile(test_df, mapping = ggplot2::aes(x=.data$x, y=.data$y, fill=.data$value), alpha=0.8)+
@@ -309,8 +309,8 @@ p2 <- ggplot2::ggplot(test_df2) + ggplot2::coord_equal() + ggplot2::theme_classi
   ggplot2::geom_polygon(data=raster::rasterToPolygons(raster_new_rich), mapping = ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
   ggplot2::scale_fill_distiller(palette = "Spectral", direction = +1, guide = ggplot2::guide_legend(),breaks=rev(seq(0, raster::maxValue(raster_new_rich), raster::maxValue(raster_new_rich)/10)),
                                 labels=round(rev(seq(0, raster::maxValue(raster_new_rich), raster::maxValue(raster_new_rich)/10))), limits = c(0, raster::maxValue(raster_new_rich)))+
-  ggplot2::ggtitle("Traditional richness map (without uncertainties)")+
-  ggplot2::xlab("Latitude") + ggplot2::ylab("Longitude")
+  ggplot2::ggtitle("Species richness map (without uncertainties)")+
+  ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude")
 
 
 # Plot n° 3
@@ -320,8 +320,8 @@ p3 <-  ggplot2::ggplot(DF)+
     ggplot2::geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$year))/30)+
     ggplot2::coord_cartesian(xlim = c(min(DF$year), year_study))+
     ggplot2::scale_y_continuous(labels = function(x) paste0(x*100, "%"))+
-    ggplot2::ggtitle("Occurrence dates distribution")+
-    ggplot2::xlab("Year") + ggplot2::ylab("Density")+
+    ggplot2::ggtitle("Occurrence date")+
+    ggplot2::xlab("Year") + ggplot2::ylab("Frequency")+
     ggplot2::labs(fill="Number of taxa")+
     ggplot2::theme_classic()
 
@@ -333,14 +333,14 @@ p4 <- ggplot2::ggplot(DF) +
   ggplot2::geom_histogram(alpha=.6, fill="#FF6666", binwidth = diff(range(DF$uncertainty))/30)+
   ggplot2::coord_cartesian(xlim = c(min(DF$uncertainty), max(DF$uncertainty)))+
   ggplot2::scale_y_continuous(labels = function(x) paste0(x*100, "%"))+
-  ggplot2::ggtitle("Occurrence uncertainties distribution")+
-  ggplot2::xlab("Uncertainty (metres)") + ggplot2::ylab("Density")+
+  ggplot2::ggtitle("Occurrence spatial uncertainty")+
+  ggplot2::xlab("Uncertainty (m)") + ggplot2::ylab("Frequency")+
   ggplot2::theme_classic()
 
 
 # Plot n° 5
 
-ss <-  gridExtra::tableGrob(statistics)
+ss <- gridExtra::grid.arrange(top="Summary statistics", gridExtra::tableGrob(statistics))
 
 # Creating the .pdf file
 grDevices::pdf("Ignorance_output.pdf", onefile = TRUE)
@@ -358,17 +358,17 @@ utils::write.csv(list, row.names=FALSE, "Taxa considered to compute the Floristi
 message(paste0("Done! The files have been saved here: ", getwd()))
 
 ### Print images
-message("Plot Map of Flositic Ignorance (MFI)")
+message("Plot Map of Floristic Ignorance (MFI)")
 print(p1)
 
-message("Plot tradional richness Map")
+message("Plot Species richness Map")
 
 print(p2)
 
-message("Plot Occurrence uncertainties distribution")
+message("Plot frequency of occurrences spatial uncertainty")
 print(p3)
 
-message("Plot Occurrence dates distribution")
+message("Plot frequency of occurrence date")
 print(p4)
 
 message("Return statistics")
