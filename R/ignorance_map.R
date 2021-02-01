@@ -6,7 +6,7 @@
 #' @param site a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326
 #' @param year_study the present-year in which you perform the analysis
 #' @param excl_areas a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326
-#' @param CRS.new the new Coordinate Reference System. Note: must be a projected CRS. Default = 
+#' @param CRS.new the new Coordinate Reference System. Note: must be a projected CRS. Default = 3035.
 #' @param tau percentual value of taxa loss in 100 years time-span (see below for further details)
 #' @param cellsize the resolution of the ignorance map (in meters)
 #' 
@@ -341,7 +341,7 @@ p4 <- ggplot2::ggplot(DF) +
 
 # Plot n° 5
 
-ss <- gridExtra::grid.arrange(top="Summary statistics", gridExtra::tableGrob(statistics))
+#ss <- gridExtra::grid.arrange(top="Summary statistics", gridExtra::tableGrob(statistics))
 
 # Creating the .pdf file
 grDevices::pdf("Ignorance_output.pdf", onefile = TRUE)
@@ -349,8 +349,7 @@ print(p1)
 print(p2)
 print(p3)
 print(p4)
-grid::grid.newpage()
-grid::grid.draw(ss)
+grid::grid.draw(gridExtra::grid.arrange(top="Summary statistics", gridExtra::tableGrob(statistics)))
 grDevices::dev.off()
 
 # Write to file the raster of the ‘Map of Floristic Ignorance’ and a .csv file listing the taxa considered to draft the map
@@ -373,8 +372,7 @@ message("Plot frequency of occurrence date")
 print(p4)
 
 message("Return statistics")
-grid::grid.newpage()
-grid::grid.draw(ss)
+grid::grid.draw(gridExtra::grid.arrange(top="Summary statistics", gridExtra::tableGrob(statistics)))
 rgdal::set_thin_PROJ6_warnings(FALSE)
 
 # Save into a list

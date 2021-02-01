@@ -23,7 +23,7 @@ ignorance_map(
 
 \item{excl_areas}{a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326}
 
-\item{CRS.new}{the new Coordinate Reference System. Note: must be a projected CRS. Default =}
+\item{CRS.new}{the new Coordinate Reference System. Note: must be a projected CRS. Default = 3035.}
 
 \item{tau}{percentual value of taxa loss in 100 years time-span (see below for further details)}
 
