@@ -13,7 +13,7 @@
 #' @return an object of class list with 2 slots:
 #' \itemize{
 ##'  \item{"The virtual floristic list"}{A dataframe with five columns}
-##'  \item{"Statistics"}{A set of summarising statistics of the VFL drafting process }
+##'  \item{"Statistics"}{A set of summarising statistics of the VFL drafting process}
 ##' }
 #' @export
 #' @examples \dontrun{
