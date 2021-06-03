@@ -22,7 +22,7 @@
 #' data(park)
 #' data(unsuitablezone)
 #' 
-#' virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezone, tau = 30, upperlimit = 25)
+#' vfl<- virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezone, tau = 30, upperlimit = 25)
 #' 
 #' }
 

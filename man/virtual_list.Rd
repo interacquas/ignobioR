@@ -33,7 +33,7 @@ virtual_list(
 an object of class list with 2 slots:
 \itemize{
  \item{"The virtual floristic list"}{A dataframe with five columns}
- \item{"Statistics"}{A set of summarising statistics of the VFL drafting process }
+ \item{"Statistics"}{A set of summarising statistics of the VFL drafting process}
 }
 }
 \description{
@@ -46,7 +46,7 @@ data(floratus)
 data(park)
 data(unsuitablezone)
 
-virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezone, tau = 30, upperlimit = 25)
+vfl<- virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezone, tau = 30, upperlimit = 25)
 
 }
 }
