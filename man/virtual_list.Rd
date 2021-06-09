@@ -11,7 +11,8 @@ virtual_list(
   excl_areas = NULL,
   CRS.new = 3035,
   tau,
-  upperlimit = 20
+  upperlimit = 20,
+  verbose = TRUE
 )
 }
 \arguments{

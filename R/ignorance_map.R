@@ -9,10 +9,10 @@
 #' @param CRS.new the new Coordinate Reference System. Note: must be a projected CRS. Default = 3035.
 #' @param tau percentual value of taxa loss in 100 years time-span (see below for further details)
 #' @param cellsize the resolution of the ignorance map (in meters)
-#' 
+#' @param verbose an optional logical value. If TRUE information on the evolution of the algorithm is printed. Default is TRUE (suggested for large dataset)
 #' @return A list with 4 objects:
 #' \itemize{
-##'  \item{"MFI"}{ the Map of Floristic Ignorance}
+##'  \item{"MRFI"}{ the Map of Relative Floristic Ignorance}
 ##'  \item{"RICH"}{ the corresponding map computed without taking into account spatial and temporal uncertainties}
 ##'  \item{"uncertainties"}{ the corresponding map computed without taking into account spatial and temporal uncertainties}
 ##'  \item{"Statistics"}{ a table summarising the settings used to draft the Map of Florstic Ignorance}
