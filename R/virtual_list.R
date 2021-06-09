@@ -9,6 +9,7 @@
 #' @param CRS.new the new Coordinate Reference System. Note: must be in a projected CRS. Default = 3035
 #' @param tau percentual value of taxa loss in 100 years time-span (see below for further details)
 #' @param upperlimit maximum number of floristic records for a given taxon managed by the algorithm to compute the VFL. You can increase this number; a number between 20 and 30 is suggested. Then, the algorithm considers only the n most relevant, in terms of probability, occurrence records
+#' @param verbose an optional logical value. If TRUE information on the evolution of the algorithm is printed. Default is TRUE (suggested for large dataset)
 #' 
 #' @return an object of class list with 2 slots:
 #' \itemize{

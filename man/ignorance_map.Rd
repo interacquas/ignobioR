@@ -29,11 +29,13 @@ ignorance_map(
 \item{tau}{percentual value of taxa loss in 100 years time-span (see below for further details)}
 
 \item{cellsize}{the resolution of the ignorance map (in meters)}
+
+\item{verbose}{an optional logical value. If TRUE information on the evolution of the algorithm is printed. Default is TRUE (suggested for large dataset)}
 }
 \value{
 A list with 4 objects:
 \itemize{
- \item{"MFI"}{ the Map of Floristic Ignorance}
+ \item{"MRFI"}{ the Map of Relative Floristic Ignorance}
  \item{"RICH"}{ the corresponding map computed without taking into account spatial and temporal uncertainties}
  \item{"uncertainties"}{ the corresponding map computed without taking into account spatial and temporal uncertainties}
  \item{"Statistics"}{ a table summarising the settings used to draft the Map of Florstic Ignorance}
@@ -49,7 +51,8 @@ data(park)
 data(unsuitablezone)
 
 # Short example
-mrfi <- ignorance_map(data_flor = floratus[1:1000,], excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)
+set.seed(123)
+mfi <-  ignorance_map(data_flor= floratus[sample(nrow(floratus), 1000), ],  site=park, tau= 80, cellsize= 2000)
 
 # Extended example
 mrfi <- ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)

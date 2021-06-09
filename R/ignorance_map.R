@@ -24,7 +24,8 @@
 #' data(unsuitablezone)
 #' 
 #' # Short example
-#' mrfi <- ignorance_map(data_flor = floratus[1:1000,], excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)
+#' set.seed(123)
+#' mfi <-  ignorance_map(data_flor= floratus[sample(nrow(floratus), 1000), ],  site=park, tau= 80, cellsize= 2000)
 #' 
 #' # Extended example
 #' mrfi <- ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)
