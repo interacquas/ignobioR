@@ -31,8 +31,16 @@
 #' }
 
 
-ignorance_map <- function(data_flor, site, year_study = NULL, excl_areas = NULL, CRS.new = 3035, tau, cellsize) {
+ignorance_map <- function(data_flor, site, year_study = NULL, excl_areas = NULL, CRS.new = 3035, tau, cellsize, verbose = TRUE) {
 
+  msgprint <- function(text, verbose) {
+    if (verbose == TRUE) {
+      message(text)
+    }
+  } # verbose function
+  
+  
+  
   ################## Check for settings #############
   if (length(year_study) ==0) 
   {
@@ -60,13 +68,13 @@ ignorance_map <- function(data_flor, site, year_study = NULL, excl_areas = NULL,
   rgdal::set_thin_PROJ6_warnings(TRUE)
   raster::crs(site) <- sp::CRS("+init=epsg:4326")
   CRS.new <- paste0("+init=epsg:", CRS.new)
-  message()
-  message("##############################################################################################")
-  message("Please be patient. The process can be very slow, depending on the amount of records provided")
-  message("##############################################################################################")
-  message()
-  message(paste0("Chosen Coordinate Reference System:", " ", CRS.new))
-  message(paste0("Chosen tau:", " ", tau))
+  msgprint("",verbose)
+  msgprint("##############################################################################################", verbose)
+  msgprint("Please be patient. The process can be very slow, depending on the amount of records provided", verbose)
+  msgprint("##############################################################################################", verbose)
+  msgprint("",verbose)
+  msgprint(paste0("Chosen Coordinate Reference System:", " ", CRS.new), verbose)
+  msgprint(paste0("Chosen tau:", " ", tau), verbose)
   
 ignorance_species <- function(dfOBJ) {
   ###### Create buffers having radius = 'uncertainty'
@@ -111,13 +119,13 @@ ignorance_species <- function(dfOBJ) {
 } # define the core function
 
 if(is.null(excl_areas)==TRUE)
-  {message("No unsuitable areas provided")
-  cont <- 0} else {message("Unsuitable areas provided. Plotting")
+  {msgprint("No unsuitable areas provided", verbose)
+  cont <- 0} else {msgprint("Unsuitable areas provided. Plotting", verbose)
                    sp::plot(excl_areas, col=rgb(1,0,0, 0.2), main="Unsuitable areas")
                    sp::plot(site, border="black", lty=2, lwd=2, add=TRUE)
                    cont <- 1}
 
-message("Creating spatial objects")
+msgprint("Creating spatial objects", verbose)
 
 # Create a ‘SpatialPointsdataframe’
 data_flor_planar <- data_flor
@@ -145,7 +153,7 @@ data_flor_planar$long <- data_flor_planar@coords[,1]
 data_flor_buffer <- rgeos::gBuffer(data_flor_planar, width=(data_flor_planar$uncertainty), byid=TRUE)
 
 ##### Plot intermediate steps
-message("Plotting")
+msgprint("Plotting", verbose)
 
 if(cont==1)
 {
@@ -160,7 +168,7 @@ if(cont==1)
   sp::plot(points_3035, cex=0.2, pch=20, add=TRUE, col="darkgrey")
 }
 
-message("Filtering occurrence records having buffers intersecting the study area")
+msgprint("Filtering occurrence records having buffers intersecting the study area", verbose)
 result <- raster::intersect(data_flor_buffer, site_3035)
 DF <- as.data.frame(result)
 
@@ -173,7 +181,7 @@ list <- unique(DF$Taxon)
 list <- as.vector(list)
 
 # Create an empty raster
-message("Creating an empty raster")
+msgprint("Creating an empty raster", verbose)
 
 filter_buffer <- result$record
 empty <- data_flor_buffer[filter_buffer, ]
@@ -202,11 +210,11 @@ raster::values(r) <- 1:raster::ncell(r)
 r2 <- r
 r2[]<-NA
 
-message("Calculating species richness per cell")
+msgprint("Calculating species richness per cell", verbose)
 rich <- raster::rasterize(data_flor_planar, r, 'Taxon', function(x, ...) length(unique(na.omit(x))))
 rich[is.na(rich)] <- 0
 
-message("Preparing preliminary data to draft the Map of Floristic Ignorance")
+msgprint("Preparing preliminary data to draft the Map of Floristic Ignorance", verbose)
 included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
 number_included_species <- max(included_species)
 TA2<- sp::geometry(data_flor_planar)
@@ -215,7 +223,7 @@ sapply(sp::over(site_3035, TA2, returnList = FALSE), length)
 cl <- parallel::makeCluster(parallel::detectCores()-1) #### to perform a parallel computing
 doSNOW::registerDoSNOW(cl)
 
-message("Drafting the Map of Floristic Ignorance!")
+msgprint("Drafting the Map of Relative Floristic Ignorance!", verbose)
 pb <- utils::txtProgressBar(min = 0, max = length(list), style = 3) # progress bar
 progress <- function(n) utils::setTxtProgressBar(pb, n)
 opts <- base::list(progress = progress)
@@ -234,7 +242,7 @@ close(pb)
 parallel::stopCluster(cl)
 
 #####
-message("Almost done. Preparing outputs.......")
+msgprint("Almost done. Preparing outputs.......", verbose)
 
 #### Sum the single rasters
 base::names(raster_stack) <- list
@@ -289,7 +297,7 @@ p1 <- ggplot2::ggplot(test_df)+ggplot2::coord_equal()+ ggplot2::theme_classic()+
   ggplot2::geom_tile(test_df, mapping = ggplot2::aes(x=.data$x, y=.data$y, fill=.data$value), alpha=0.8)+
   ggplot2::geom_polygon(tip1, mapping= ggplot2::aes(x=long, y=lat), fill=NA, color="black", size=1)+
   ggplot2::geom_polygon(data=raster::rasterToPolygons(raster_new), mapping = ggplot2::aes(x=long, y=lat, group=group), color="black", alpha=0)+
-  ggplot2::ggtitle("Map of Floristic Ignorance (MFI)")
+  ggplot2::ggtitle("Map of Relative Floristic Ignorance (MRFI)")
 
 # Plot n° 2
 x_crop_rich <- raster::extend(rich, raster_new, value=0)
@@ -359,23 +367,23 @@ grDevices::dev.off()
 # Write to file the raster of the ‘Map of Floristic Ignorance’ and a .csv file listing the taxa considered to draft the map
 raster::writeRaster(raster_new, filename = "MAPignorance", format="GTiff", overwrite=TRUE)
 utils::write.csv(list, row.names=FALSE, "Taxa considered to compute the Floristic Ignorance Map.csv")
-message(paste0("Done! The files have been saved here: ", getwd()))
+msgprint(paste0("Done! The files have been saved here: ", getwd()), verbose)
 
 ### Print images
-message("Plot Map of Floristic Ignorance (MFI)")
+msgprint("Plot Map of Relative Floristic Ignorance (MRFI)", verbose)
 print(p1)
 
-message("Plot Species richness Map")
+msgprint("Plot Species richness Map", verbose)
 
 print(p2)
 
-message("Plot frequency of occurrences spatial uncertainty")
+msgprint("Plot frequency of occurrences spatial uncertainty", verbose)
 print(p3)
 
-message("Plot frequency of occurrence date")
+msgprint("Plot frequency of occurrence date", verbose)
 print(p4)
 
-message("Return statistics")
+msgprint("Return statistics", verbose)
 grid::grid.draw(gridExtra::grid.arrange(top="Summary statistics", gridExtra::tableGrob(statistics)))
 rgdal::set_thin_PROJ6_warnings(FALSE)
 

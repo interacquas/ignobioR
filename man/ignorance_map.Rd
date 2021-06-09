@@ -11,7 +11,8 @@ ignorance_map(
   excl_areas = NULL,
   CRS.new = 3035,
   tau,
-  cellsize
+  cellsize,
+  verbose = TRUE
 )
 }
 \arguments{
