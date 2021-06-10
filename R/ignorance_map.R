@@ -25,7 +25,7 @@
 #' 
 #' # Short example
 #' set.seed(123)
-#' mfi <-  ignorance_map(data_flor= floratus[sample(nrow(floratus), 1000), ],  site=park, tau= 80, cellsize= 2000)
+#' mrfi <- ignorance_map(data_flor= floratus[sample(nrow(floratus), 2000), ],  site=park, tau= 80, cellsize= 2000)
 #' 
 #' # Extended example
 #' mrfi <- ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)
@@ -215,7 +215,7 @@ msgprint("Calculating species richness per cell", verbose)
 rich <- raster::rasterize(data_flor_planar, r, 'Taxon', function(x, ...) length(unique(na.omit(x))))
 rich[is.na(rich)] <- 0
 
-msgprint("Preparing preliminary data to draft the Map of Floristic Ignorance", verbose)
+msgprint("Preparing preliminary data to draft the Map of Relative Floristic Ignorance", verbose)
 included_species <- GISTools::poly.counts(data_flor_planar, site_3035)
 number_included_species <- max(included_species)
 TA2<- sp::geometry(data_flor_planar)
@@ -367,7 +367,7 @@ grDevices::dev.off()
 
 # Write to file the raster of the ‘Map of Floristic Ignorance’ and a .csv file listing the taxa considered to draft the map
 raster::writeRaster(raster_new, filename = "MAPignorance", format="GTiff", overwrite=TRUE)
-utils::write.csv(list, row.names=FALSE, "Taxa considered to compute the Floristic Ignorance Map.csv")
+utils::write.csv(list, row.names=FALSE, "Taxa considered to compute the Map of Relative Floristic Ignorance (MRFI).csv")
 msgprint(paste0("Done! The files have been saved here: ", getwd()), verbose)
 
 ### Print images
