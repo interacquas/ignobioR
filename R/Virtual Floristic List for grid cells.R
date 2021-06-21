@@ -8,7 +8,7 @@ data(park)
 data(floratus)
 
 
-grid <- sf::st_make_grid(st_as_sf(park), cellsize=0.01) # Create a grid of a study area; specifiy cellsize in the function
+grid <- sf::st_make_grid(st_as_sf(park), cellsize=0.01) # Create a grid of a study area; specify cellsize in the function
 grid <- as_Spatial(grid)
 plot(grid)
 plot(park, add=TRUE, border="red")
