@@ -390,6 +390,6 @@ rgdal::set_thin_PROJ6_warnings(FALSE)
 
 # Save into a list
 
-to2 <- list(MFI = raster_new, RICH = raster_new_rich, Uncertainties = data.frame(uncertainty= DF$uncertainty, year= DF$year) , Statistics= knitr::kable(statistics, format = "markdown", digits = 4))
+to2 <- list(MRFI = raster_new, RICH = raster_new_rich, Uncertainties = data.frame(uncertainty= DF$uncertainty, year= DF$year) , Statistics= knitr::kable(statistics, format = "markdown", digits = 4))
 
 }
