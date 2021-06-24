@@ -14,7 +14,7 @@ LinkingTo: testthat
 Imports:
 	doParallel,
 	doSNOW,
-	ellipsis (>= 0.3.2)
+	ellipsis (>= 0.3.2),
 	foreach,
 	gdalUtils,
 	ggplot2,
