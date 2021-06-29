@@ -7,8 +7,12 @@ library(ignobioR)
 data(park)
 data(floratus)
 
+# Create a grid of a study area; specifiy cellsize in the function
+grid <- sf::st_make_grid(st_as_sf(park), cellsize=0.01) 
 
-grid <- sf::st_make_grid(st_as_sf(park), cellsize=0.01) # Create a grid of a study area; specifiy cellsize in the function
+# Create an example dataset to test the script
+dataset <- floratus[1:10000,]
+
 grid <- as_Spatial(grid)
 plot(grid)
 plot(park, add=TRUE, border="red")
@@ -19,7 +23,7 @@ for (i in 1:length(grid@plotOrder)) {
   message()
   message(paste0("Cell number  ", i, " of ", length(grid@plotOrder)))
 
-  list <- virtual_list(data_flor=floratus[1:10000,], excl_areas = unsuitablezone,  site=grid[i], tau=20, verbose=FALSE) # draft the Virtual floristic List
+  list <- virtual_list(data_flor=dataset, excl_areas = unsuitablezone,  site=grid[i], tau=20, verbose=FALSE) # draft the Virtual floristic List
 
   dataset[[i]] <- cbind(list$VFL[,1:2], i)
 
