@@ -11,7 +11,7 @@ data(floratus)
 grid <- sf::st_make_grid(st_as_sf(park), cellsize=0.01) 
 
 # Create an example dataset to test the script
-dataset <- floratus[1:10000,]
+dataset <- floratus[1:20000,]
 
 grid <- as_Spatial(grid)
 plot(grid)
