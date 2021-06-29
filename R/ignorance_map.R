@@ -275,7 +275,7 @@ end_time <- Sys.time()
 
 #### Create the dataframe storing the descriptive statistics
 names <-c("Started", "Finished", "Elapsed time", "CRS (EPSG code)", "Cell size (km)", "100 years % loss ratio (tau)",
-          "Total occurrence within", "Total occurrences computed", "Occurrence uncertanty (median value, m)", "Occurrence dates (median value, year)")
+          "Total occurrence within", "Total occurrences computed", "Occurrence uncertainty (median value, m)", "Occurrence dates (median value, year)")
 values <- c(as.character(start_time), as.character(end_time), round(end_time-start_time,2), substr(CRS.new, 12, 16), cellsize/1000, tau,
             nrow(points_INS), nrow(DF), round(median(DF$uncertainty)), median(DF$year))
 statistics <- as.data.frame(cbind(names, values))
@@ -351,10 +351,6 @@ p4 <- ggplot2::ggplot(DF) +
   ggplot2::xlab("Uncertainty (m)") + ggplot2::ylab("Frequency")+
   ggplot2::theme_classic()
 
-
-# Plot n° 5
-
-#ss <- gridExtra::grid.arrange(top="Summary statistics", gridExtra::tableGrob(statistics))
 
 # Creating the .pdf file
 grDevices::pdf("Ignorance_output.pdf", onefile = TRUE)
