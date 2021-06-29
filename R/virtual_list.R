@@ -147,7 +147,7 @@ probsptemp_species <- function(specie) {
 
 if(is.null(excl_areas)==TRUE) {msgprint("No unsuitable areas provided", verbose)
                                cont <- 0} else
-                                 {msgprint("Unsiuitable areas provided", verbose)
+                                 {msgprint("Unsuitable areas provided", verbose)
                                   cont <- 1}
 
 msgprint("Preparing spatial objects!", verbose)
