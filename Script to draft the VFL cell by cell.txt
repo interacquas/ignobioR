@@ -4,14 +4,17 @@ if(!require(sf)){install.packages("sf"); library(sf)}
 if(!require(raster)){install.packages("raster"); library(raster)}
 library(ignobioR)
 
+#Loading objects
 data(park)
 data(floratus)
+data(unsuitablezone)
 
 # Create a grid of a study area; specifiy cellsize in the function
-grid <- sf::st_make_grid(st_as_sf(park), cellsize=0.01) 
+grid <- sf::st_make_grid(st_as_sf(park), cellsize=0.05) 
 
-# Create an example dataset to test the script
-dataset <- floratus[1:20000,]
+# A small dataset with 5000 occurrence records to run the example (instead of using the full dataset)
+example <- floratus[1:5000,]
+
 
 grid <- as_Spatial(grid)
 plot(grid)
@@ -21,12 +24,15 @@ dataset <- list() # create an empty list
 
 for (i in 1:length(grid@plotOrder)) {
   message()
-  message(paste0("Cell number  ", i, " of ", length(grid@plotOrder)))
-
-  list <- virtual_list(data_flor=dataset, excl_areas = unsuitablezone,  site=grid[i], tau=20, verbose=FALSE) # draft the Virtual floristic List
-
+  message(paste0("STEP: Cell number ", i, " of ", length(grid@plotOrder)))
+  
+  plot(park, main = paste("Cell number", i))
+  plot(grid[i], add=TRUE, border="red")
+  
+  list <- virtual_list(data_flor=example, excl_areas = unsuitablezone,  site=grid[i], tau=20, verbose=FALSE) # draft the Virtual floristic List
+  
   dataset[[i]] <- cbind(list$VFL[,1:2], i)
-
+  
 }
 
 df <- do.call(rbind.data.frame, dataset)
