@@ -21,7 +21,7 @@ data(park)
 # Short example
 set.seed(123)
 
-mrfi <- ignorance_map(data_flor= floratus[sample(nrow(floratus), 2000), ],  site=park, tau= 80, cellsize= 2000)
+mrfi <- ignorance_map(data_flor= floratus[sample(nrow(floratus), 2000), ],  site=park, tau= 20, cellsize= 2000)
 
 # Extended example
 mrfi <- ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)
@@ -31,10 +31,10 @@ mrfi <- ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = 
 # Short example
 set.seed(123)
 
-vfl <- virtual_list(data_flor= floratus[sample(nrow(floratus), 2000), ], site = park, excl_areas = unsuitablezone, tau = 30, upperlimit = 25)
+vfl <- virtual_list(data_flor= floratus[sample(nrow(floratus), 2000), ], site = park, excl_areas = unsuitablezone, tau = 20, upperlimit = 25)
 
 # Extended example 
-vfl <- virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezone, tau = 30, upperlimit = 25)
+vfl <- virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezone, tau = 20, upperlimit = 25)
 
 
 # The Authors
