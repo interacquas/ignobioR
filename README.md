@@ -18,22 +18,22 @@ data(floratus)
 data(park)
 
 ### MAP OF RELATIVE FLORISTIC IGNORANCE (MRFI)
-# Short example
+#### Short example
 set.seed(123)
 
 mrfi <- ignorance_map(data_flor= floratus[sample(nrow(floratus), 2000), ],  site=park, tau= 20, cellsize= 2000)
 
-# Extended example
+#### Extended example
 mrfi <- ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)
 
 ### VIRTUAL FLORISTIC LIST (VFL)
 
-# Short example
+#### Short example
 set.seed(123)
 
 vfl <- virtual_list(data_flor= floratus[sample(nrow(floratus), 2000), ], site = park, excl_areas = unsuitablezone, tau = 20, upperlimit = 25)
 
-# Extended example 
+#### Extended example 
 vfl <- virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezone, tau = 20, upperlimit = 25)
 
 
