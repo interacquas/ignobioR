@@ -39,7 +39,7 @@ vfl <- virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezo
 
 # The Authors
 
-Marco D'Antraccoli, Botanic Garden and Museum, University of Pisa (marco.dantraccoli@unipi.it)
+Marco D'Antraccoli, Botanic Garden and Museum, University of Pisa (marco.dantraccoli@unipi.it; https://people.unipi.it/marco_dantraccoli/)
 
 Giuseppe Antonelli
 
