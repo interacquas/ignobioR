@@ -43,10 +43,6 @@ Marco D'Antraccoli, Botanic Garden and Museum, University of Pisa (marco.dantrac
 
 Giuseppe Antonelli
 
-Gianni Bedini, Department of Biology, University of Pisa
-
-Lorenzo Peruzzi, Department of Biology, University of Pisa
-
 
 # Please check our Vignette
 https://interacquas.github.io/ignobioR/
