@@ -1,0 +1,15 @@
+citHeader("To cite ignobioR in publications use:")
+
+bibentry(
+  bibtype  = "Article",
+  title    = "Maps of relative floristic ignorance and virtual floristic lists: An R package to incorporate uncertainty in mapping and analysing biodiversity data",
+  author   = c(person("Marco", "D'Antraccoli"),
+               person("Gianni", "Bedini"),
+               person("Lorenzo", "Peruzzi")),
+  journal  = "Ecological Informatics",
+  year     = "2022",
+  volume   = "67",
+  pages    = "101512",
+  doi      = "10.1016/j.ecoinf.2021.101512",
+  url      = "https://doi.org/10.1016/j.ecoinf.2021.101512"
+)
