@@ -94,13 +94,11 @@
 #' )
 #' }
 
-virtual_list <- function(data_flor, site, year_study = NULL,
-                         excl_areas = NULL, CRS.new = 3035,
-                         tau, upperlimit = 20, 
-                         min_probability = 0,
-                         verbose = TRUE,
+virtual_list <- function(data_flor, site, year_study = NULL, excl_areas = NULL, 
+                         CRS.new = 3035, tau, upperlimit = 20, 
+                         min_probability = 0, verbose = TRUE,
                          check_overlap = TRUE,
-                         output_dir = file.path(getwd(), "output"),
+                         output_dir = output_dir = getwd(),
                          output_prefix = "VFL") {
   
   # ============================================================================

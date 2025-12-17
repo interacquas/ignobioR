@@ -63,6 +63,8 @@ D'Antraccoli, M., Bedini, G., & Peruzzi, L. (2022). Maps of relative floristic i
 
 - Marco D'Antraccoli ([University of Pisa](https://people.unipi.it/marco_dantraccoli/))
 - Giuseppe Antonelli ([ResearchGate](https://www.researchgate.net/profile/Giuseppe-Antonelli))
+- Gianni Bedini ([University of Pisa](https://people.unipi.it/gianni_bedini/))
+- Lorenzo Peruzzi ([University of Pisa](https://people.unipi.it/lorenzo_peruzzi/))
 
 ## License
 

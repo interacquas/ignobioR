@@ -1,8 +1,10 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
 <url><loc>/articles/ignobioR-intro.html</loc></url>
+<url><loc>/articles/ignobioR-vignette.html</loc></url>
 <url><loc>/articles/index.html</loc></url>
 <url><loc>/articles/my-vignette.html</loc></url>
+<url><loc>/articles/Vignette.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/reference/floratus.html</loc></url>
