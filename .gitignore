@@ -8,3 +8,5 @@ Taxa considered to compute the Floristic Ignorance Map.csv
 inst/doc
 /doc/
 /Meta/
+.RData
+.Rhistory
