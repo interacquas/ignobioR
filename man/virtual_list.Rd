@@ -2,7 +2,7 @@
 % Please edit documentation in R/virtual_list.R
 \name{virtual_list}
 \alias{virtual_list}
-\title{Virtual floristic list (VFL)}
+\title{Virtual Floristic List}
 \usage{
 virtual_list(
   data_flor,
@@ -12,49 +12,109 @@ virtual_list(
   CRS.new = 3035,
   tau,
   upperlimit = 20,
-  verbose = TRUE
+  min_probability = 0,
+  verbose = TRUE,
+  check_overlap = TRUE,
+  output_dir = file.path(getwd(), "output"),
+  output_prefix = "VFL"
 )
 }
 \arguments{
-\item{data_flor}{dataframe having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)}
+\item{data_flor}{Data frame with columns: 'Taxon', 'Long', 'Lat',
+'uncertainty' (radius in meters), 'year'.}
 
-\item{site}{a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326}
+\item{site}{sf polygon or SpatialPolygonsDataFrame of study area.}
 
-\item{year_study}{the present-year in which you perform the analysis}
+\item{year_study}{Numeric year of analysis (default = current year).}
 
-\item{excl_areas}{a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326}
+\item{excl_areas}{Optional sf polygon(s) of unsuitable areas to exclude.}
 
-\item{CRS.new}{the new Coordinate Reference System. Note: must be in a projected CRS. Default = 3035}
+\item{CRS.new}{Numeric EPSG code for projected CRS (default = 3035).}
 
-\item{tau}{percentual value of taxa loss in 100 years time-span (see below for further details)}
+\item{tau}{Percent taxa loss per 100 years (0 ≤ tau < 100).}
 
-\item{upperlimit}{maximum number of floristic records for a given taxon managed by the algorithm to compute the VFL. You can increase this number; a number between 20 and 30 is suggested. Then, the algorithm considers only the n most relevant, in terms of probability, occurrence records}
+\item{upperlimit}{Maximum number of records per taxon used in probability
+calculation (default = 20). Prevents computational explosion for well-sampled
+taxa. Higher values increase accuracy but dramatically slow computation:
+\itemize{
+  \item{10}{ Very fast, good accuracy - for exploratory analysis}
+  \item{20}{ Fast, very good accuracy - recommended default}
+  \item{30}{ Slow, excellent accuracy - for publication-quality results}
+}}
 
-\item{verbose}{an optional logical value. If TRUE information on the evolution of the algorithm is printed. Default is TRUE (suggested for large dataset)}
+\item{min_probability}{Minimum probability threshold (%) for inclusion in VFL
+(default = 0). Set to 5-10 to filter unlikely taxa.}
+
+\item{verbose}{Logical; print progress messages (default = TRUE).}
+
+\item{check_overlap}{Logical; plot spatial overlap diagnostic (default = TRUE).}
+
+\item{output_dir}{Directory for output files (default = working directory).}
+
+\item{output_prefix}{Filename prefix (default = "VFL").}
 }
 \value{
-an object of class list with 2 slots:
+List with:
 \itemize{
- \item{"The virtual floristic list"}{A dataframe with five columns}
- \item{"Statistics"}{A set of summarising statistics of the VFL drafting process}
+  \item{\code{VFL}}{Data frame: Taxon, probability, records, max, min.}
+  \item{\code{Statistics}}{Metadata table.}
+  \item{\code{Plots}}{Named list of 2 ggplot objects (histograms).}
+  \item{\code{spatial_data}}{sf objects for further analysis.}
 }
 }
 \description{
-A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
+Computes a Virtual Floristic List (VFL): taxa potentially occurring within
+a study site, with probabilities based on spatial uncertainty and temporal
+decay using inclusion-exclusion principle.
+}
+\details{
+The function uses the inclusion-exclusion principle to aggregate probabilities
+from multiple records of the same taxon. For a taxon with n records, the
+computation requires 2^n combinations. The \code{upperlimit} parameter prevents
+exponential explosion: with n > upperlimit, only the upperlimit records with
+highest probabilities are used.
+
+PDF Output Structure (2 pages, A4 landscape):
+\itemize{
+  \item{Page 1}{ Distribution analysis (probability + temporal histograms)}
+  \item{Page 2}{ Summary statistics table}
+}
 }
 \examples{
 \dontrun{
-
+# Load example data
 data(floratus)
 data(park)
-data(unsuitablezone)
 
-# Short example
-set.seed(123)
-vfl <- virtual_list(data_flor= floratus[sample(nrow(floratus), 2000), ], site = park, excl_areas = unsuitablezone, tau = 30, upperlimit = 25)
+# Basic usage (creates VFL_output.pdf and VFL_probabilities.csv)
+vfl <- virtual_list(
+  data_flor = floratus,
+  site = park,
+  tau = 30
+)
 
-# Extended example 
-vfl <- virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezone, tau = 30, upperlimit = 25)
+# Custom naming (creates Park_output.pdf and Park_probabilities.csv)
+vfl <- virtual_list(
+  data_flor = floratus,
+  site = park,
+  tau = 30,
+  output_prefix = "Park"
+)
 
+# Filter unlikely taxa (>5\% probability only)
+vfl_filtered <- virtual_list(
+  data_flor = floratus,
+  site = park,
+  tau = 30,
+  min_probability = 5
+)
+
+# High accuracy mode
+vfl_accurate <- virtual_list(
+  data_flor = floratus,
+  site = park,
+  tau = 30,
+  upperlimit = 30
+)
 }
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ignorance_map.R
 \name{ignorance_map}
 \alias{ignorance_map}
-\title{Ignorance map}
+\title{Map of Relative Floristic Ignorance}
 \usage{
 ignorance_map(
   data_flor,
@@ -12,49 +12,148 @@ ignorance_map(
   CRS.new = 3035,
   tau,
   cellsize,
-  verbose = TRUE
+  verbose = TRUE,
+  check_overlap = TRUE,
+  output_dir = file.path(getwd(), "output"),
+  output_prefix = "MRFI",
+  site_buffer = FALSE,
+  buffer_width = NULL,
+  mask_method = "touches",
+  use_coverage_weighting = TRUE
 )
 }
 \arguments{
-\item{data_flor}{dataframe having 5 columns, namely ‘Taxon’ (species identity), ‘Long’ (longitude coordinates), ‘Lat’ (latitude coordinates), ‘uncertainty’ (radius of uncertainty, in metres), and ‘year’ (year of the record)}
+\item{data_flor}{A data.frame with 5 columns: 'Taxon' (species identity), 
+'Long' (longitude), 'Lat' (latitude), 'uncertainty' (spatial uncertainty 
+radius in meters), and 'year' (year of occurrence record).}
 
-\item{site}{a layer object of class ‘SpatialPolygonsDataFrame’ representing the study area, having CRS: +init=epsg:4326}
+\item{site}{An `sf` object (or 'SpatialPolygonsDataFrame') representing the 
+study area. If no CRS is set, assumes EPSG:4326 (WGS84).}
 
-\item{year_study}{the present-year in which you perform the analysis}
+\item{year_study}{Numeric year of analysis (e.g., 2025). Defaults to current 
+system year if not specified.}
 
-\item{excl_areas}{a layer object of class ‘SpatialPolygonsDataFrame’ to delimit certainly unsuitable areas adjacent or within the study area, having CRS: +init=epsg:4326}
+\item{excl_areas}{Optional `sf` object (or 'SpatialPolygonsDataFrame') to 
+delimit unsuitable areas (e.g., marine surfaces for terrestrial flora) to be 
+excluded from calculations. If no CRS is set, assumes EPSG:4326.}
 
-\item{CRS.new}{the new Coordinate Reference System. Note: must be a projected CRS. Default = 3035.}
+\item{CRS.new}{Numeric EPSG code for projected CRS used in calculations (must 
+be in meters). Default = 3035 (ETRS89-LAEA Europe).}
 
-\item{tau}{percentual value of taxa loss in 100 years time-span (see below for further details)}
+\item{tau}{Numeric. Percentual value of taxa loss over 100 years (0 <= tau < 100). 
+Represents the temporal decay of floristic records.}
 
-\item{cellsize}{the resolution of the ignorance map (in meters)}
+\item{cellsize}{Numeric. Resolution of output raster in meters.}
 
-\item{verbose}{an optional logical value. If TRUE information on the evolution of the algorithm is printed. Default is TRUE (suggested for large dataset)}
+\item{verbose}{Logical. If TRUE (default), prints progress messages during execution.}
+
+\item{check_overlap}{Logical. If TRUE (default), checks and plots spatial overlap 
+between occurrence points and study area.}
+
+\item{output_dir}{Character. Directory path for output files. Defaults to working directory.}
+
+\item{output_prefix}{Character. Prefix for output filenames. Default = "MRFI".}
+
+\item{site_buffer}{Logical. If TRUE, expands the study area boundary to analyze 
+a larger region beyond the original site. If FALSE (default), analyzes only the 
+original boundary. Note: Edge effects from external records are already handled 
+by the spatial uncertainty mechanism - points outside the site automatically 
+contribute to cells within the study area if their uncertainty buffers reach in. 
+This parameter is for expanding the analysis region itself, not for fixing edge 
+effects. Buffer width controlled by buffer_width parameter.}
+
+\item{buffer_width}{Numeric. Width of buffer in meters when site_buffer=TRUE. 
+If NULL (default), uses cellsize as buffer distance. If specified, overrides 
+default. Must be > 0. Buffer will NOT extend into exclusion areas.}
+
+\item{mask_method}{Character. Method for final raster masking. One of:
+\itemize{
+  \item{"touches"}{ Include any cell intersecting site boundary (default, MRFI-aligned)}
+  \item{"none"}{ Include entire raster extent, no masking (shows all data)}
+}}
+
+\item{use_coverage_weighting}{Logical. If TRUE (default), weights ignorance 
+contribution by fraction of cell covered by each buffer (matches original algorithm, 
+slower but more accurate). If FALSE, uses faster binary approach where any buffer 
+touch contributes full ignorance value (faster but may underestimate ignorance).}
 }
 \value{
 A list with 4 objects:
 \itemize{
- \item{"MRFI"}{ the Map of Relative Floristic Ignorance}
- \item{"RICH"}{ the corresponding map computed without taking into account spatial and temporal uncertainties}
- \item{"uncertainties"}{ the corresponding map computed without taking into account spatial and temporal uncertainties}
- \item{"Statistics"}{ a table summarising the settings used to draft the Map of Florstic Ignorance}
+  \item{MRFI}{ A `terra SpatRaster` of the Map of Relative Floristic Ignorance}
+  \item{RICH}{ A `terra SpatRaster` of species richness computed without uncertainties}
+  \item{Uncertainties}{ A data.frame of uncertainty and year values for all records 
+  used in computation}
+  \item{Statistics}{ A data.frame summarizing settings and results}
 }
 }
 \description{
-A list of species potentially occurring within a study site, in which a probability of occurrence is computed for every taxon
+Computes a Map of Relative Floristic Ignorance (MRFI) using
+modern `sf` and `terra` packages for high performance. Aligned with MRFI 
+philosophy: shows all areas where data exists, letting IRFI values indicate 
+sampling quality rather than excluding poorly-sampled areas.
+
+The function automatically generates both quantile and continuous visualizations,
+providing comprehensive analysis in a standardized 4-page PDF output.
+}
+\details{
+PDF Output Structure (4 pages, A4 landscape):
+\itemize{
+  \item{Page 1}{ Quantile comparison (MRFI + Richness) - Primary analysis figure}
+  \item{Page 2}{ Continuous comparison (MRFI + Richness) - Raw data view}
+  \item{Page 3}{ Data diagnostics (temporal + spatial uncertainty histograms)}
+  \item{Page 4}{ Summary statistics table}
+}
 }
 \examples{
 \dontrun{
+# Load example data (requires 'ignobioR' package data)
 data(floratus)
 data(park)
 data(unsuitablezone)
 
-# Short example
-set.seed(123)
-mrfi <- ignorance_map(data_flor= floratus[sample(nrow(floratus), 2000), ],  site=park, tau= 80, cellsize= 2000)
+# Example 1: Basic usage (recommended - edge effects already handled)
+mrfi <- ignorance_map(
+  data_flor = floratus,
+  site = park,
+  excl_areas = unsuitablezone,
+  tau = 20,
+  cellsize = 2000
+)
 
-# Extended example
-mrfi <- ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)
+# Example 2: With buffer to EXPAND analysis area beyond original site
+# (defaults to cellsize width expansion)
+mrfi_buffered <- ignorance_map(
+  data_flor = floratus,
+  site = park,
+  tau = 20,
+  cellsize = 2000,
+  site_buffer = TRUE  # Analyzes original site + 2000m buffer zone
+)
+
+# Example 3: Custom buffer to analyze larger region (5km beyond site)
+mrfi_5km <- ignorance_map(
+  data_flor = floratus,
+  site = park,
+  excl_areas = unsuitablezone,
+  tau = 20,
+  cellsize = 2000,
+  site_buffer = TRUE,
+  buffer_width = 5000  # Analyzes original site + 5km buffer zone
+)
+
+# Example 4: Fast mode without coverage weighting
+mrfi_fast <- ignorance_map(
+  data_flor = floratus,
+  site = park,
+  tau = 20,
+  cellsize = 2000,
+  use_coverage_weighting = FALSE
+)
+
+# View results
+terra::plot(mrfi$MRFI)
+terra::plot(mrfi$RICH)
+print(mrfi$Statistics)
 }
 }
