@@ -41,11 +41,7 @@ vfl <- virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezo
 
 Marco D'Antraccoli, Botanic Garden and Museum, University of Pisa (marco.dantraccoli@unipi.it; https://people.unipi.it/marco_dantraccoli/)
 
-Giuseppe Antonelli
-
-Gianni Bedini, Department of Biology, University of Pisa
-
-Lorenzo Peruzzi, Department of Biology, University of Pisa
+Giuseppe Antonelli (https://www.researchgate.net/profile/Giuseppe-Antonelli)
 
 
 # Please check our Vignette
