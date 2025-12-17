@@ -723,7 +723,7 @@ ignorance_map <- function(data_flor, site, year_study = NULL, excl_areas = NULL,
                                     label.theme = ggplot2::element_text(size = 9),
                                     title.theme = ggplot2::element_text(size = 10, face = "bold"))
     ) +
-    ggplot2::ggtitle("MRFI - Quantile Scale (Octiles)") +
+    ggplot2::ggtitle("MRFI - Quantile Scale") +
     ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude")
   p1_quant <- add_boundaries(p1_quant)
   
@@ -747,7 +747,7 @@ ignorance_map <- function(data_flor, site, year_study = NULL, excl_areas = NULL,
                                     label.theme = ggplot2::element_text(size = 9),
                                     title.theme = ggplot2::element_text(size = 10, face = "bold"))
     ) +
-    ggplot2::ggtitle("Species Richness - Quantile Scale (Octiles)") +
+    ggplot2::ggtitle("Species Richness - Quantile Scale") +
     ggplot2::xlab("Longitude") + ggplot2::ylab("Latitude")
   p2_quant <- add_boundaries(p2_quant)
   
