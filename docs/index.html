@@ -67,68 +67,94 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-
 <div class="section level1">
 <div class="page-header"><h1 id="ignobior">ignobioR<a class="anchor" aria-label="anchor" href="#ignobior"></a>
 </h1></div>
-<p>The huge amount of biodiversity records currently available offers increasing opportunities of data analyses, allowing to improve our knowledge of natural systems and their dynamics. This amount of data poses new challenges for reliable analyses and correct interpretation of results. Indeed, to safely deal with occurrence records we must consider their uncertainty, which can introduce biases within analyses.</p>
-<p>This R package provides an objective framework to explicitly include spatial and temporal uncertainties during the mapping and listing of plant occurrence records (both current and historical) for a given study area; ignobioR package returns the here defined (1) ‘Map of Relative Floristic Ignorance’ (MRFI), which represents the spatial distribution of the lack of floristic knowledge, and a (2) ‘Virtual Floristic List’ (VFL), i.e. a list of taxa potentially occurring in the area, showing a probability of occurrence for each taxon.</p>
+<p><strong>Version 2.0.0 - Next Generation Floristics toolkit for R</strong></p>
+<p><a href="https://www.gnu.org/licenses/gpl-3.0.en.html" class="external-link"><img src="https://img.shields.io/badge/license-GPL--3-blue.svg" alt="License"></a></p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>The <code>ignobioR</code> package implements Next Generation Floristics (NGF) methodology to explicitly account for spatial and temporal uncertainties in botanical occurrence records. It provides two core tools:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Map of Relative Floristic Ignorance (MRFI)</strong> - Identifies knowledge gaps across your study area</li>
+<li>
+<strong>Virtual Floristic List (VFL)</strong> - Estimates occurrence probabilities for all potentially present taxa</li>
+</ol>
 </div>
-<div class="section level1">
-<h1 id="how-to-download-and-install-the-r-package">How to download and install the R package<a class="anchor" aria-label="anchor" href="#how-to-download-and-install-the-r-package"></a>
-</h1>
-<p>if(!require(devtools)){install.packages(“devtools”); library(devtools)}</p>
-<p>install_github(“interacquas/ignobioR”)</p>
+<div class="section level2">
+<h2 id="whats-new-in-200">What’s New in 2.0.0<a class="anchor" aria-label="anchor" href="#whats-new-in-200"></a>
+</h2>
+<ul>
+<li>
+<strong>Modern spatial packages</strong>: Now uses <code>sf</code> and <code>terra</code> (faster, more reliable)</li>
+<li>
+<strong>Enhanced visualizations</strong>: Automatic PDF reports with quantile and continuous scales</li>
+<li>
+<strong>Improved accuracy</strong>: Coverage-weighted rasterization for precise MRFI calculation</li>
+</ul>
 </div>
-<div class="section level1">
-<h1 id="how-to-use-the-r-package-in-brief">How to use the R package (in brief):<a class="anchor" aria-label="anchor" href="#how-to-use-the-r-package-in-brief"></a>
-</h1>
-<p>library(ignobioR)</p>
-<p>data(floratus)</p>
-<p>data(park)</p>
-<div class="section level3">
-<h3 id="map-of-relative-floristic-ignorance-mrfi">MAP OF RELATIVE FLORISTIC IGNORANCE (MRFI)<a class="anchor" aria-label="anchor" href="#map-of-relative-floristic-ignorance-mrfi"></a>
-</h3>
-<div class="section level4">
-<h4 id="short-example">Short example<a class="anchor" aria-label="anchor" href="#short-example"></a>
-</h4>
-<p>set.seed(123)</p>
-<p>mrfi &lt;- ignorance_map(data_flor= floratus[sample(nrow(floratus), 2000), ], site=park, tau= 20, cellsize= 2000)</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install from GitHub</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"interacquas/ignobioR"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="extended-example">Extended example<a class="anchor" aria-label="anchor" href="#extended-example"></a>
-</h4>
-<p>mrfi &lt;- ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)</p>
+<div class="section level2">
+<h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ignobioR</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load example data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">floratus</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">park</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">unsuitablezone</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create Map of Relative Floristic Ignorance</span></span>
+<span><span class="va">mrfi</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ignorance_map.html">ignorance_map</a></span><span class="op">(</span></span>
+<span>  data_flor <span class="op">=</span> <span class="va">floratus</span>,</span>
+<span>  site <span class="op">=</span> <span class="va">park</span>,</span>
+<span>  excl_areas <span class="op">=</span> <span class="va">unsuitablezone</span>,</span>
+<span>  tau <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  cellsize <span class="op">=</span> <span class="fl">2000</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate Virtual Floristic List</span></span>
+<span><span class="va">vfl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/virtual_list.html">virtual_list</a></span><span class="op">(</span></span>
+<span>  data_flor <span class="op">=</span> <span class="va">floratus</span>,</span>
+<span>  site <span class="op">=</span> <span class="va">park</span>,</span>
+<span>  excl_areas <span class="op">=</span> <span class="va">unsuitablezone</span>,</span>
+<span>  tau <span class="op">=</span> <span class="fl">20</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
+<p>Full documentation and vignettes: <a href="https://interacquas.github.io/ignobioR/" class="external-link uri">https://interacquas.github.io/ignobioR/</a></p>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>D’Antraccoli, M., Bedini, G., &amp; Peruzzi, L. (2022). Maps of relative floristic ignorance and virtual floristic lists: An R package to incorporate uncertainty in mapping and analysing biodiversity data. <em>Ecological Informatics</em>, 67, 101512. <a href="https://doi.org/10.1016/j.ecoinf.2021.101512" class="external-link uri">https://doi.org/10.1016/j.ecoinf.2021.101512</a></p>
+</div>
+<div class="section level2">
+<h2 id="authors">Authors<a class="anchor" aria-label="anchor" href="#authors"></a>
+</h2>
+<ul>
+<li>Marco D’Antraccoli (<a href="https://people.unipi.it/marco_dantraccoli/" class="external-link">University of Pisa</a>)</li>
+<li>Giuseppe Antonelli (<a href="https://www.researchgate.net/profile/Giuseppe-Antonelli" class="external-link">ResearchGate</a>)</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+</h2>
+<p>GPL-3</p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="virtual-floristic-list-vfl">VIRTUAL FLORISTIC LIST (VFL)<a class="anchor" aria-label="anchor" href="#virtual-floristic-list-vfl"></a>
-</h3>
-<div class="section level4">
-<h4 id="short-example-1">Short example<a class="anchor" aria-label="anchor" href="#short-example-1"></a>
-</h4>
-<p>set.seed(123)</p>
-<p>vfl &lt;- virtual_list(data_flor= floratus[sample(nrow(floratus), 2000), ], site = park, excl_areas = unsuitablezone, tau = 20, upperlimit = 25)</p>
-</div>
-<div class="section level4">
-<h4 id="extended-example-1">Extended example<a class="anchor" aria-label="anchor" href="#extended-example-1"></a>
-</h4>
-<p>vfl &lt;- virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezone, tau = 20, upperlimit = 25)</p>
-</div>
-</div>
-</div>
-<div class="section level1">
-<h1 id="the-authors">The Authors<a class="anchor" aria-label="anchor" href="#the-authors"></a>
-</h1>
-<p>Marco D’Antraccoli, Botanic Garden and Museum, University of Pisa (<a href="mailto:marco.dantraccoli@unipi.it" class="email">marco.dantraccoli@unipi.it</a>; <a href="https://people.unipi.it/marco_dantraccoli/" class="external-link uri">https://people.unipi.it/marco_dantraccoli/</a>)</p>
-<p>Giuseppe Antonelli (<a href="https://www.researchgate.net/profile/Giuseppe-Antonelli" class="external-link uri">https://www.researchgate.net/profile/Giuseppe-Antonelli</a>)</p>
-</div>
-<div class="section level1">
-<h1 id="please-check-our-vignette">Please check our Vignette<a class="anchor" aria-label="anchor" href="#please-check-our-vignette"></a>
-</h1>
-<p><a href="https://interacquas.github.io/ignobioR/" class="external-link uri">https://interacquas.github.io/ignobioR/</a></p>
-</div>
-
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
