@@ -16,7 +16,6 @@ The `ignobioR` package implements Next Generation Floristics (NGF) methodology t
 - **Modern spatial packages**: Now uses `sf` and `terra` (faster, more reliable)
 - **Enhanced visualizations**: Automatic PDF reports with quantile and continuous scales
 - **Improved accuracy**: Coverage-weighted rasterization for precise MRFI calculation
-- **Better edge handling**: Automatically includes external records with overlapping uncertainty buffers
 
 ## Installation
 ```r
