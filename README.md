@@ -1,48 +1,70 @@
 # ignobioR
 
-The huge amount of biodiversity records currently available offers increasing opportunities of data analyses, allowing to improve our knowledge of natural systems and their dynamics. This amount of data poses new challenges for reliable analyses and correct interpretation of results. Indeed, to safely deal with occurrence records we must consider their uncertainty, which can introduce biases within analyses. 
+**Version 2.0.0 - Next Generation Floristics toolkit for R**
 
-This R package provides an objective framework to explicitly include spatial and temporal uncertainties during the mapping and listing of plant occurrence records (both current and historical) for a given study area; ignobioR package returns the here defined (1) ‘Map of Relative Floristic Ignorance’ (MRFI), which represents the spatial distribution of the lack of floristic knowledge, and a (2) ‘Virtual Floristic List’ (VFL), i.e. a list of taxa potentially occurring in the area, showing a probability of occurrence for each taxon.
+[![License](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
-# How to download and install the R package
-if(!require(devtools)){install.packages("devtools"); library(devtools)} 
+## Overview
 
-install_github("interacquas/ignobioR")
+The `ignobioR` package implements Next Generation Floristics (NGF) methodology to explicitly account for spatial and temporal uncertainties in botanical occurrence records. It provides two core tools:
 
-# How to use the R package (in brief):
+1. **Map of Relative Floristic Ignorance (MRFI)** - Identifies knowledge gaps across your study area
+2. **Virtual Floristic List (VFL)** - Estimates occurrence probabilities for all potentially present taxa
 
+## What's New in 2.0.0
+
+- **Modern spatial packages**: Now uses `sf` and `terra` (faster, more reliable)
+- **Enhanced visualizations**: Automatic PDF reports with quantile and continuous scales
+- **Improved accuracy**: Coverage-weighted rasterization for precise MRFI calculation
+- **Better edge handling**: Automatically includes external records with overlapping uncertainty buffers
+
+## Installation
+```r
+# Install from GitHub
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("interacquas/ignobioR")
+```
+
+## Quick Start
+```r
 library(ignobioR)
 
+# Load example data
 data(floratus)
-
 data(park)
+data(unsuitablezone)
 
-### MAP OF RELATIVE FLORISTIC IGNORANCE (MRFI)
-#### Short example
-set.seed(123)
+# Create Map of Relative Floristic Ignorance
+mrfi <- ignorance_map(
+  data_flor = floratus,
+  site = park,
+  excl_areas = unsuitablezone,
+  tau = 20,
+  cellsize = 2000
+)
 
-mrfi <- ignorance_map(data_flor= floratus[sample(nrow(floratus), 2000), ],  site=park, tau= 20, cellsize= 2000)
+# Generate Virtual Floristic List
+vfl <- virtual_list(
+  data_flor = floratus,
+  site = park,
+  excl_areas = unsuitablezone,
+  tau = 20
+)
+```
 
-#### Extended example
-mrfi <- ignorance_map(data_flor = floratus, excl_areas = unsuitablezone, site = park, tau = 20, cellsize = 2000)
+## Documentation
 
-### VIRTUAL FLORISTIC LIST (VFL)
+Full documentation and vignettes: https://interacquas.github.io/ignobioR/
 
-#### Short example
-set.seed(123)
+## Citation
 
-vfl <- virtual_list(data_flor= floratus[sample(nrow(floratus), 2000), ], site = park, excl_areas = unsuitablezone, tau = 20, upperlimit = 25)
+D'Antraccoli, M., Bedini, G., & Peruzzi, L. (2022). Maps of relative floristic ignorance and virtual floristic lists: An R package to incorporate uncertainty in mapping and analysing biodiversity data. *Ecological Informatics*, 67, 101512. https://doi.org/10.1016/j.ecoinf.2021.101512
 
-#### Extended example 
-vfl <- virtual_list(data_flor = floratus, site = park, excl_areas = unsuitablezone, tau = 20, upperlimit = 25)
+## Authors
 
+- Marco D'Antraccoli ([University of Pisa](https://people.unipi.it/marco_dantraccoli/))
+- Giuseppe Antonelli ([ResearchGate](https://www.researchgate.net/profile/Giuseppe-Antonelli))
 
-# The Authors
+## License
 
-Marco D'Antraccoli, Botanic Garden and Museum, University of Pisa (marco.dantraccoli@unipi.it; https://people.unipi.it/marco_dantraccoli/)
-
-Giuseppe Antonelli (https://www.researchgate.net/profile/Giuseppe-Antonelli)
-
-
-# Please check our Vignette
-https://interacquas.github.io/ignobioR/
+GPL-3
