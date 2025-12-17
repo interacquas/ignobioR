@@ -4,11 +4,11 @@ Title: Managing biodiversity occurrence data considering uncertainty
 Version: 2.0.0
 Authors@R: c(
     person("Marco", "D'Antraccoli", 
-           email = "marco.dantraccoli@unipi.it", 
-           role = c("aut", "cre")),
+           email = "marco.dantraccoli@unipi.it",
+           role = "aut"),
     person("Giuseppe", "Antonelli", 
            email = "antonelli.gpp@gmail.com", 
-           role = "aut"),
+           role = c("aut", "cre")),
     person("Gianni", "Bedini", 
            role = "aut"),
     person("Lorenzo", "Peruzzi", 
