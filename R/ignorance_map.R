@@ -135,7 +135,7 @@ ignorance_map <- function(data_flor, site, year_study = NULL, excl_areas = NULL,
                           check_overlap = TRUE, 
                           site_buffer = FALSE, buffer_width = NULL, mask_method = "touches",
                           use_coverage_weighting = TRUE, 
-                          output_dir = getwd(), output_prefix = "MRFI",) {
+                          output_dir = getwd(), output_prefix = "MRFI") {
   
   # ============================================================================
   # HELPER FUNCTIONS
