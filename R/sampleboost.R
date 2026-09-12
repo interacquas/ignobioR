@@ -17,14 +17,17 @@
 #' @param ndvi A `terra` `SpatRaster` holding NDVI or another environmental
 #'   index.
 #' @param ignorance A `terra` `SpatRaster` holding the Map of Relative Floristic
-#'   Ignorance (MRFI), as returned by [ignorance_map()].
+#'   Ignorance (MRFI), as returned by [ignorance_map()]. Higher values must mean
+#'   less well known: if the raster holds accumulated knowledge rather than
+#'   ignorance, `igno.weight` will steer plots toward the best surveyed areas.
 #' @param site An `sf` or `sfc` polygon object defining the study area. Multiple
 #'   features are dissolved before sampling.
 #' @param excl_areas Optional `sf` or `sfc` object delimiting areas unsuitable
 #'   for sampling (water bodies, inaccessible terrain). If no CRS is set,
 #'   EPSG:4326 is assumed.
-#' @param CRS.new Numeric EPSG code of a projected CRS in metres. Default 3035
-#'   (ETRS89-LAEA Europe).
+#' @param CRS.new EPSG code of a projected CRS in metres, used for all distance
+#'   and area computation. If `NULL` (the default) the CRS of `ndvi` is used
+#'   when it is projected, which avoids resampling the largest input.
 #' @param nplot Integer, number of plots per configuration. Minimum 2.
 #' @param plot_radius Numeric, plot radius in metres.
 #' @param perm Integer, number of configurations to generate and score.
@@ -34,6 +37,9 @@
 #'   `final_score` lies in [0, 1] and the defaults give equal weighting.
 #' @param seed Optional integer seed. Supplying it makes the result exactly
 #'   reproducible; the value used is recorded in `statistics`.
+#' @param block_size Integer, number of configurations whose points are drawn
+#'   and extracted in one batch. Larger values are faster and use more memory.
+#'   Default 250.
 #' @param verbose Logical, print progress messages. Default TRUE.
 #' @param output_dir Optional directory for CSV and PDF output. If NULL (the
 #'   default) no files are written and results are returned in memory only.
@@ -57,7 +63,13 @@
 #' containing its centre. This is appropriate when plot area is small relative
 #' to cell area; a warning is issued otherwise. NDVI and ignorance are sampled
 #' independently, so the two rasters need not share a grid and neither is
-#' resampled.
+#' resampled onto the other.
+#'
+#' **Batching.** Points for `block_size` configurations are drawn in a single
+#' `sf::st_sample()` call and extracted in a single `terra::extract()` call per
+#' raster. Because `type = "random"` draws independent uniform points, splitting
+#' one large draw into configurations is equivalent to drawing each separately,
+#' and it removes the per-call overhead that dominates runtime.
 #'
 #' **Non-overlap.** Two plots overlap when their centres are closer than
 #' `2 * plot_radius`. Configurations containing any overlapping pair are
@@ -75,12 +87,12 @@
 #' different values of `perm`. Raw objective values are returned alongside the
 #' normalized ones for that reason.
 #'
-#' @importFrom sf st_as_sf st_as_sfc st_area st_bbox st_buffer st_coordinates
-#'   st_crs st_difference st_drop_geometry st_geometry st_intersection
-#'   st_intersects st_is_empty st_make_valid st_sample st_transform st_union
-#' @importFrom terra crop extract mask project res vect
+#' @importFrom sf st_area st_as_sf st_bbox st_buffer st_cast st_coordinates
+#'   st_crs st_difference st_intersection st_intersects st_is_empty
+#'   st_is_longlat st_make_valid st_sample st_transform st_union
+#' @importFrom terra crop crs extract mask project res vect
 #' @importFrom tidyterra geom_spatraster
-#' @importFrom ggplot2 aes coord_sf element_blank element_text geom_col geom_point
+#' @importFrom ggplot2 aes element_blank element_text geom_col geom_point
 #'   geom_sf geom_text ggplot ggtitle labs scale_color_distiller
 #'   scale_fill_distiller scale_y_continuous theme theme_classic theme_minimal
 #'   xlab ylab
@@ -100,7 +112,7 @@
 #'
 #' res <- sampleboost(
 #'   ndvi = ndvi, ignorance = mrfi, site = park,
-#'   nplot = 50, plot_radius = 5.64, perm = 500, seed = 1
+#'   nplot = 50, plot_radius = 5.64, perm = 1000, seed = 1
 #' )
 #'
 #' res$best_scores
@@ -109,16 +121,17 @@
 #' # Prioritize poorly known areas over environmental heterogeneity
 #' res2 <- sampleboost(
 #'   ndvi = ndvi, ignorance = mrfi, site = park,
-#'   nplot = 50, plot_radius = 5.64, perm = 500, seed = 1,
+#'   nplot = 50, plot_radius = 5.64, perm = 1000, seed = 1,
 #'   ndvi.weight = 1, igno.weight = 3, dist.weight = 1
 #' )
 #' }
 sampleboost <- function(ndvi, ignorance, site,
                         excl_areas = NULL,
-                        CRS.new = 3035,
+                        CRS.new = NULL,
                         nplot, plot_radius, perm,
                         ndvi.weight = 1, igno.weight = 1, dist.weight = 1,
                         seed = NULL,
+                        block_size = 250L,
                         verbose = TRUE,
                         output_dir = NULL,
                         output_prefix = "SampleBoost") {
@@ -137,9 +150,6 @@ sampleboost <- function(ndvi, ignorance, site,
   if (!inherits(ndvi, "SpatRaster")) stop("'ndvi' must be a terra SpatRaster.")
   if (!inherits(ignorance, "SpatRaster")) stop("'ignorance' must be a terra SpatRaster.")
   
-  if (!is.numeric(CRS.new) || length(CRS.new) != 1L || is.na(CRS.new) || CRS.new <= 0) {
-    stop("'CRS.new' must be a single positive numeric EPSG code.")
-  }
   if (!is.numeric(nplot) || length(nplot) != 1L || nplot < 2) {
     stop("'nplot' must be a single number of at least 2.")
   }
@@ -148,6 +158,9 @@ sampleboost <- function(ndvi, ignorance, site,
   }
   if (!is.numeric(perm) || length(perm) != 1L || perm < 1) {
     stop("'perm' must be a single number of at least 1.")
+  }
+  if (!is.numeric(block_size) || length(block_size) != 1L || block_size < 1) {
+    stop("'block_size' must be a single number of at least 1.")
   }
   
   weights <- c(ndvi = ndvi.weight, igno = igno.weight, dist = dist.weight)
@@ -160,6 +173,7 @@ sampleboost <- function(ndvi, ignorance, site,
   
   nplot <- as.integer(nplot)
   perm <- as.integer(perm)
+  block_size <- min(as.integer(block_size), perm)
   
   if (!is.null(seed)) {
     if (!is.numeric(seed) || length(seed) != 1L) stop("'seed' must be a single number.")
@@ -171,24 +185,53 @@ sampleboost <- function(ndvi, ignorance, site,
   msg("Inputs validated.")
   
   # --------------------------------------------------------------------------
-  # 2. PROJECTION AND SAMPLING AREA
+  # 2. WORKING CRS
   # --------------------------------------------------------------------------
   
-  msg(paste0("Reprojecting inputs to EPSG:", CRS.new, " ..."))
+  ndvi_crs <- sf::st_crs(terra::crs(ndvi))
   
-  crs_sf <- sf::st_crs(CRS.new)
-  crs_terra <- paste0("EPSG:", CRS.new)
+  if (is.null(CRS.new)) {
+    if (is.na(ndvi_crs)) {
+      stop("'ndvi' has no CRS, so the working CRS cannot be inferred. ",
+           "Supply 'CRS.new' explicitly.")
+    }
+    if (isTRUE(sf::st_is_longlat(ndvi_crs))) {
+      stop("'ndvi' is in geographic coordinates, so distances are not in metres. ",
+           "Supply a projected 'CRS.new' (for example 32632 for UTM zone 32N).")
+    }
+    crs_sf <- ndvi_crs
+    msg(paste0("Working CRS taken from NDVI: ",
+               if (is.na(crs_sf$epsg)) "(no EPSG code)" else paste0("EPSG:", crs_sf$epsg), "."))
+  } else {
+    if (!is.numeric(CRS.new) || length(CRS.new) != 1L || is.na(CRS.new) || CRS.new <= 0) {
+      stop("'CRS.new' must be NULL or a single positive numeric EPSG code.")
+    }
+    crs_sf <- sf::st_crs(CRS.new)
+    if (is.na(crs_sf)) stop("EPSG:", CRS.new, " was not recognised.")
+    if (isTRUE(sf::st_is_longlat(crs_sf))) {
+      stop("'CRS.new' must be a projected CRS in metres, not a geographic one.")
+    }
+    msg(paste0("Working CRS: EPSG:", CRS.new, "."))
+  }
   
-  if (!identical(terra::crs(ndvi), crs_terra)) {
+  # Compare CRS objects, not strings: terra::crs() returns full WKT, so a
+  # string comparison against "EPSG:nnnnn" never matches and would reproject
+  # rasters that are already in the target CRS.
+  if (is.na(ndvi_crs) || ndvi_crs != crs_sf) {
     msg("  Reprojecting NDVI ...")
-    ndvi <- terra::project(ndvi, crs_terra)
+    ndvi <- terra::project(ndvi, crs_sf$wkt)
   }
-  if (!identical(terra::crs(ignorance), crs_terra)) {
+  igno_crs <- sf::st_crs(terra::crs(ignorance))
+  if (is.na(igno_crs) || igno_crs != crs_sf) {
     msg("  Reprojecting ignorance ...")
-    ignorance <- terra::project(ignorance, crs_terra)
+    ignorance <- terra::project(ignorance, crs_sf$wkt)
   }
-  # Note: the two rasters are sampled independently at point locations, so no
-  # common grid is required and neither is resampled onto the other.
+  # The two rasters are sampled independently at point locations, so no common
+  # grid is required and neither is resampled onto the other.
+  
+  # --------------------------------------------------------------------------
+  # 3. SAMPLING AREA
+  # --------------------------------------------------------------------------
   
   if (inherits(site, "Spatial")) site <- sf::st_as_sf(site)
   if (is.na(sf::st_crs(site))) {
@@ -236,7 +279,6 @@ sampleboost <- function(ndvi, ignorance, site,
   msg(paste0("  Sampling area: ", round(sampling_area / 1e6, 2), " km2 (",
              round(area_loss_pct, 1), "% lost to boundary constraint)."))
   
-  # Point extraction assumes a plot sits within roughly one cell.
   cell_area <- prod(terra::res(ndvi))
   if (areaplot > cell_area) {
     warning("Plot area (", round(areaplot), " m2) exceeds the NDVI cell area (",
@@ -246,98 +288,135 @@ sampleboost <- function(ndvi, ignorance, site,
   msg(paste0("  Plot area: ", round(areaplot, 1), " m2; NDVI cell: ",
              round(cell_area, 1), " m2. Extraction: centre cell."))
   
-  # Feasibility hint before spending time on permutations.
-  packing_ratio <- (nplot * pi * (2 * plot_radius / 2)^2) / sampling_area
+  packing_ratio <- (nplot * pi * plot_radius^2) / sampling_area
   if (packing_ratio > 0.3) {
     warning("Requested plots occupy ~", round(packing_ratio * 100),
             "% of the sampling area. Non-overlapping configurations will be rare; ",
             "consider fewer plots, a smaller radius, or a larger 'perm'.")
   }
   
-  # Crop and mask for display and for consistent NA handling.
   site_vect <- terra::vect(sf::st_as_sf(site_proj))
   ndvi <- terra::mask(terra::crop(ndvi, site_vect), site_vect)
   ignorance <- terra::mask(terra::crop(ignorance, site_vect), site_vect)
   
   # --------------------------------------------------------------------------
-  # 3. GENERATE AND SCORE CONFIGURATIONS
+  # 4. GENERATE AND SCORE CONFIGURATIONS (BATCHED)
   # --------------------------------------------------------------------------
   
-  msg(paste0("Generating ", perm, " configurations ..."))
+  msg(paste0("Generating ", perm, " configurations in blocks of ", block_size, " ..."))
   
   min_sep <- 2 * plot_radius
   
   ndvi_between_var <- rep(NA_real_, perm)
-  mean_ignorance <- rep(NA_real_, perm)
-  mean_nn_dist <- rep(NA_real_, perm)
+  mean_ignorance   <- rep(NA_real_, perm)
+  mean_nn_dist     <- rep(NA_real_, perm)
   
   reject_overlap <- logical(perm)
   reject_npoints <- logical(perm)
-  reject_na <- logical(perm)
+  reject_na      <- logical(perm)
   
   configs <- vector("list", perm)
   
+  # Draw n independent uniform points, retrying because st_sample() can return
+  # fewer than requested when its internal rejection sampling falls short.
+  draw_points <- function(n) {
+    got <- list()
+    have <- 0L
+    tries <- 0L
+    while (have < n && tries < 25L) {
+      s <- sf::st_sample(site_sampling, size = n - have, type = "random")
+      s <- suppressWarnings(sf::st_cast(s, "POINT"))
+      if (length(s) > 0L) {
+        got[[length(got) + 1L]] <- s
+        have <- have + length(s)
+      }
+      tries <- tries + 1L
+    }
+    if (have < n) {
+      stop("st_sample() could not draw ", n, " points inside the sampling area ",
+           "after 25 attempts. The geometry may be very thin or fragmented.")
+    }
+    do.call(c, got)[seq_len(n)]
+  }
+  
+  block_starts <- seq(1L, perm, by = block_size)
   pb <- if (verbose) utils::txtProgressBar(min = 0, max = perm, style = 3) else NULL
   
-  for (i in seq_len(perm)) {
+  for (bs in block_starts) {
     
-    pts <- sf::st_as_sf(sf::st_sample(site_sampling, size = nplot, type = "random"))
+    be <- min(bs + block_size - 1L, perm)
+    n_conf <- be - bs + 1L
+    n_pts <- n_conf * nplot
     
-    # Belt and braces: st_sample draws from the differenced polygon, but a point
-    # on a shared edge can still test as intersecting an exclusion area.
-    if (has_exclusions && nrow(pts) > 0L) {
-      hit <- apply(sf::st_intersects(pts, excl_proj, sparse = FALSE), 1, any)
-      if (any(hit)) pts <- pts[!hit, , drop = FALSE]
+    pts <- draw_points(n_pts)
+    pts_sf <- sf::st_as_sf(pts)
+    
+    coords_all <- sf::st_coordinates(pts)
+    ndvi_all <- terra::extract(ndvi, pts_sf, ID = FALSE)[, 1]
+    igno_all <- terra::extract(ignorance, pts_sf, ID = FALSE)[, 1]
+    
+    # st_sample draws from the differenced polygon, but a point on a shared
+    # edge can still test as intersecting an exclusion area.
+    if (has_exclusions) {
+      excl_hit <- apply(sf::st_intersects(pts_sf, excl_proj, sparse = FALSE), 1, any)
+    } else {
+      excl_hit <- rep(FALSE, n_pts)
     }
     
-    if (nrow(pts) < nplot) {
-      reject_npoints[i] <- TRUE
-      if (!is.null(pb)) utils::setTxtProgressBar(pb, i)
-      next
+    # Column j of idx holds the row indices of configuration j in this block.
+    idx <- matrix(seq_len(n_pts), nrow = nplot)
+    
+    for (j in seq_len(n_conf)) {
+      
+      i <- bs + j - 1L
+      rows <- idx[, j]
+      
+      if (any(excl_hit[rows])) {
+        reject_npoints[i] <- TRUE
+        next
+      }
+      
+      coords <- coords_all[rows, , drop = FALSE]
+      dmat <- as.matrix(stats::dist(coords))
+      diag(dmat) <- Inf
+      
+      # Two circular plots of equal radius overlap iff their centres are closer
+      # than twice the radius, so the distance matrix answers both questions.
+      if (min(dmat) < min_sep) {
+        reject_overlap[i] <- TRUE
+        next
+      }
+      
+      ndvi_vals <- ndvi_all[rows]
+      igno_vals <- igno_all[rows]
+      
+      if (anyNA(ndvi_vals) || anyNA(igno_vals)) {
+        reject_na[i] <- TRUE
+        next
+      }
+      
+      # True nearest-neighbour distance: the mean over plots of the distance to
+      # the closest other plot. This rewards even spacing, whereas the mean of
+      # all pairwise distances rewards pushing plots toward opposite extremes.
+      nn <- apply(dmat, 1, min)
+      
+      ndvi_between_var[i] <- stats::var(ndvi_vals)
+      mean_ignorance[i]   <- mean(igno_vals)
+      mean_nn_dist[i]     <- mean(nn)
+      
+      configs[[i]] <- data.frame(
+        config_id = i,
+        plot_id = seq_len(nplot),
+        x = coords[, 1],
+        y = coords[, 2],
+        ndvi = ndvi_vals,
+        ignorance = igno_vals,
+        nn_dist = nn,
+        stringsAsFactors = FALSE
+      )
     }
     
-    coords <- sf::st_coordinates(pts)
-    dmat <- as.matrix(stats::dist(coords))
-    diag(dmat) <- Inf
-    
-    # Two circular plots of equal radius overlap iff their centres are closer
-    # than twice the radius, so the distance matrix answers both questions.
-    if (min(dmat) < min_sep) {
-      reject_overlap[i] <- TRUE
-      if (!is.null(pb)) utils::setTxtProgressBar(pb, i)
-      next
-    }
-    
-    # True nearest-neighbour distance: the mean over plots of the distance to
-    # the closest other plot. This rewards even spacing, whereas the mean of all
-    # pairwise distances rewards pushing plots toward opposite extremes.
-    nn <- apply(dmat, 1, min)
-    
-    ndvi_vals <- terra::extract(ndvi, pts, ID = FALSE)[, 1]
-    igno_vals <- terra::extract(ignorance, pts, ID = FALSE)[, 1]
-    
-    if (anyNA(ndvi_vals) || anyNA(igno_vals)) {
-      reject_na[i] <- TRUE
-      if (!is.null(pb)) utils::setTxtProgressBar(pb, i)
-      next
-    }
-    
-    ndvi_between_var[i] <- stats::var(ndvi_vals)
-    mean_ignorance[i] <- mean(igno_vals)
-    mean_nn_dist[i] <- mean(nn)
-    
-    configs[[i]] <- data.frame(
-      config_id = i,
-      plot_id = seq_len(nplot),
-      x = coords[, 1],
-      y = coords[, 2],
-      ndvi = ndvi_vals,
-      ignorance = igno_vals,
-      nn_dist = nn,
-      stringsAsFactors = FALSE
-    )
-    
-    if (!is.null(pb)) utils::setTxtProgressBar(pb, i)
+    if (!is.null(pb)) utils::setTxtProgressBar(pb, be)
   }
   if (!is.null(pb)) close(pb)
   
@@ -345,7 +424,7 @@ sampleboost <- function(ndvi, ignorance, site,
   
   msg(paste0("  Valid: ", sum(valid), "/", perm,
              " (rejected - overlap: ", sum(reject_overlap),
-             ", too few points: ", sum(reject_npoints),
+             ", in exclusion area: ", sum(reject_npoints),
              ", missing raster values: ", sum(reject_na), ")"))
   
   if (!any(valid)) {
@@ -359,7 +438,7 @@ sampleboost <- function(ndvi, ignorance, site,
   }
   
   # --------------------------------------------------------------------------
-  # 4. NORMALIZE, WEIGHT, SELECT
+  # 5. NORMALIZE, WEIGHT, SELECT
   # --------------------------------------------------------------------------
   
   msg("Scoring configurations ...")
@@ -407,7 +486,7 @@ sampleboost <- function(ndvi, ignorance, site,
              " (score ", round(best$final_score, 3), ")."))
   
   # --------------------------------------------------------------------------
-  # 5. FIELD SHEET AND STATISTICS
+  # 6. FIELD SHEET AND STATISTICS
   # --------------------------------------------------------------------------
   
   wgs <- sf::st_coordinates(sf::st_transform(best_solution_sf, 4326))
@@ -424,24 +503,26 @@ sampleboost <- function(ndvi, ignorance, site,
   end_time <- Sys.time()
   elapsed <- as.numeric(difftime(end_time, start_time, units = "secs"))
   
+  epsg_used <- if (is.na(crs_sf$epsg)) "custom (no EPSG)" else as.character(crs_sf$epsg)
+  
   statistics <- data.frame(
-    Statistic = c("Started", "Finished", "Elapsed time (s)", "CRS (EPSG)", "Seed",
-                  "Exclusion areas", "Number of plots", "Plot radius (m)",
+    Statistic = c("Started", "Finished", "Elapsed time (s)", "Working CRS (EPSG)",
+                  "Seed", "Exclusion areas", "Number of plots", "Plot radius (m)",
                   "Plot area (m2)", "NDVI cell size (m)", "Sampling area (km2)",
-                  "Configurations tested", "Valid configurations",
-                  "Rejected - overlap", "Rejected - too few points",
+                  "Configurations tested", "Block size", "Valid configurations",
+                  "Rejected - overlap", "Rejected - in exclusion area",
                   "Rejected - missing values",
                   "NDVI weight", "Ignorance weight", "Distance weight",
                   "Best configuration", "Best final score",
                   "Best NDVI between-plot variance", "Best mean ignorance",
                   "Best mean nearest-neighbour distance (m)"),
     Value = c(format(start_time), format(end_time), round(elapsed, 2),
-              as.character(CRS.new),
+              epsg_used,
               if (is.null(seed)) "not set" else as.character(seed),
               if (has_exclusions) "yes" else "no",
               nplot, round(plot_radius, 2), round(areaplot, 1),
               round(sqrt(cell_area), 1), round(sampling_area / 1e6, 2),
-              perm, sum(valid),
+              perm, block_size, sum(valid),
               sum(reject_overlap), sum(reject_npoints), sum(reject_na),
               weights[["ndvi"]], weights[["igno"]], weights[["dist"]],
               best$config_id, round(best$final_score, 4),
@@ -451,7 +532,7 @@ sampleboost <- function(ndvi, ignorance, site,
   )
   
   # --------------------------------------------------------------------------
-  # 6. PLOTS
+  # 7. PLOTS
   # --------------------------------------------------------------------------
   
   excl_plot <- NULL
@@ -471,6 +552,8 @@ sampleboost <- function(ndvi, ignorance, site,
     p
   }
   
+  # geom_spatraster() already establishes the coordinate system, so no
+  # coord_sf() is added here; adding one emits a replacement message.
   map_layer <- function(r, palette, direction, legend, title) {
     p <- ggplot2::ggplot() +
       tidyterra::geom_spatraster(data = r) +
@@ -480,7 +563,6 @@ sampleboost <- function(ndvi, ignorance, site,
       ggplot2::scale_fill_distiller(palette = palette, name = legend,
                                     na.value = "transparent", direction = direction) +
       ggplot2::ggtitle(title) +
-      ggplot2::coord_sf() +
       ggplot2::theme_minimal()
     add_boundaries(p)
   }
@@ -529,7 +611,7 @@ sampleboost <- function(ndvi, ignorance, site,
                 scores = plot_scores, contributions = plot_contributions)
   
   # --------------------------------------------------------------------------
-  # 7. OPTIONAL FILE OUTPUT
+  # 8. OPTIONAL FILE OUTPUT
   # --------------------------------------------------------------------------
   
   if (!is.null(output_dir)) {
@@ -569,7 +651,7 @@ sampleboost <- function(ndvi, ignorance, site,
   }
   
   # --------------------------------------------------------------------------
-  # 8. RETURN
+  # 9. RETURN
   # --------------------------------------------------------------------------
   
   list(
