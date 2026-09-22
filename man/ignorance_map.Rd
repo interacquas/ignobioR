@@ -14,12 +14,12 @@ ignorance_map(
   cellsize,
   verbose = TRUE,
   check_overlap = TRUE,
-  output_dir = file.path(getwd(), "output"),
-  output_prefix = "MRFI",
   site_buffer = FALSE,
   buffer_width = NULL,
   mask_method = "touches",
-  use_coverage_weighting = TRUE
+  use_coverage_weighting = TRUE,
+  output_dir = getwd(),
+  output_prefix = "MRFI"
 )
 }
 \arguments{
@@ -50,10 +50,6 @@ Represents the temporal decay of floristic records.}
 \item{check_overlap}{Logical. If TRUE (default), checks and plots spatial overlap 
 between occurrence points and study area.}
 
-\item{output_dir}{Character. Directory path for output files. Defaults to working directory.}
-
-\item{output_prefix}{Character. Prefix for output filenames. Default = "MRFI".}
-
 \item{site_buffer}{Logical. If TRUE, expands the study area boundary to analyze 
 a larger region beyond the original site. If FALSE (default), analyzes only the 
 original boundary. Note: Edge effects from external records are already handled 
@@ -76,6 +72,10 @@ default. Must be > 0. Buffer will NOT extend into exclusion areas.}
 contribution by fraction of cell covered by each buffer (matches original algorithm, 
 slower but more accurate). If FALSE, uses faster binary approach where any buffer 
 touch contributes full ignorance value (faster but may underestimate ignorance).}
+
+\item{output_dir}{Character. Directory path for output files. Defaults to working directory.}
+
+\item{output_prefix}{Character. Prefix for output filenames. Default = "MRFI".}
 }
 \value{
 A list with 4 objects:
