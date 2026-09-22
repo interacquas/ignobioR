@@ -15,7 +15,7 @@ virtual_list(
   min_probability = 0,
   verbose = TRUE,
   check_overlap = TRUE,
-  output_dir = file.path(getwd(), "output"),
+  output_dir = getwd(),
   output_prefix = "VFL"
 )
 }
