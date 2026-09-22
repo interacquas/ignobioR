@@ -9,7 +9,8 @@
 #' The three objectives, all maximized, are:
 #' \itemize{
 #'   \item environmental heterogeneity, as between-plot NDVI variance;
-#'   \item floristic ignorance, as the mean MRFI value across plots;
+#'   \item floristic ignorance, as the mean MRFI value across plots
+#'     (D'Antraccoli et al., 2022);
 #'   \item spatial dispersion, as the mean nearest-neighbour distance between
 #'     plot centres (Clark & Evans, 1954).
 #' }
@@ -93,6 +94,11 @@
 #' Clark, P.J. & Evans, F.C. (1954). Distance to nearest neighbour as a
 #' measure of spatial relationships in populations. \emph{Ecology}, 35(4),
 #' 445--453.
+#' 
+#' D’Antraccoli, M., Bedini, G. & Peruzzi, L. (2022). Maps of relative 
+#' floristic ignorance and virtual floristic lists: An R package to incorporate 
+#' uncertainty in mapping and analysing biodiversity data. \emph{Ecological 
+#' Informatics}, 67, 101512.
 #'
 #' Nekola, J.C. & White, P.S. (1999). The distance decay of similarity in
 #' biogeography and ecology. \emph{Journal of Biogeography}, 26, 867--878.
